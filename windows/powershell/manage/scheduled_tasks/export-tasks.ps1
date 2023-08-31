@@ -1,5 +1,5 @@
 param(
-    [String]$OutputPath = "C:\tmp\scheduled_tasks",
+    [String]$OutputPath = ".",
     [Boolean]$Debug = $false
 )
 
@@ -9,6 +9,11 @@ $ExportTasks = @(
         Name       = "Kill Discord";
         Path       = "\CustomTasks";
         OutputFile = "$($OutputPath)\kill discord.xml"
+    },
+    [PSCustomObject]@{
+        Name       = "Reboot system";
+        Path       = "\";
+        OutputFile = "$($OutputPath)reboot system.xml"
     }
 )
 
