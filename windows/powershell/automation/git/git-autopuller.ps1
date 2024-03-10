@@ -1,63 +1,71 @@
-<#
-    Automate pulling & fetching a git repository.
-#>
-
-param (
-    [String]$GitDir,
+Param(
+    [String]$RepositoryPath,
     [Switch]$Debug
 )
 
-# Check if GitDir parameter is provided
-if (-not $GitDir) {
-    Write-Host 'Please provide the -GitDir parameter.'
+# Check if repos$RepositoryPath parameter is provided
+if (-not $RepositoryPath) {
+    Write-Host 'Please provide the -RepositoryPath parameter.' -ForegroundColor Yellow
     exit 1
 }
 
-# Ensure directory is a git repository
-$gitPath = Join-Path $GitDir '.git'
-if (-not (Test-Path -Path $gitPath -PathType Container)) {
-    Write-Warning "Path '$GitDir' is not a git repository"
-    exit 1
+# Store the current directory
+$CurrentDirectory = Get-Location
+
+# Change directory to the repository
+Set-Location $RepositoryPath
+
+# Fetch all remote branches
+try {
+    git fetch --all
+} catch {
+    Write-Host "[ERROR] Error fetching all git branches. Details: $($_.Exception.message)" -ForegroundColor Yellow
 }
 
-# Change directory to the specified Git directory
-# Push-Location -Path $GitDir
+# Get a list of all branches (local and remote)
+$GitBranches = git branch -a | ForEach-Object { $_.Trim() }
 
-function PullAllBranches {
-    ## Loop over git branches from HEAD, run fetch & pull
-    $branches = git branch -r | ForEach-Object { $_.Trim() }
+# Loop through each branch
+ForEach ($GitBranch in $GitBranches) {
+    # Extract the branch name
+    $GitBranchName = $GitBranch -replace '^remotes/origin/|^\*|^\s+', ''
 
-    foreach ($branch in $branches) {
-        # Extract branch name from remote reference
-        $fixedBranch = $branch -replace '^origin/', ''
+    # Skip if it's a remote HEAD or other non-branch reference
+    if ($GitBranch -match '^remotes/origin/HEAD' -or $GitBranch -match '->') {
+        continue
+    }
 
-        # Check if the branch is a tracking branch
-        if ($fixedBranch -match '^(\S+)\s+->') {
-            $fixedBranch = $matches[1]
+    # Check if the branch is a remote branch
+    if ($GitBranch -match '^remotes/origin/') {
+        # Check if the branch already exists locally
+        if (-not (git branch --list $GitBranchName)) {
+            # If the branch doesn't exist locally, create it by checking it out
+            try {
+                git checkout -b $GitBranchName remotes/origin/$GitBranchName
+            } catch {
+                Write-Host "[ERROr] Error checking out branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
+            }
         }
-
-        Write-Host "Pulling branch: $fixedBranch"
+        else {
+            # If the branch exists locally, just fetch it
+            try{
+                git fetch origin $GitBranchName
+            } catch {
+                Write-Host "[ERROR] Error fetching branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
+            }
+        }
+    }
+    else {
+        # For local branches, simply checkout and pull
+        git checkout $GitBranchName
         
-        # Checkout the branch and pull
-        git checkout $fixedBranch | Out-Null
-        git pull
-
-        # Go back to the default branch
-        git checkout -
+        try {
+            git pull
+        } catch {
+            Write-Host "[ERROR] Error pulling branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
+        }
     }
 }
 
-function Main() {
-    Param(
-        [String]$RepoDir = $GitDir
-    )
-    # Change directory to the specified Git directory
-    Push-Location -Path $RepoDir
-
-    ## Loop over all branches, fetch & pull
-    PullAllBranches
-    # Go back to the original location
-    Pop-Location
-}
-
-Main
+# Set location back to the original directory
+Set-Location -Path $CurrentDirectory
