@@ -1,0 +1,31 @@
+[project]
+name = "autogit.py"
+version = "0.1.0"
+description = "Automated git operations."
+authors = [
+    {name = "redjax", email = "none@none.com"},
+]
+dependencies = [
+    "GitPython>=3.1.42",
+    "pydantic>=2.6.4",
+    "pendulum>=3.0.0",
+    "loguru>=0.7.2",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=24.3.0",
+    "nox>=2024.3.2",
+    "ipykernel>=6.29.3",
+]
