@@ -9,16 +9,25 @@ if (-not $RepositoryPath) {
     exit 1
 }
 
+if ( -Not (Test-Path "$($RepositoryPath)" -PathType Container) ) {
+    Write-Error "[ERROR] Could not find repository at path '$($RepositoryPath)'"
+
+    exit 1
+}
+
 # Store the current directory
 $CurrentDirectory = Get-Location
 
 # Change directory to the repository
-Set-Location $RepositoryPath
+Set-Location (Join-Path -Path $RepositoryPath -ChildPath '')
+
+Write-Host "Synchronizing repository at path '$($RepositoryPath)'" -ForegroundColor Green
 
 # Fetch all remote branches
 try {
     git fetch --all
-} catch {
+}
+catch {
     Write-Host "[ERROR] Error fetching all git branches. Details: $($_.Exception.message)" -ForegroundColor Yellow
 }
 
@@ -42,15 +51,17 @@ ForEach ($GitBranch in $GitBranches) {
             # If the branch doesn't exist locally, create it by checking it out
             try {
                 git checkout -b $GitBranchName remotes/origin/$GitBranchName
-            } catch {
+            }
+            catch {
                 Write-Host "[ERROr] Error checking out branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
             }
         }
         else {
             # If the branch exists locally, just fetch it
-            try{
+            try {
                 git fetch origin $GitBranchName
-            } catch {
+            }
+            catch {
                 Write-Host "[ERROR] Error fetching branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
             }
         }
@@ -61,7 +72,8 @@ ForEach ($GitBranch in $GitBranches) {
         
         try {
             git pull
-        } catch {
+        }
+        catch {
             Write-Host "[ERROR] Error pulling branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
         }
     }
