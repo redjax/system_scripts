@@ -12,7 +12,7 @@ catch {
     #     Remove-Item -Path $file -Force
     # }
 
-    exit 1
+    return $null
 }
 
 powershell.exe -ExecutionPolicy ByPass -File $file -Verbose

@@ -14,7 +14,7 @@ function Check-WingetInstalled {
         Write-Warning "Winget is not installed."
 
         If ( -Not $wingetInstalled ) {
-            exit 1
+            return $null
         } else {
             # Call the Install-WingetCli function to install Winget
             Install-WingetCli -Debug:$Debug

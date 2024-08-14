@@ -31,5 +31,5 @@ try {
 }
 catch {
     Write-Warning "Error pruning local branches. Details: $($_.Exception.Message)"
-    exit 1
+    return $null
 }

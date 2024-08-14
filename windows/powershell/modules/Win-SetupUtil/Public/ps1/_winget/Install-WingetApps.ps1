@@ -8,20 +8,20 @@ function Install-WingetApps {
 
     Write-Debug "START install Winget apps"
 
-    # Get JSON files from the Private/WingetAppLists directory
-    $jsonFilesPath = Get-WingetAppJsonFiles -Path "$PSScriptRoot/Private/WingetAppLists"
+    # # Get JSON files from the Private/WingetAppLists directory
+    # $jsonFilesPath = Get-WingetAppJsonFiles -WingetAppListsDir "$PSScriptRoot/Private/WingetAppLists"
 
-    if (-Not $jsonFilesPath) {
-        Write-Warning 'No .json files found in the specified directory.'
-        exit 1
-    }
+    # if (-Not $jsonFilesPath) {
+    #     Write-Warning 'No .json files found in the specified directory.'
+    #     return $null
+    # }
 
     # Allow user to select JSON files
-    $selectedJsonFiles = Select-WingetAppList -Path "$PSScriptRoot/Private/WingetAppLists"
+    $selectedJsonFiles = Select-WingetAppList
 
     if (-Not $selectedJsonFiles) {
         Write-Warning 'No JSON files selected.'
-        exit 1
+        return $null
     }
 
     $allSelectedApps = @()

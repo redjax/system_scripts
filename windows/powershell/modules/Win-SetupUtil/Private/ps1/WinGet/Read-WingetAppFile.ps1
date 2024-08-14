@@ -14,6 +14,11 @@ function Read-WingetAppFile {
         $JsonFilePath
     )
 
+    If ( -Not $JsonFilePath ) {
+        Write-Error "Missing JSON file path"
+
+        return $null
+    }
     Write-Debug "Reading JSON file: $JsonFilePath"
 
     # Read the JSON file and convert it to objects

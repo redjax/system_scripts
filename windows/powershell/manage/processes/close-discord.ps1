@@ -47,7 +47,7 @@ function Remove-Process {
 
 If ( $null -eq $ProcessName ) {
     Write-Error "-ProcessName cannot be null."
-    exit 1
+    return $null
 }
 else {
     Remove-Process

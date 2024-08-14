@@ -7,7 +7,7 @@ function Get-WingetAppJsonFiles {
     #>
     [CmdletBinding()]
     Param(
-        [String]$WingetAppListsDir = "$PSScriptRoot/../WingetAppLists"
+        [String]$WingetAppListsDir = "$PSScriptRoot/../../WingetAppLists"
     )
 
     $JsonFiles = Get-ChildItem -Path $WingetAppListsDir -Filter *.json | Where-Object { $_.Name -notmatch '^_' }

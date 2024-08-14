@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE"
+    },
+    {
+        "name": "WinSCP",
+        "id": "WinSCP.WinSCP",
+        "description": "Connect to SCP/SFTP servers."
+    },
+    {
+        "name": "Greenshot (Screenshots)",
+        "id": "Greenshot.Greenshot",
+        "description": "Free, open-source screenshot utility"
+    },
+    {
+        "name": "Peazip",
+        "id": "Giorgiotani.Peazip",
+        "description": "Free, open-source file archiving utility"
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)"
+    },
+    {
+        "name": "WinDbg",
+        "id": "Microsoft.WinDbg",
+        "description": "A utility for opening Windows memory dumps"
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "id": "Microsoft.PowerShell",
+        "description": "Cross-platform, 'new' version of Powershell. Not totally backwards compatible."
+    },
+    {
+        "name": "Ventoy",
+        "id": "Ventoy.Ventoy",
+        "description": "A USB live media creation tool"
+    }
+]

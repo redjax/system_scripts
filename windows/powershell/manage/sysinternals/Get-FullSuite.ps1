@@ -21,7 +21,7 @@ Function Get-Sysinternals {
     If ( Test-Path $downloadpath ) {
         Write-Host "$($downloadpath) exists. Exiting." -ForegroundColor Green
 
-        exit 1
+        return $null
     }
   
     Write-Host "Downloading SysinternalsSuite.zip" -ForegroundColor Yellow

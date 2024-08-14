@@ -10,39 +10,14 @@
         "description": "Play (almost) any type of media. Also includes tools for managing/converting media"
     },
     {
-        "name": "WinSCP",
-        "id": "WinSCP.WinSCP",
-        "description": "Connect to SCP/SFTP servers."
-    },
-    {
-        "name": "Greenshot (Screenshots)",
-        "id": "Greenshot.Greenshot",
-        "description": "Free, open-source screenshot utility"
-    },
-    {
         "name": "Peazip",
         "id": "Giorgiotani.Peazip",
         "description": "Free, open-source file archiving utility"
     },
     {
-        "name": "Postman",
-        "id": "Postman.Postman",
-        "description": "Utility for interacting with APIs"
-    },
-    {
-        "name": "HTTPie",
-        "id": "HTTPie.HTTPie",
-        "description": "Free, open source REST API testing utility"
-    },
-    {
         "name": "Notepad++",
         "id": "Notepad++.Notepad++",
         "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)"
-    },
-    {
-        "name": "Azure CLI",
-        "id": "Microsoft.AzureCLI",
-        "description": "Command line utility for interacting with Azure environment. Needed for some scripts/apps"
     },
     {
         "name": "Git",
@@ -70,24 +45,9 @@
         "description": "Open source email client"
     },
     {
-        "name": "Notepad++",
-        "id": "Notepad++.Notepad++",
-        "description": "Free, open source notepad alternative with memory"
-    },
-    {
-        "name": "VLC media player",
-        "id": "VideoLAN.VLC",
-        "description": "The best project on the Internet"
-    },
-    {
         "name": "Neovim",
         "id": "Neovim.Neovim",
         "description": "A CLI text editor"
-    },
-    {
-        "name": "Microsoft Powershell Core",
-        "id": "Microsoft.PowerShell",
-        "description": "Cross-platform, 'new' version of Powershell. Not totally backwards compatible."
     },
     {
         "name": "Microsoft PowerToys",
@@ -95,23 +55,8 @@
         "description": "Tools & utilities for Windows."
     },
     {
-        "name": "dBeaver",
-        "id": "dbeaver.dbeaver",
-        "description": "A useful database connection manager"
-    },
-    {
         "name": "Obsidian.md",
         "id": "Obsidian.Obsidian",
         "description": "A cross-platform markdown notes app, with synch"
-    },
-    {
-        "name": "Ventoy",
-        "id": "Ventoy.Ventoy",
-        "description": "A USB live media creation tool"
-    },
-    {
-        "name": "WinDbg",
-        "id": "Microsoft.WinDbg",
-        "description": "A utility for opening Windows memory dumps"
     }
 ]

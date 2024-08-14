@@ -14,12 +14,12 @@ $PyenvShimPath = "$env:USERPROFILE\.pyenv\pyenv-win\shims"
 
 If (-Not $UserEnv -and -Not $MachineEnv) {
     Write-Warning "Missing ENV var type. Please re-run the script, passing either -UserEnv or -MachineEnv"
-    exit 1
+    return $null
 }
 
 If ($UserEnv -and $MachineEnv) {
     Write-Warning "You must pass only 1 type of env variable, -UserEnv or -MachineEnv"
-    exit 1
+    return $null
 }
 
 If ($UserEnv) {
@@ -93,7 +93,7 @@ function Set-UserEnvVar {
     }
     catch {
         Write-Warning "Unhandled exception setting ENV var [$($VarType):$($VarKey)] to value [$newPath]. Details: $($_.Exception.Message)"
-        exit 1
+        return $null
     }
 }
 

@@ -2,15 +2,15 @@ function Select-WingetAppList {
     <# Present user with list of found JSON file(s) containing lists of apps to install with Winget. #>
     [CmdletBinding()]
     param(
-        [string]$Path = "$PSScriptRoot/../WingetAppLists"
+        [string]$Path = "$PSScriptRoot/../../WingetAppLists"
     )
 
     # Get the list of .json files with full paths
-    $jsonFilesFullPath = Get-WingetAppJsonFiles -Path $Path
+    $jsonFilesFullPath = Get-WingetAppJsonFiles -WingetAppListsDir $Path
 
     if ($jsonFilesFullPath.Count -eq 0) {
         Write-Host 'No JSON files found in the specified directory.'
-        return
+        return $null
     }
 
     # Extract only filenames for display

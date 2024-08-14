@@ -107,7 +107,7 @@ function Install-Prompt {
 
     If ( -Not $Application ) {
         Write-Error 'No application detected'
-        exit 1
+        return $null
     }
 
     If ( $Debug ) {
@@ -154,7 +154,7 @@ function Install-Apps {
     If ( -not $AppsList ) {
         Write-Error 'No applications were passed to Install-Apps.'
 
-        exit 1
+        return $null
     }
 
     If ( $All ) {

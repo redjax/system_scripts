@@ -6,13 +6,13 @@ Param(
 # Check if repos$RepositoryPath parameter is provided
 if (-not $RepositoryPath) {
     Write-Host 'Please provide the -RepositoryPath parameter.' -ForegroundColor Yellow
-    exit 1
+    return $null
 }
 
 if ( -Not (Test-Path "$($RepositoryPath)" -PathType Container) ) {
     Write-Error "[ERROR] Could not find repository at path '$($RepositoryPath)'"
 
-    exit 1
+    return $null
 }
 
 # Store the current directory
