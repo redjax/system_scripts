@@ -1,7 +1,7 @@
 <#
     A "docstring" at the top of the module is not required, but when included, will add a "help"
     entry to the Get-Help command.
-
+    
     .SYNOPSIS
     An example Powershell module, to be used as a reference when creating future modules.
 
@@ -18,7 +18,7 @@
 
     .NOTES
     Version: 1.0
-    Author: Jack Kenyon
+    Author: redjax
     Creation Date: 07-22-2024
     Modified Date: 
     Purpose/Change: Init
@@ -41,9 +41,9 @@ $CurrentManifest = Test-ModuleManifest $ModuleManifest
 
 $Aliases = @()
 
-## Get list of .ps1 files in Public/ recursively
+## Get list of .ps1 files in Public/ recursively (including subfolders)
 $PublicFunctions = Get-ChildItem -Path $PublicFunctionsPath -Recurse -Filter *.ps1
-## Get list of .ps1 files in Private/ recursively
+## Get list of .ps1 files in Private/ recursively (including subfolders)
 $PrivateFunctions = Get-ChildItem -Path $PrivateFunctionsPath -Recurse -Filter *.ps1
 
 ## Load all Powershell functions from script files

@@ -1,16 +1,12 @@
 function Install-WingetApps {
     <# Present user with list of apps installable via Winget, loaded from JSON files. #>
-    param (
-        [switch]$Debug
-    )
+    [CmdletBinding()]
+    Param()
 
-    # Enable debugging if the -Debug switch is passed
-    if ($Debug) {
-        $DebugPreference = 'Continue'
-    }
-    else {
-        $DebugPreference = 'SilentlyContinue'
-    }
+    # Set the debug preference globally
+    # Set-DebugPreference
+
+    Write-Debug "START install Winget apps"
 
     # Get JSON files from the Private/WingetAppLists directory
     $jsonFilesPath = Get-WingetAppJsonFiles -Path "$PSScriptRoot/Private/WingetAppLists"

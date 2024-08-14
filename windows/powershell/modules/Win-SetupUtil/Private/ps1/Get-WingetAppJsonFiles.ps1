@@ -5,6 +5,7 @@ function Get-WingetAppJsonFiles {
 
         Return list of JSON files that do not begin with "_".
     #>
+    [CmdletBinding()]
     Param(
         [String]$WingetAppListsDir = "$PSScriptRoot/../WingetAppLists"
     )

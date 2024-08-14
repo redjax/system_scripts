@@ -1,5 +1,6 @@
 function Select-WingetAppsFromList {
     <# Present multi-select list of apps that can be installed with Winget. #>
+    [CmdletBinding()]
     param (
         [array]$AppObjects
     )

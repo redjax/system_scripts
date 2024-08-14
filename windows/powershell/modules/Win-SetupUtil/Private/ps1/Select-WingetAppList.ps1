@@ -1,5 +1,6 @@
 function Select-WingetAppList {
     <# Present user with list of found JSON file(s) containing lists of apps to install with Winget. #>
+    [CmdletBinding()]
     param(
         [string]$Path = "$PSScriptRoot/../WingetAppLists"
     )

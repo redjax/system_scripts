@@ -9,14 +9,12 @@ function Read-WingetAppFile {
 
         Load each app into a PSCustomObject and return list of apps.
     #>
-    param (
-        [string]$JsonFilePath,
-        [switch]$Debug
+    [CmdletBinding()]
+    Param(
+        $JsonFilePath
     )
 
-    if ($Debug) {
-        Write-Debug "Reading JSON file: $JsonFilePath"
-    }
+    Write-Debug "Reading JSON file: $JsonFilePath"
 
     # Read the JSON file and convert it to objects
     $jsonContent = Get-Content -Path $JsonFilePath -Raw | ConvertFrom-Json
