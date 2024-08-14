@@ -1,0 +1,82 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE"
+    },
+    {
+        "name": "Azure Data Studio",
+        "id": "Microsoft.AzureDataStudio",
+        "description": "Connect to data sources in Azure (databases, blob storage, etc)"
+    },
+    {
+        "name": "Microsoft SQL Server Management Studio (SSMS)",
+        "id": "Microsoft.SqlServerManagementStudio",
+        "description": "Connect to and manage Microsoft SQL Server databases"
+    },
+    {
+        "name": "VLC Media Player",
+        "id": "VideoLAN.VLC",
+        "description": "Play (almost) any type of media. Also includes tools for managing/converting media"
+    },
+    {
+        "name": "WinSCP",
+        "id": "WinSCP.WinSCP",
+        "description": "Connect to SCP/SFTP servers."
+    },
+    {
+        "name": "Peazip",
+        "id": "Giorgiotani.Peazip",
+        "description": "Free, open-source file archiving utility"
+    },
+    {
+        "name": "HTTPie",
+        "id": "HTTPie.HTTPie",
+        "description": "Free, open source REST API testing utility"
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)"
+    },
+    {
+        "name": "Azure CLI",
+        "id": "Microsoft.AzureCLI",
+        "description": "Command line utility for interacting with Azure environment. Needed for some scripts/apps"
+    },
+    {
+        "name": "Git",
+        "id": "Git.Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories"
+    },
+    {
+        "name": "ShareX",
+        "id": "ShareX",
+        "description": "Screenshot utility"
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Free, open source notepad alternative with memory"
+    },
+    {
+        "name": "Neovim",
+        "id": "Neovim.Neovim",
+        "description": "A CLI text editor"
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "id": "Microsoft.PowerShell",
+        "description": "Cross-platform, 'new' version of Powershell. Not totally backwards compatible."
+    },
+    {
+        "name": "Microsoft PowerToys",
+        "id": "Microsoft.PowerToys",
+        "description": "Tools & utilities for Windows."
+    },
+    {
+        "name": "dBeaver",
+        "id": "dbeaver.dbeaver",
+        "description": "A useful database connection manager"
+    }
+]
