@@ -66,9 +66,6 @@ $AppSupportApps = @(
         Name = 'VLC media player' ; ID = 'VideoLAN.VLC' ; Description = 'The best project on the Internet'
     },
     [PSCustomObject]@{
-        Name = 'Transmission Remote GUI' ; ID = 'PeterDaveHello.TransmissionRemoteGUI' ; Description = 'A convenient, multi-remote Transmission controller'
-    },
-    [PSCustomObject]@{
         Name = 'Neovim' ; ID = 'Neovim.Neovim' ; Description = 'A CLI text editor'
     },
     [PSCustomObject]@{
