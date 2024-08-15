@@ -1,0 +1,160 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE",
+        "tags": [
+            "ide",
+            "text editor",
+            "dev"
+        ]
+    },
+    {
+        "name": "Azure Data Studio",
+        "id": "Microsoft.AzureDataStudio",
+        "description": "Connect to data sources in Azure (databases, blob storage, etc)",
+        "tags": [
+            "ide",
+            "database",
+            "azure"
+        ]
+    },
+    {
+        "name": "Microsoft SSMS",
+        "id": "Microsoft.SQLServerManagementStudio",
+        "description": "Microsoft SQL Server Management Studio",
+        "tags": [
+            "database",
+            "utility"
+        ]
+    },
+    {
+        "name": "VLC Media Player",
+        "id": "VideoLAN.VLC",
+        "description": "Play (almost) any type of media. Also includes tools for managing/converting media",
+        "tags": [
+            "multimedia",
+            "video",
+            "audio",
+            "utility"
+        ]
+    },
+    {
+        "name": "WinSCP",
+        "id": "WinSCP.WinSCP",
+        "description": "Connect to SCP/SFTP servers.",
+        "tags": [
+            "utility",
+            "ftp",
+            "sftp",
+            "scp"
+        ]
+    },
+    {
+        "name": "Peazip",
+        "id": "Giorgiotani.Peazip",
+        "description": "Free, open-source file archiving utility",
+        "tags": [
+            "utility",
+            "archiving"
+        ]
+    },
+    {
+        "name": "HTTPie",
+        "id": "HTTPie.HTTPie",
+        "description": "Free, open source REST API testing utility",
+        "tags": [
+            "dev",
+            "api"
+        ]
+    },
+    {
+        "name": "Postman",
+        "id": "Postman.Postman",
+        "description": "Utility for interacting with APIs",
+        "tags": [
+            "dev",
+            "api"
+        ]
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev"
+        ]
+    },
+    {
+        "name": "Azure CLI",
+        "id": "Microsoft.AzureCLI",
+        "description": "Command line utility for interacting with Azure environment. Needed for some scripts/apps",
+        "tags": [
+            "azure",
+            "cli",
+            "utility"
+        ]
+    },
+    {
+        "name": "Git",
+        "id": "Git.Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories",
+        "tags": [
+            "dev"
+        ]
+    },
+    {
+        "name": "ShareX",
+        "id": "ShareX",
+        "description": "Screenshot utility",
+        "tags": [
+            "utility",
+            "photo",
+            "screenshot"
+        ]
+    },
+    {
+        "name": "Neovim",
+        "id": "Neovim.Neovim",
+        "description": "A CLI text editor",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev",
+            "cli"
+        ]
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "id": "Microsoft.PowerShell",
+        "description": "Cross-platform, 'new' version of Powershell. Not totally backwards compatible.",
+        "tags": [
+            "cli"
+        ]
+    },
+    {
+        "name": "Microsoft PowerToys",
+        "id": "Microsoft.PowerToys",
+        "description": "Tools & utilities for Windows.",
+        "tags": [
+            "utility"
+        ]
+    },
+    {
+        "name": "dBeaver",
+        "id": "dbeaver.dbeaver",
+        "description": "A useful database connection manager",
+        "tags": []
+    },
+    {
+        "name": "dBeaver",
+        "id": "dbeaver.dbeaver",
+        "description": "A useful database connection manager",
+        "tags": [
+            "database",
+            "utility"
+        ]
+    }
+]

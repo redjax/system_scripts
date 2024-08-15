@@ -1,0 +1,111 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE",
+        "tags": [
+            "ide",
+            "text editor",
+            "dev"
+        ]
+    },
+    {
+        "name": "VLC Media Player",
+        "id": "VideoLAN.VLC",
+        "description": "Play (almost) any type of media. Also includes tools for managing/converting media",
+        "tags": [
+            "multimedia",
+            "video",
+            "audio",
+            "utility"
+        ]
+    },
+    {
+        "name": "Peazip",
+        "id": "Giorgiotani.Peazip",
+        "description": "Free, open-source file archiving utility",
+        "tags": [
+            "utility",
+            "archiving"
+        ]
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)",
+        "tags": [
+            "ide",
+            "text editor",
+            "dev"
+        ]
+    },
+    {
+        "name": "Git",
+        "id": "Git.Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories",
+        "tags": [
+            "dev"
+        ]
+    },
+    {
+        "name": "Ente Auth",
+        "id": "ente-io.auth-desktop",
+        "description": "Cross platform, open source MFA app",
+        "tags": [
+            "security"
+        ]
+    },
+    {
+        "name": "ShareX",
+        "id": "ShareX",
+        "description": "Screenshot utility",
+        "tags": [
+            "utility",
+            "photo",
+            "screenshot"
+        ]
+    },
+    {
+        "name": "Mozilla Firefox",
+        "id": "Mozilla.Firefox",
+        "description": "Open source browser",
+        "tags": [
+            "browser"
+        ]
+    },
+    {
+        "name": "Mozilla Thunderbird",
+        "id": "Mozilla.Thunderbird",
+        "description": "Open source email client",
+        "tags": [
+            "email"
+        ]
+    },
+    {
+        "name": "Neovim",
+        "id": "Neovim.Neovim",
+        "description": "A CLI text editor",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev",
+            "cli"
+        ]
+    },
+    {
+        "name": "Microsoft PowerToys",
+        "id": "Microsoft.PowerToys",
+        "description": "Tools & utilities for Windows.",
+        "tags": [
+            "utility"
+        ]
+    },
+    {
+        "name": "Obsidian.md",
+        "id": "Obsidian.Obsidian",
+        "description": "A cross-platform markdown notes app, with synch",
+        "tags": [
+            "notes"
+        ]
+    }
+]

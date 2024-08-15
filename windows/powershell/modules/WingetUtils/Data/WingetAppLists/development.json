@@ -1,0 +1,75 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev"
+        ]
+    },
+    {
+        "name": "Postman",
+        "id": "Postman.Postman",
+        "description": "Utility for interacting with APIs",
+        "tags": [
+            "dev",
+            "api"
+        ]
+    },
+    {
+        "name": "HTTPie",
+        "id": "HTTPie.HTTPie",
+        "description": "Free, open source REST API testing utility",
+        "tags": [
+            "dev",
+            "api"
+        ]
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev"
+        ]
+    },
+    {
+        "name": "Git",
+        "id": "Git.Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories",
+        "tags": [
+            "dev"
+        ]
+    },
+    {
+        "name": "Neovim",
+        "id": "Neovim.Neovim",
+        "description": "A CLI text editor",
+        "tags": [
+            "dev",
+            "text editor",
+            "ide",
+            "cli"
+        ]
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "id": "Microsoft.PowerShell",
+        "description": "Cross-platform, 'new' version of Powershell. Not totally backwards compatible.",
+        "tags": [
+            "cli"
+        ]
+    },
+    {
+        "name": "dBeaver",
+        "id": "dbeaver.dbeaver",
+        "description": "A useful database connection manager",
+        "tags": [
+            "database"
+        ]
+    }
+]

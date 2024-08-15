@@ -1,0 +1,77 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev"
+        ]
+    },
+    {
+        "name": "WinSCP",
+        "id": "WinSCP.WinSCP",
+        "description": "Connect to SCP/SFTP servers.",
+        "tags": [
+            "utility",
+            "ftp",
+            "sftp",
+            "scp"
+        ]
+    },
+    {
+        "name": "Greenshot (Screenshots)",
+        "id": "Greenshot.Greenshot",
+        "description": "Free, open-source screenshot utility",
+        "tags": [
+            "utility",
+            "screenshot"
+        ]
+    },
+    {
+        "name": "Peazip",
+        "id": "Giorgiotani.Peazip",
+        "description": "Free, open-source file archiving utility",
+        "tags": [
+            "utility",
+            "archiving"
+        ]
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)",
+        "tags": [
+            "text editor",
+            "ide",
+            "dev"
+        ]
+    },
+    {
+        "name": "WinDbg",
+        "id": "Microsoft.WinDbg",
+        "description": "A utility for opening Windows memory dumps",
+        "tags": [
+            "utility",
+            "diagnostic"
+        ]
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "id": "Microsoft.PowerShell",
+        "description": "Cross-platform, 'new' version of Powershell. Not totally backwards compatible.",
+        "tags": [
+            "cli"
+        ]
+    },
+    {
+        "name": "Ventoy",
+        "id": "Ventoy.Ventoy",
+        "description": "A USB live media creation tool",
+        "tags": [
+            "utility",
+            "iso"
+        ]
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Azure CLI",
+        "id": "Microsoft.AzureCLI",
+        "description": "Command line utility for interacting with Azure environment. Needed for some scripts/apps",
+        "tags": [
+            "azure",
+            "cli",
+            "utility"
+        ]
+    }
+]

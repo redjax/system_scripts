@@ -1,0 +1,20 @@
+[
+    {
+        "name": "dBeaver",
+        "id": "dbeaver.dbeaver",
+        "description": "A useful database connection manager",
+        "tags": [
+            "database",
+            "utility"
+        ]
+    },
+    {
+        "name": "Microsoft SSMS",
+        "id": "Microsoft.SQLServerManagementStudio",
+        "description": "Microsoft SQL Server Management Studio",
+        "tags": [
+            "database",
+            "utility"
+        ]
+    }
+]
