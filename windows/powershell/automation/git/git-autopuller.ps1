@@ -77,6 +77,9 @@ ForEach ($GitBranch in $GitBranches) {
             Write-Host "[ERROR] Error pulling branch '$($GitBranchName)'. Details: $($_.Exception.message)" -ForegroundColor Yellow
         }
     }
+
+    ## Switch to last branch
+    git checkout -
 }
 
 # Set location back to the original directory
