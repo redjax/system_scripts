@@ -91,6 +91,9 @@ $AppSupportApps = @(
     },
     [PSCustomObject]@{
         Name = 'WinDbg' ; ID = 'Microsoft.WinDbg' ; Description = 'A utility for opening Windows memory dumps'
+    },
+    [PSCustomObject]@{
+        Name = 'Alacritty' ; ID = 'Alacritty.Alacritty'; Description = 'A fast, hardware accelerated, cross platform terminal emulator'
     }
 
 )
