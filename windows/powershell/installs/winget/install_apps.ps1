@@ -78,6 +78,9 @@ $AppSupportApps = @(
         Name = 'Microsoft PowerToys' ; ID = 'Microsoft.PowerToys' ; Description = 'Tools & utilities for Windows.'
     },
     [PSCustomObject]@{
+        Name = "Microsoft PC Manager" ; ID = "Microsoft.PCManager" ; Description = "Microsoft's official 'PC cleaner' app."
+    },
+    [PSCustomObject]@{
         Name = 'dBeaver' ; ID = 'dbeaver.dbeaver' ; Description = 'A useful database connection manager'
     },
     [PSCustomObject]@{
