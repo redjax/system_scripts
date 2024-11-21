@@ -1,119 +1,121 @@
 ## Remove the space between "#" and "Requires" to check that user running script is an Administrator
 # Requires -RunAsAdministrator
 
+<#
+.SYNOPSIS
+Installs a list of apps using WinGet.
+
+.DESCRIPTION
+Installs a list of apps using WinGet, as defined in a JSON file.
+
+.PARAMETER AppsJsonFile
+The path to a JSON file containing the list of apps to install.
+
+.PARAMETER Debug
+Enable Debug mode.
+
+.PARAMETER DryRun
+Do not take any actions, but describe what would happen.
+
+.PARAMETER Y
+Automatically answer "yes" to install prompts.
+
+.EXAMPLE
+.\install_apps.ps1 -AppsJsonFile C:\Users\<username>\Desktop\winget-apps.json -DryRun
+#>
+
 Param(
     ## Print debug messages
     [Switch]$Debug,
     ## Do not take any actions, but describe what would happen
     [Switch]$DryRun,
-    ## Install all apps, skipping y/n prompts
-    [Switch]$All,
-    ## Append $OptionalApps list to chosen install list
-    [Switch]$Optional
+    ## Automatically answer "yes" to install prompts
+    [Switch]$Y,
+    ## Path to a JSON file containing the list of apps to install
+    [String]$AppsJsonFile = ".\applists\standard.json"
 )
 
-## List of objects representing apps to be installed with WinGet
-$AppSupportApps = @(
-    [PSCustomObject]@{
-        Name = 'Visual Studio Code' ; ID = 'Microsoft.VisualStudioCode' ; Description = 'Text editor/code IDE'
-    },
-    [PSCustomObject]@{
-        Name = 'Azure Data Studio' ; ID = 'Microsoft.AzureDataStudio' ; Description = 'Connect to data sources in Azure (databases, blob storage, etc)'
-    },
-    [PSCustomObject]@{
-        Name = 'Microsoft SQL Server Management Studio (SSMS)' ; ID = 'Microsoft.SqlServerManagementStudio' ; Description = 'Connect to and manage Microsoft SQL Server databases'
-    },
-    [PSCustomObject]@{
-        Name = 'VLC Media Player' ; ID = 'VideoLAN.VLC' ; Description = 'Play (almost) any type of media. Also includes tools for managing/converting media'
-    },
-    [PSCustomObject]@{
-        Name = 'WinSCP' ; ID = 'WinSCP.WinSCP' ; Description = 'Connect to SCP/SFTP servers.'
-    },
-    [PSCustomObject]@{
-        Name = 'Greenshot (Screenshots)' ; ID = 'Greenshot.Greenshot' ; Description = 'Free, open-source screenshot utility'
-    },
-    [PSCustomObject]@{
-        Name = 'Peazip' ; ID = 'Giorgiotani.Peazip' ; Description = 'Free, open-source file archiving utility'
-    },
-    [PSCustomObject]@{
-        Name = 'Postman' ; ID = 'Postman.Postman' ; Description = 'Utility for interacting with APIs'
-    },
-    [PSCustomObject]@{
-        Name = 'Notepad++' ; ID = 'Notepad++.Notepad++' ; Description = 'Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)'
-    },
-    [PSCustomObject]@{
-        Name = 'Azure CLI' ; ID = 'Microsoft.AzureCLI' ; Description = 'Command line utility for interacting with Azure environment. Needed for some scripts/apps'
-    },
-    [PSCustomObject]@{
-        Name = 'Git' ; ID = 'Git.Git' ; Description = 'Git source control. Needed to interact with Azure DevOps repositories'
-    },
-    [PSCustomObject]@{
-        Name = 'Ente Auth' ; ID = 'ente-io.auth-desktop' ; Description = 'Cross platform, open source MFA app'
-    },
-    [PSCustomObject]@{
-        Name = 'ShareX' ; ID = 'ShareX' ; Description = 'Screenshot utility'
-    },
-    [PSCustomObject]@{
-        Name = 'Mozilla Firefox' ; ID = 'Mozilla.Firefox' ; Description = 'Open source browser'
-    },
-    [PSCustomObject]@{
-        Name = 'Mozilla Thunderbird' ; ID = 'Mozilla.Thunderbird' ; Description = 'Open source email client'
-    },
-    [PSCustomObject]@{
-        Name = 'Notepad++' ; ID = 'Notepad++.Notepad++' ; Description = 'Free, open source notepad alternative with memory'
-    },
-    [PSCustomObject]@{
-        Name = 'VLC media player' ; ID = 'VideoLAN.VLC' ; Description = 'The best project on the Internet'
-    },
-    [PSCustomObject]@{
-        Name = 'Neovim' ; ID = 'Neovim.Neovim' ; Description = 'A CLI text editor'
-    },
-    [PSCustomObject]@{
-        Name = 'Microsoft VSCode' ; ID = 'Microsoft.VisualStudioCode' ; Description = "Open source, extensible text editor. Microsoft's only solid piece of software."
-    },
-    [PSCustomObject]@{
-        Name = 'Microsoft Powershell Core' ; ID = 'Microsoft.PowerShell' ; Description = "Cross-platform, 'new' version of Powershell. Not totally backwards compatible."
-    },
-    [PSCustomObject]@{
-        Name = 'Microsoft PowerToys' ; ID = 'Microsoft.PowerToys' ; Description = 'Tools & utilities for Windows.'
-    },
-    [PSCustomObject]@{
-        Name = "Microsoft PC Manager" ; ID = "Microsoft.PCManager" ; Description = "Microsoft's official 'PC cleaner' app."
-    },
-    [PSCustomObject]@{
-        Name = 'dBeaver' ; ID = 'dbeaver.dbeaver' ; Description = 'A useful database connection manager'
-    },
-    [PSCustomObject]@{
-        Name = 'Obsidian.md' ; ID = 'Obsidian.Obsidian' ; Description = 'A cross-platform markdown notes app, with synch'
-    },
-    [PSCustomObject]@{
-        Name = 'Ventoy' ; ID = 'Ventoy.Ventoy' ; Description = 'A USB live media creation tool'
-    },
-    [PSCustomObject]@{
-        Name = 'WinSCP' ; ID = 'WinSCP.WinSCP' ; Description = 'An SCP and (S)FTP client for Windows'
-    },
-    [PSCustomObject]@{
-        Name = 'WinDbg' ; ID = 'Microsoft.WinDbg' ; Description = 'A utility for opening Windows memory dumps'
-    },
-    [PSCustomObject]@{
-        Name = 'Alacritty' ; ID = 'Alacritty.Alacritty'; Description = 'A fast, hardware accelerated, cross platform terminal emulator'
+If ( $Debug ) {
+    ## Enable debugging if -Debug passed
+    $DebugPreference = "Continue"
+}
+
+if ( $DryRun ) {
+    Write-Host "[DRY RUN ENABLED]`n" -ForegroundColor Magenta -NoNewline;
+    Write-Host " -DryRun " -ForegroundColor Cyan -NoNewline;
+    Write-Host "detected. Script will not install any apps, but will print details about the action it would take."
+}
+
+## Convert JSON file path to absolute path
+$AbsolutePath = Resolve-Path -Path $AppsJsonFile
+## Re-assign AppsJsonFile var
+$AppsJsonFile = $AbsolutePath
+Write-Debug "App JSON file path: $($AbsolutePath)"
+Write-Debug "$($AbsolutePath) exists: $([System.IO.File]::Exists($AbsolutePath))"
+
+if ( -Not ( $AppsJsonFile ) ) {
+    Write-Warning "No -AppsJsonFile detected. Script will exit, run it again with the -AppsJsonFile parameter."
+    exit 1
+}
+elseif ( -Not ( Test-Path -PathType Leaf -Path $AppsJsonFile) ) {
+    Write-Warning "Could not find app JSON file at path '$($AppsJsonFile)'. Script will exit, pass a path to a valid JSON file with -AppsJsonFile."
+}
+
+function Read-AppsFromJson {
+    <#
+    .SYNOPSIS
+    Read winget install apps list from a JSON file.
+    
+    .DESCRIPTION
+    Read winget install apps list from a JSON file, create a PSCustomObject from it, and return it.
+    
+    .PARAMETER JsonFilePath
+    Path to a JSON file containing the list of apps to install.
+    
+    .EXAMPLE
+    Read-AppsFromJson -JsonFilePath "C:\Users\<username>\Desktop\winget-apps.json"
+    
+    .NOTES
+    - Relative paths like '.\file.json' will be converted to absolute paths.
+    #>
+    Param(
+        [String]$JsonFilePath
+    )
+
+    Write-Debug "JSON file path: $($JsonFilePath)"
+    Write-Debug "$($JsonFilePath) exists: $([System.IO.File]::Exists($JsonFilePath))"
+
+    if ( -Not $JsonFilePath ) {
+        Write-Error "Load-AppsFromJson called without a path to a JSON file. Run script with -Debug to check value."
+        exit 1
     }
 
-)
+    try {
+        [PSCustomObject]$AppsJson = Get-Content -Path $JsonFilePath | ConvertFrom-Json
+        Write-Host "Loaded apps from JSON file at path '$($JsonFilePath)'" -ForegroundColor Green
 
-If ( $Optional ) {
-    Write-Host 'Optional list is not yet implemented.' -ForegroundColor Yellow
+        return $AppsJson
+    } catch {
+        Write-Error "Could not load JSON file at path '$($JsonFilePath)'. Details: $($_.Exception.Message)"
+        exit 1
+    }
 }
 
 function Install-Prompt {
     <# Prompt user for Y/N response to install application. #>
     Param(
-        $Application = $null
+        [PSCustomObject]$Application = $null,
+        [Switch]$SkipPrompt = $Y
     )
 
     If ( -Not $Application ) {
         Write-Error 'No application detected'
         exit 1
+    }
+
+    If ( $SkipPrompt ) {
+        Write-Debug "-Y detected, skipping prompt."
+        return $true
     }
 
     If ( $Debug ) {
@@ -243,4 +245,7 @@ function Install-Apps {
     }
 }
 
-Install-Apps -AppsList $AppSupportApps
+## Get AppsJson PSCustomObject
+[PSCustomObject]$AppsJson = Read-AppsFromJson -JsonFilePath $AppsJsonFile
+
+Install-Apps -AppsList $AppsJson
