@@ -27,10 +27,45 @@
 Param(
     [switch]$Debug,
     [switch]$Save,
+    [switch]$Help,
     [string]$OutputDirectory = "${env:USERPROFILE}\SystemReport",
     [string]$OutputFilename = "SystemReport",
     [string]$OutputFormat = "json"
 )
+
+If ( $Help ) {
+    Write-Host "`n[[ Get-SystemSpecReport Help ]]" -ForegroundColor Green
+    Write-Host ("-" * 31)
+    Write-Host ""
+
+    Write-Host "Compile a report of system information, including OS & Powershell environment," `
+        "CPU, GPU, GRAM, disks, and motherboard. Optionally export to a file with -Save.`n" -ForegroundColor Magenta
+    
+    Write-Host "[Params]`n" -ForegroundColor cyan
+
+    Write-Host "-Save" -ForegroundColor cyan -NoNewline; Write-Host ": Save report to file."
+    Write-Host "-Debug" -ForegroundColor cyan -NoNewline; Write-Host ": Enable debug mode."
+    Write-Host "-OutputDirectory" -ForegroundColor cyan -NoNewline; Write-Host ": Specify the output directory for the report file."
+    Write-Host "-OutputFilename" -ForegroundColor cyan -NoNewline; Write-Host ": Specify the filename for the report file."
+    Write-Host "-OutputFormat" -ForegroundColor cyan -NoNewline; Write-Host ": Specify the format for the report file (json, xml, txt)."
+    Write-Host ""
+
+    ## Format shell code example using -NoNewline;
+    Write-Host "Example" -ForegroundColor Magenta -NoNewline; Write-Host ": Save report to C:\Temp\SystemReport.xml"
+    Write-Host "    $> " -NoNewline;
+    Write-Host ".\Get-SystemSpecReport.ps1 " -ForegroundColor Yellow -NoNewline;
+    Write-Host "-Save " -ForegroundColor cyan -NoNewline;
+    Write-Host "-OutputDirectory " -ForegroundColor cyan -NoNewline;
+    Write-Host "C:\Temp " -NoNewline;
+    Write-Host "-OutputFilename " -ForegroundColor cyan -NoNewline;
+    Write-Host "SystemReport " -NoNewline;
+    Write-Host "-OutputFormat " -ForegroundColor cyan -NoNewline; 
+    Write-Host  "xml"
+
+    Write-Host ""
+
+    exit 0
+}
 
 if ( $Debug ) {
     $DebugPreference = "Continue"
@@ -58,22 +93,22 @@ function Format-ByteSize {
     Write-Debug "Converting $($SizeInBytes) bytes to human-readable form."
 
     if ($SizeInBytes -lt 1KB) {
-        return "{0:N2} B" -f $SizeInBytes
+        return "{ 0:N2 } B" -f $SizeInBytes
     }
     elseif ($SizeInBytes -lt 1MB) {
-        return "{0:N2} KB" -f ($SizeInBytes / 1KB)
+        return "{ 0:N2 } KB" -f ($SizeInBytes / 1KB)
     }
     elseif ($SizeInBytes -lt 1GB) {
-        return "{0:N2} MB" -f ($SizeInBytes / 1MB)
+        return "{ 0:N2 } MB" -f ($SizeInBytes / 1MB)
     }
     elseif ($SizeInBytes -lt 1TB) {
-        return "{0:N2} GB" -f ($SizeInBytes / 1GB)
+        return "{ 0:N2 } GB" -f ($SizeInBytes / 1GB)
     }
     elseif ($SizeInBytes -lt 1PB) {
-        return "{0:N2} TB" -f ($SizeInBytes / 1TB)
+        return "{ 0:N2 } TB" -f ($SizeInBytes / 1TB)
     }
     else {
-        return "{0:N2} PB" -f ($SizeInBytes / 1PB)
+        return "{ 0:N2 } PB" -f ($SizeInBytes / 1PB)
     }
 }
 
@@ -142,7 +177,7 @@ function Get-SystemSpecs {
     Write-Host "Gathering CPU information..." -ForegroundColor Cyan
     try {
         # $cpuInfo = Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, Manufacturer
-        $cpuInfo = Get-CimInstance Win32_Processor | Select-Object @{Name='Name'; Expression={$_.Name.Trim()}}, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, Manufacturer
+        $cpuInfo = Get-CimInstance Win32_Processor | Select-Object @{Name = 'Name'; Expression = { $_.Name.Trim() } }, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, Manufacturer
     }
     catch {
         Write-Error "Error gathering CPU information: $($_.Exception.message)"
