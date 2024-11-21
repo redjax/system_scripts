@@ -4,7 +4,7 @@ My collection of system scripts, broken down by OS.
 
 ## Directories
 
-- [`scripts/]
+- [`scripts/`]
   - Scripts meant to be run from the repository root, i.e. `./scripts/script_name.sh/ps1/...`
 - [`windows/`](./windows/)
   - `Powershell` and `Batch` scripts.
