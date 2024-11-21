@@ -20,6 +20,9 @@ Do not take any actions, but describe what would happen.
 .PARAMETER Y
 Automatically answer "yes" to install prompts.
 
+.PARAMETER Sample
+Output a sample apps.json file with the required structure
+
 .EXAMPLE
 .\install_apps.ps1 -AppsJsonFile C:\Users\<username>\Desktop\winget-apps.json -DryRun
 #>
@@ -32,12 +35,75 @@ Param(
     ## Automatically answer "yes" to install prompts
     [Switch]$Y,
     ## Path to a JSON file containing the list of apps to install
-    [String]$AppsJsonFile = ".\applists\standard.json"
+    [String]$AppsJsonFile = ".\applists\standard.json",
+    ## Output a sample apps.json file with the required structure
+    [Switch]$Sample
 )
+
+function Write-SampleJson {
+    param (
+        [string]$OutputDirectory
+    )
+
+    # Ensure the directory exists
+    Write-Debug "Saving sample JSON file to directory: $OutputDirectory"
+
+    if (-not (Test-Path -Path $OutputDirectory)) {
+        try {
+            New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
+            Write-Host "Created missing directory: $OutputDirectory"
+        } catch {
+            Write-Error "Failed to create directory: $_"
+            exit 1
+        }
+    }
+
+    # Define example app definition
+    $exampleApp = @(
+        @{
+            Name        = "Name of application"
+            ID          = "winget.ID"
+            Description = "A short description of the app."
+        }
+    )
+
+    # Convert the example app array to JSON with proper formatting and indentation
+    $jsonTemplate = $exampleApp | ConvertTo-Json -Depth 10
+
+    # Wrap the JSON string in an array format if necessary
+    $jsonTemplate = "[$jsonTemplate]"
+
+    # Define the output file path
+    $outputFilePath = Join-Path -Path $OutputDirectory -ChildPath "sample.apps.json"
+
+    # Write the JSON template to the file with proper formatting
+    try {
+        Set-Content -Path $outputFilePath -Value $jsonTemplate -Encoding UTF8
+        Write-Host "Sample JSON file created at: $outputFilePath"
+        exit 0
+    } catch {
+        Write-Error "Failed to write JSON file: $_"
+        exit 1
+    }
+}
 
 If ( $Debug ) {
     ## Enable debugging if -Debug passed
     $DebugPreference = "Continue"
+}
+
+## If -Sample is detected, output sample JSON file and exit early
+if ( $Sample ) {
+    # Get the absolute path to the script execution location
+    $scriptDirectory = $PSScriptRoot
+    Write-Debug "Script directory: $($scriptDirectory)"
+
+    # Write the sample JSON file
+    Write-SampleJson -OutputDirectory $scriptDirectory
+
+    # Notify user and exit
+    Write-Host "Sample JSON file generated at $scriptDirectory"
+    exit 0
 }
 
 if ( $DryRun ) {
