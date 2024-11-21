@@ -78,6 +78,9 @@ $AppSupportApps = @(
         Name = 'Microsoft PowerToys' ; ID = 'Microsoft.PowerToys' ; Description = 'Tools & utilities for Windows.'
     },
     [PSCustomObject]@{
+        Name = "Microsoft PC Manager" ; ID = "Microsoft.PCManager" ; Description = "Microsoft's official 'PC cleaner' app."
+    },
+    [PSCustomObject]@{
         Name = 'dBeaver' ; ID = 'dbeaver.dbeaver' ; Description = 'A useful database connection manager'
     },
     [PSCustomObject]@{
@@ -91,6 +94,9 @@ $AppSupportApps = @(
     },
     [PSCustomObject]@{
         Name = 'WinDbg' ; ID = 'Microsoft.WinDbg' ; Description = 'A utility for opening Windows memory dumps'
+    },
+    [PSCustomObject]@{
+        Name = 'Alacritty' ; ID = 'Alacritty.Alacritty'; Description = 'A fast, hardware accelerated, cross platform terminal emulator'
     }
 
 )
