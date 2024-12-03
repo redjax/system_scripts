@@ -1,0 +1,6 @@
+[
+    {"name": "Azure Data Studio", "id": "Microsoft.AzureDataStudio", "description": "Connect to data sources in Azure (databases, blob storage, etc)"},
+    {"name": "Azure Storage Explorer", "id": "Microsoft.Azure.StorageExplorer", "description": "Connect to Azure Storage instances, like Blob storage"},
+    {"name": "Azure CLI", "id": "Microsoft.AzureCLI", "description": "Command line utility for interacting with Azure environment. Needed for some scripts/apps"},
+    {"name": "Azure Bicep CLI", "id": "Microsoft.Bicep", "description": "Command line utility for interacting with Azure Bicep. Needed for some scripts/apps"}
+]
