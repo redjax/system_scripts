@@ -46,31 +46,40 @@ function New-AquaPaths {
     Write-Information "Initializing aqua install paths."
     Write-Host "Creating aqua paths." -ForegroundColor cyan
 
-    ## Define the paths to check
-    $paths = @($RootPath, $ProjectPath, "$ProjectPath\bin")
-
-    # Loop over each path and create the directory if it doesn't exist
-    ForEach ( $path in $paths ) {
-        If ( -Not (Test-Path -Type container -Path $path) ) {
-            Write-Host "Path '$($path)' does not exist. Creating path." -ForegroundColor Gray
-
-            If ( $DryRun ) {
-                Write-Host "[DRY RUN] Would create path: $path" -ForegroundColor Magenta
-                continue
-            } 
-
-            try {
-                New-Item -ItemType Directory -Force -Path $path | Out-Null
-                Write-Debug "Created directory: $path"
-            }
-            catch {
-                Write-Error "Unhandled exception creating path [$($path)]. Details: $($_.Exception.Message)"
-            }
-        }
-        else {
-            Write-Debug "Path '$($path)' already exists."
-        }
+    try {
+        New-Item -ItemType Directory -Force -Path $RootPath | Out-Null
+        Write-Debug "Created directory: $RootPath"
+    } 
+    catch {
+        Write-Error "Unhandled exception creating path [$($RootPath)]. Details: $($_.Exception.Message)"
+        return 1
     }
+
+    # ## Define the paths to check
+    # $paths = @($RootPath, $ProjectPath) # , "$ProjectPath\bin")
+
+    # # Loop over each path and create the directory if it doesn't exist
+    # ForEach ( $path in $paths ) {
+    #     If ( -Not (Test-Path -Type container -Path $path) ) {
+    #         Write-Host "Path '$($path)' does not exist. Creating path." -ForegroundColor Gray
+
+    #         If ( $DryRun ) {
+    #             Write-Host "[DRY RUN] Would create path: $path" -ForegroundColor Magenta
+    #             continue
+    #         } 
+
+    #         try {
+    #             New-Item -ItemType Directory -Force -Path $path | Out-Null
+    #             Write-Debug "Created directory: $path"
+    #         }
+    #         catch {
+    #             Write-Error "Unhandled exception creating path [$($path)]. Details: $($_.Exception.Message)"
+    #         }
+    #     }
+    #     else {
+    #         Write-Debug "Path '$($path)' already exists."
+    #     }
+    # }
 }
 
 function Get-PkgManager {
@@ -96,14 +105,17 @@ function Get-PkgManager {
         Write-Warning "No package managers found. Please install at least one package manager."
         # return $null
         exit 1
-    } elseif ($installedPkgManagers.Count -eq 1) {
+    }
+    elseif ($installedPkgManagers.Count -eq 1) {
         Write-Debug "Only one package manager found: $($installedPkgManagers[0]), using it."
         return $installedPkgManagers[0]
-    } else {
+    }
+    else {
         ## Check if a preferred package manager was provided
         If ( $PreferPkgManager ) {
 
-        } else {
+        }
+        else {
             ## Return the first available package manager
             Write-Warning "Multiple package managers found: $($installedPkgManagers -join ', '), using the first one: $($installedPkgManagers[0]). Provide a preferred package manager with -PreferPkgManager."
             return $installedPkgManagers[0]
@@ -116,15 +128,18 @@ function Get-PkgManager {
         if ( $installedPkgManagers -contains $PreferPkgManager ) {
             Write-Debug "Preferred package manager '$PreferPkgManager' is installed, using it."
             return $PreferPkgManager
-        } else {
+        }
+        else {
             Write-Warning "Preferred package manager '$PreferPkgManager' is not installed."
             return $null
         }
-    } else {
+    }
+    else {
         # If no preferred package manager is specified, return the first available one
         if ($installedPkgManagers.Count -gt 0) {
             return $installedPkgManagers[0]
-        } else {
+        }
+        else {
             Write-Warning "No package manager found."
             return $null
         }
@@ -176,7 +191,8 @@ function Install-AquaCLI {
     try {
         Write-Debug "Running command: $InstallCmd"
         Invoke-Expression $InstallCmd
-    } catch {
+    }
+    catch {
         Write-Error "Error installing aqua. Details: $($_.Exception.Message)"
         exit 1
     }
@@ -185,11 +201,21 @@ function Install-AquaCLI {
 function Set-AquaEnvVariables {
     Param(
         [string]$AquaRoot = $AquaRoot,
-        [string]$AquaProjectRoot = "$($AquaRoot)\aquaproject-aqua"
+        [string]$AquaProjectRoot = "$($AquaRoot)\aquaproject-aqua",
+        [string]$AquaGlobalConfig = "$($AquaProjectRoot)\aqua.yaml",
+        [bool]$EnableAquaProgressBar = $true,
+        [bool]$EnableAquaDetailedOutput = $true,
+        [int]$AquaMaxParallelDownloads = 5
     )
 
     If ( $DryRun ) {
         Write-Host "[DRY RUN] Would set environment variables for aqua." -ForegroundColor Magenta
+        Write-Debug "[DRY RUN] Would set `$AQUA_ROOT_DIR environment variable to: $AquaProjectRoot"
+        Write-Debug "[DRY RUN] Would set `$AQUA_GLOBAL_CONFIG environment variable to: $AquaGlobalConfig"
+        Write-Debug "[DRY RUN] Would set `$AQUA_PROGRESS_BAR environment variable to: $($EnableAquaProgressBar)"
+        Write-Debug "[DRY RUN] Would set `$AQUA_GENERATE_WITH_DETAIL environment variable to: $($EnableAquaDetailedOutput)"
+        Write-Debug "[DRY RUN] Would set `$AQUA_MAX_PARALLEL_DOWNLOADS environment variable to: $($AquaMaxParallelDownloads)"
+
         return
     }
     
@@ -197,10 +223,14 @@ function Set-AquaEnvVariables {
     Write-Host "Setting environment variables for aqua." -ForegroundColor cyan
 
     ## Set environment variables
-    try{
-        [Environment]::SetEnvironmentVariable("AQUA_ROOT", $AquaRoot, "User")
-        [Environment]::SetEnvironmentVariable("AQUA_PROJECT_ROOT", $AquaProjectRoot, "User")
-    } catch {
+    try {
+        [Environment]::SetEnvironmentVariable("AQUA_ROOT_DIR", $AquaRoot, "User")
+        [Environment]::SetEnvironmentVariable("AQUA_GLOBAL_CONFIG", $AquaGlobalConfig, "User")
+        [Environment]::SetEnvironmentVariable("AQUA_PROGRESS_BAR", $EnableAquaProgressBar, "User")
+        [Environment]::SetEnvironmentVariable("AQUA_GENERATE_WITH_DETAIL", $EnableAquaDetailedOutput, "User")
+        [Environment]::SetEnvironmentVariable("AQUA_MAX_PARALLEL_DOWNLOADS", $AquaMaxParallelDownloads, "User")
+    }
+    catch {
         Write-Error "Error setting aqua environment variables. Details: $($_.Exception.Message)"
         exit 1
     }
@@ -208,7 +238,7 @@ function Set-AquaEnvVariables {
 
 function Set-AquaBinPath {
     Param(
-        [string]$AquaBinPath = "$env:USERPROFILE\.aqua\aquaproject-aqua\bin"  # Default Aqua bin path
+        [string]$AquaBinPath = "$env:USERPROFILE\.aqua\bin"  # Default Aqua bin path
     )
 
     If ( -Not $AquaBinPath ) {
@@ -231,10 +261,11 @@ function Set-AquaBinPath {
         $newPath = if ($existingPath) { "$existingPath;$AquaBinPath" } else { $AquaBinPath }
 
         ## Set the updated PATH
-        try{
+        try {
             [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
             Write-Host "Aqua bin path added to PATH: $AquaBinPath" -ForegroundColor Green
-        } catch {
+        }
+        catch {
             Write-Error "Error adding aqua bin path to PATH. Details: $($_.Exception.Message)"
             exit 1
         }
@@ -242,6 +273,42 @@ function Set-AquaBinPath {
     else {
         Write-Host "Aqua bin path is already in the PATH." -ForegroundColor Yellow
     }
+}
+
+function Invoke-AquaInit {
+    Param(
+        [string]$AquaRoot = $AquaRoot,
+        [string]$AquaProjectRoot = "$($AquaRoot)\aquaproject-aqua",
+        [string]$AquaConfigPath = "$($AquaProjectRoot)\aqua.yaml"
+    )
+
+    If ( $DryRun ) {
+        Write-Host "[DRY RUN] Would run 'aqua init' command." -ForegroundColor Magenta
+        return
+    }
+
+    Write-Information "Running aqua init command"
+
+    If ( -Not (Test-Path -Type Leaf -Path "$($AquaConfigPath)") ) {
+        Write-Host "Running 'aqua init' command." -ForegroundColor Cyan
+        try {
+            Push-Location $AquaRoot
+            & aqua init
+        }
+        catch {
+            Write-Error "Error running 'aqua init' command. Details: $($_.Exception.Message)"
+            exit 1
+        }
+        finally {
+            Pop-Location
+
+            Write-Host "Aqua init command complete. Run 'aqua --help' to get started. Run 'aqua root-dir' to get the path to the global aqua project." -ForegroundColor Green
+        }
+    } else {
+        Write-Host "Aqua project already initialized. Run 'aqua --help' to get started. Run 'aqua root-dir' to get the path to the global aqua project." -ForegroundColor Green
+        return 0
+    }
+    
 }
 
 
@@ -274,9 +341,10 @@ function Start-AquaSetup {
     $PkgMgr = Get-PkgManager -PreferPkgManager "scoop"
 
     ## Create directories
-    try{
+    try {
         New-AquaPaths -RootPath $AquaRoot -ProjectPath $AquaProjectRoot
-    } catch {
+    }
+    catch {
         Write-Error "Error setting up aqua paths. Details: $($_.Exception.Message)"
         exit 1
     }
@@ -284,24 +352,32 @@ function Start-AquaSetup {
     ## Install aqua
     try {
         Install-AquaCLI -PkgMgr $PkgMgr
-    } catch {
+    }
+    catch {
         Write-Error "Error installing aqua. Details: $($_.Exception.Message)"
         exit 1
     }
 
     ## Set environment variables.
-    Set-AquaEnvVariables -AquaRoot $AquaRoot -AquaProjectRoot $AquaProjectRoot
+    Set-AquaEnvVariables -AquaRoot $AquaRoot -AquaProjectRoot $AquaProjectRoot -AquaMaxParallelDownloads 10
 
     ## Add aqua bin path to $PATH
     Set-AquaBinPath -AquaBinPath $AquaBinPath
 
-    ## Output success message
-    Write-Host "Aqua install complete. Restart PowerShell to load the updated environment variables." -ForegroundColor Green
-    Write-Host "    To use aqua, run 'aqua --help'." -ForegroundColor Green
-    Write-Host "    To initialize a new project, run 'aqua init'." -ForegroundColor Green
-    Write-Host "    Run this command from $($AquaRoot) to create a 'global' configuration for your user account." -ForegroundColor Green
+    ## Initialize global aqua.yaml
+    Invoke-AquaInit -AquaRoot $AquaRoot -AquaProjectRoot $AquaProjectRoot
 
-    exit 0
+    If ( -Not $DryRun ) {
+        ## Output success message
+        Write-Host "Aqua install complete. Restart PowerShell to load the updated environment variables." -ForegroundColor Green
+        Write-Host "    To use aqua, run 'aqua --help'." -ForegroundColor Green
+        Write-Host "    To initialize a new project, run 'aqua init'." -ForegroundColor Green
+        Write-Host "    Run this command from $($AquaProjectRoot) to create a 'global' configuration for your user account." -ForegroundColor Green
+
+        exit 0
+    } else {
+        Write-Host "[DRY RUN] End dry run" -ForegroundColor Magenta
+    }
 
 }
 
