@@ -202,7 +202,7 @@ function Set-AquaEnvVariables {
     Param(
         [string]$AquaRoot = $AquaRoot,
         [string]$AquaProjectRoot = "$($AquaRoot)\aquaproject-aqua",
-        [string]$AquaGlobalConfig = "$($AquaProjectRoot)\aqua.yaml",
+        [string]$AquaGlobalConfig = "$($AquaRoot)\aqua.yaml",
         [bool]$EnableAquaProgressBar = $true,
         [bool]$EnableAquaDetailedOutput = $true,
         [int]$AquaMaxParallelDownloads = 5
