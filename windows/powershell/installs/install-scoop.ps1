@@ -3,14 +3,6 @@ Param(
     [switch]$DryRun
 )
 
-try {
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-} catch {
-    Write-Error "Failed to set powershell execution policy to RemoteSigned."
-    Write-Error "Exception details: $($exc.Message)"
-    exit 1
-}
-
 If ( $Debug) {
     ## enable powershell logging
     $DebugPreference = "Continue"
@@ -29,12 +21,14 @@ function Install-ScoopCli {
         return
     }
     
-    try{
-        Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-    } catch {
-        Write-Error "Failed to install scoop."
-        Write-Error "Exception details: $($exc.Message)"
-        exit 1
+    If ( -Not (Get-Command scoop) ) {
+        try{
+            Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+        } catch {
+            Write-Error "Failed to install scoop."
+            Write-Error "Exception details: $($exc.Message)"
+            exit 1
+        }
     }
 }
 
@@ -52,6 +46,9 @@ function Configure-ScoopCli {
 
     try {
         scoop install aria2
+        if ( -Not $(scoop config aria2-enabled) -eq $True) {
+            scoop config aria2-enabled true
+        }
     } catch {
         Write-Error "Failed to install aria2."
         Write-Error "Exception details: $($exc.Message)"
@@ -83,4 +80,5 @@ function Configure-ScoopCli {
 }
 
 Install-ScoopCli
+
 Configure-ScoopCli
