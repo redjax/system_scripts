@@ -1,10 +1,5 @@
 [
     {
-        "name": "aria2",
-        "id": "aria2",
-        "description": "A multithreaded downloaded for speeding up scoop downloads."
-    },
-    {
         "name": "Aqua",
         "id": "aqua",
         "description": "A version manager that uses YAML for tool configuration."
