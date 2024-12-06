@@ -24,18 +24,18 @@ Param(
 )
 
 ## Check that Scoop is installed
-if (-not (Get-Command "scoop" -ErrorAction SilentlyContinue)) {
+if ( -Not (Get-Command "scoop" -ErrorAction SilentlyContinue) ) {
     Write-Error "Scoop is not installed. Please install Scoop first."
     exit 1
 }
 
 ## Function to load apps list from JSON file
-function Load-AppList {
+function Get-AppList {
     Param(
         [string]$JsonFilePath
     )
 
-    if (-not (Test-Path -Path $JsonFilePath)) {
+    if ( -Not (Test-Path -Path $JsonFilePath) ) {
         Write-Error "JSON file '$JsonFilePath' not found."
         exit 1
     }
@@ -51,7 +51,7 @@ function Load-AppList {
 
 ## Load the apps list from JSON file
 $JsonFilePath = "./applists/scoop/$($AppList).json"
-$AppSupportApps = Load-AppList -JsonFilePath $JsonFilePath
+$AppSupportApps = Get-AppList -JsonFilePath $JsonFilePath
 
 function Install-Prompt {
     <# Prompt user for Y/N response to install application. #>
@@ -59,12 +59,12 @@ function Install-Prompt {
         $Application = $null
     )
 
-    If (-Not $Application) {
+    If ( -Not $Application ) {
         Write-Error "No application detected"
         exit 1
     }
 
-    If ($Debug) {
+    If ( $Debug ) {
         Write-Host "Prompting user for install choice." -ForegroundColor Yellow
         Write-Host "App name: $($Application.name)" -ForegroundColor Yellow
         Write-Host "App description: $($Application.description)" -ForegroundColor Yellow
@@ -75,7 +75,7 @@ function Install-Prompt {
     $InstallChoice = Read-Host -Prompt "Do you want to install $($Application.name) with Scoop? (Y/N, default=N)"
 
     ## Check user input
-    switch ($InstallChoice.ToLower()) {
+    switch ( $InstallChoice.ToLower() ) {
         { @("y", "yes") -contains $_ } {
             return $true
         }
@@ -99,24 +99,24 @@ function Install-Apps {
         $AppsList = $null
     )
 
-    If (-not $AppsList) {
+    If ( -Not $AppsList ) {
         Write-Error "No applications were passed to Install-Apps."
         exit 1
     }
 
-    If ($All) {
+    If ( $All ) {
         ## Install all apps, skipping prompt
         Write-Host "-All flag detected. Skipping install prompt and installing all apps." -ForegroundColor Magenta
 
-        ForEach ($app in $AppsList) {
+        ForEach ( $app in $AppsList ) {
             Write-Host "Installing $($app.name)" -ForegroundColor Blue
 
-            If ($Debug) {
+            If ( $Debug ) {
                 Write-Host "App name: $($app.name)" -ForegroundColor Yellow
                 Write-Host "App description: $($app.description)" -ForegroundColor Yellow
             }
 
-            If ($DryRun) {
+            If ( $DryRun ) {
                 Write-Host "-DryRun detected. No app will be installed." -ForegroundColor Magenta
                 Write-Host "Install command: scoop install $($app.id)" -ForegroundColor Blue
             } else {
@@ -128,11 +128,11 @@ function Install-Apps {
             }
         }
     } else {
-        ForEach ($app in $AppsList) {
+        ForEach ( $app in $AppsList ) {
             $Proceed = Install-Prompt -Application $app
 
-            If ($Proceed) {
-                If ($DryRun) {
+            If ( $Proceed ) {
+                If ( $DryRun ) {
                     Write-Host "-DryRun detected. No app will be installed." -ForegroundColor Magenta
                     Write-Host "Install command: scoop install $($app.id)" -ForegroundColor Blue
                 } else {
