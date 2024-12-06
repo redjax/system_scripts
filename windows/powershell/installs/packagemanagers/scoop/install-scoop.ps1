@@ -3,7 +3,7 @@ Param(
     [switch]$DryRun
 )
 
-If ( $Debug) {
+If ( $Debug ) {
     ## enable powershell logging
     $DebugPreference = "Continue"
 }
@@ -22,7 +22,7 @@ function Install-ScoopCli {
     }
     
     If ( -Not (Get-Command scoop) ) {
-        try{
+        try {
             Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
         } catch {
             Write-Error "Failed to install scoop."
@@ -32,7 +32,7 @@ function Install-ScoopCli {
     }
 }
 
-function Configure-ScoopCli {
+function Initialize-ScoopCli {
     Write-Host "Installing aria2 for accelerated downloads"
 
     If ( $DryRun ) {
@@ -55,7 +55,7 @@ function Configure-ScoopCli {
     }
 
     Write-Host "Enable scoop 'extras' bucket"
-    try{
+    try {
             scoop bucket add extras
     } catch {
         Write-Error "Failed to enable scoop 'extras' bucket."
@@ -81,4 +81,4 @@ function Configure-ScoopCli {
 
 Install-ScoopCli
 
-Configure-ScoopCli
+Initialize-ScoopCli
