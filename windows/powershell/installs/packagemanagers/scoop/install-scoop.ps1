@@ -54,11 +54,12 @@ function Initialize-ScoopCli {
         Write-Error "Exception details: $($exc.Message)"
     }
 
-    Write-Host "Enable scoop 'extras' bucket"
+    Write-Host "Enable scoop buckets"
     try {
             scoop bucket add extras
+            scoop bucket add nerd-fonts
     } catch {
-        Write-Error "Failed to enable scoop 'extras' bucket."
+        Write-Error "Failed to enable 1 or more scoop buckets."
         Write-Error "Exception details: $($exc.Message)"
     }
 
