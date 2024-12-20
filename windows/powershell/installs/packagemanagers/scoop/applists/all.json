@@ -3,5 +3,10 @@
         "name": "Aqua",
         "id": "aqua",
         "description": "A version manager that uses YAML for tool configuration."
+    },
+    {
+        "name": "Treesize Free",
+        "id": "treesize-free",
+        "description": "A file scanner/disk usage analyzer."
     }
 ]
