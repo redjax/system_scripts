@@ -1,0 +1,87 @@
+[
+    {
+        "name": "Visual Studio Code",
+        "id": "Microsoft.VisualStudioCode",
+        "description": "Text editor/code IDE"
+    },
+    {
+        "name": "Azure Data Studio",
+        "id": "Microsoft.AzureDataStudio",
+        "description": "Connect to data sources in Azure (databases, blob storage, etc)"
+    },
+    {
+        "name": "Azure Storage Explorer",
+        "id": "Microsoft.Azure.StorageExplorer",
+        "description": "Connect to Azure Storage instances, like Blob storage"
+    },
+    {
+        "name": "Microsoft SQL Server Management Studio (SSMS)",
+        "id": "Microsoft.SqlServerManagementStudio",
+        "description": "Connect to and manage Microsoft SQL Server databases"
+    },
+    {
+        "name": "VLC Media Player",
+        "id": "VideoLAN.VLC",
+        "description": "Play (almost) any type of media. Also includes tools for managing/converting media"
+    },
+    {
+        "name": "WinSCP",
+        "id": "WinSCP.WinSCP",
+        "description": "Connect to SCP/SFTP servers."
+    },
+    {
+        "name": "Greenshot (Screenshots)",
+        "id": "Greenshot.Greenshot",
+        "description": "Free, open-source screenshot utility"
+    },
+    {
+        "name": "Peazip",
+        "id": "Giorgiotani.Peazip",
+        "description": "Free, open-source file archiving utility"
+    },
+    {
+        "name": "Postman",
+        "id": "Postman.Postman",
+        "description": "Utility for interacting with APIs"
+    },
+    {
+        "name": "Notepad++",
+        "id": "Notepad++.Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)"
+    },
+    {
+        "name": "Azure CLI",
+        "id": "Microsoft.AzureCLI",
+        "description": "Command line utility for interacting with Azure environment. Needed for some scripts/apps"
+    },
+    {
+        "name": "Azure Bicep CLI",
+        "id": "Microsoft.Bicep",
+        "description": "Command line utility for interacting with Azure Bicep. Needed for some scripts/apps"
+    },
+    {
+        "name": "Git",
+        "id": "Git.Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories"
+    },
+    {
+        "name": "Bitwarden",
+        "id": "",
+        "description": "Shared password manager"
+    },
+    {
+        "name": "RDCMan",
+        "id": "Microsoft.Sysinternals.RDCMan",
+        "description": "Remore Desktop Connection manager"
+    },
+    {
+        "name": "Teamviewer",
+        "id": "Teamviewer.Teamviewer",
+        "description": "Remote control console"
+    },
+    {
+        "name": "PowerToys",
+        "id": "Microsoft.PowerToys",
+        "description": "Windows enhancement utility from Microsoft"
+    }
+]
