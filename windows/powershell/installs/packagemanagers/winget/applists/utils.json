@@ -48,5 +48,10 @@
         "name": "PowerToys",
         "id": "Microsoft.PowerToys",
         "description": "Windows enhancement utility from Microsoft"
+    },
+    {
+        "name": "MiniTool Partition Wizard - Free",
+        "id": "MiniTool.PartitionWizard.Free",
+        "description": "A free (for home use) disk partitioning tool for Windows."
     }
 ]
