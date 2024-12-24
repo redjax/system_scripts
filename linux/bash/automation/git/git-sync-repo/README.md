@@ -2,6 +2,14 @@
 
 *NOTE: I have broken this script out into [its own repository](https://github.com:redjax/git-sync-repos). The files in this path may not be the most recent version of the script. I will try to update this script if I make changes in the git-sync-repos script.*
 
+```
+  !!! WARNING !!!
+
+  Don't run this script from this system_scripts repository!
+
+  The script messes with pull & push URLs. Copy this whole directory to another location on your machine and run it from there.
+```
+
 Mirror git repositories from one remote to another (i.e. a Github repository to Codeberg).
 
 ## Setup
