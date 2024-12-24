@@ -1,0 +1,6 @@
+## DELETE THESE EXAMPLE LINES AfTER COPYING THIS FILE!
+#
+#  Add the 'source' repository first, then the target you want
+#  to mirror the source repository to.
+git@gihub.com:user/repo git@codeberg.org:user/repo
+git@gitlab.com:user/repo git@github.com:user/repo
