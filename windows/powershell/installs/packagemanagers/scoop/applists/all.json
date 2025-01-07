@@ -8,10 +8,5 @@
         "name": "Treesize Free",
         "id": "treesize-free",
         "description": "A file scanner/disk usage analyzer."
-    },
-    {
-        "name": "nomacs image viewer",
-        "id": "nomacs",
-        "description": "https://github.com/nomacs/nomacs"
     }
 ]
