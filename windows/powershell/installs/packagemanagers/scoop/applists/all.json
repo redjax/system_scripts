@@ -8,5 +8,10 @@
         "name": "Treesize Free",
         "id": "treesize-free",
         "description": "A file scanner/disk usage analyzer."
+    },
+    {
+        "name": "GitExtensions",
+        "id": "gitextensions",
+        "description": "Git merge tool"
     }
 ]
