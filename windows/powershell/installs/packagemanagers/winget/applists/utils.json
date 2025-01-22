@@ -53,5 +53,10 @@
         "name": "MiniTool Partition Wizard - Free",
         "id": "MiniTool.PartitionWizard.Free",
         "description": "A free (for home use) disk partitioning tool for Windows."
+    },
+    {
+        "name": "GitExtensions",
+        "id": "GitExtensionsTeam.GitExtensions",
+        "description": "Git repository merge tool"
     }
 ]
