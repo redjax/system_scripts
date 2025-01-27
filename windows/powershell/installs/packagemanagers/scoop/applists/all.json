@@ -8,5 +8,10 @@
         "name": "Treesize Free",
         "id": "treesize-free",
         "description": "A file scanner/disk usage analyzer."
+    },
+    {
+        "name": "LazyGit",
+        "id": "lazygit",
+        "description": "A convenient TUI for git."
     }
 ]
