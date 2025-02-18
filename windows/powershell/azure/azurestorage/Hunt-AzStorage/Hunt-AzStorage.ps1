@@ -9,7 +9,9 @@
     The path to a JSON configuration file for the script.
 
     .PARAMETER SizeThreshold
-    The size threshold for large files/BLOBs.
+    The size (in bytes) threshold for large files/BLOBs. Default is 104857600 (100MB).
+    The equation for converting size in bytes to size in MB is: $Bytes * 1024 * 1024.
+    1MB = 1048576, 10MB = 10485760, 100MB = 104857600
 
     .EXAMPLE
     .\Hunt-AzStorage.ps1 -ConfigPath path/to/params.json
@@ -19,7 +21,7 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Enter a path to a configuration JSON file for the script")]
     [string]$ConfigPath = "./params.json",
     [Parameter(Mandatory = $false, HelpMessage = "Enter a size threshold (i.e. 100MB) for large files/BLOBs")]
-    [int64]$SizeThreshold = 100MB
+    [int64]$SizeThreshold = 104857600
 )
 
 $DefaultConfig = [PSCustomObject]@{
@@ -31,6 +33,25 @@ $DefaultConfig = [PSCustomObject]@{
     blob_container    = "default-blob-container"
     file_share        = "default-file-share"
     connection_string = $null
+}
+
+function Convert-BytesToHumanReadable {
+    param (
+        [int64]$Bytes
+    )
+
+    if ($Bytes -lt 1KB) {
+        return "$Bytes Bytes"
+    }
+    elseif ($Bytes -lt 1MB) {
+        return "{0:N2} KB" -f ($Bytes / 1KB)
+    }
+    elseif ($Bytes -lt 1GB) {
+        return "{0:N2} MB" -f ($Bytes / 1MB)
+    }
+    else {
+        return "{0:N2} GB" -f ($Bytes / 1GB)
+    }
 }
 
 function Get-StorageConfig {
@@ -122,7 +143,7 @@ function Get-LargeBlobs {
     param (
         [object]$Context,
         [string]$ContainerName,
-        [int64]$SizeThreshold = 100MB
+        [int64]$SizeThreshold = 104857600
     )
 
     try {
@@ -163,7 +184,7 @@ function Get-LargeFiles {
     param (
         [object]$Context,
         [string]$ShareName,
-        [int64]$SizeThreshold = 100MB
+        [int64]$SizeThreshold = 104857600
     )
 
     try {
@@ -243,15 +264,15 @@ if ( $config ) {
 
         if ( $emptyBlobs ) {
             Write-Host "[$($emptyBlobs.Count)] Empty Blobs:" -ForegroundColor Magenta
-            $emptyBlobs | ForEach-Object { Write-Host "Blob: $($_.Name) | Size: $($_.Length) bytes" -ForegroundColor Yellow }
+            $emptyBlobs | ForEach-Object { Write-Host "Blob: $($_.Name) | Size: $(Convert-BytesToHumanReadable -Bytes $($_.Length))" -ForegroundColor Yellow }
         }
         else {
             Write-Host "No 0kb BLOB files found" -ForegroundColor Green
         }
 
         if ( $largeBlobs ) {
-            Write-Host "[$($largeBlobs.Count)] Large Blobs (>$($largeBlobs[0].Length) bytes):" -ForegroundColor Magenta
-            $largeBlobs | ForEach-Object { Write-Host "Blob: $($_.Name) | Size: $($_.Length) bytes" -ForegroundColor Yellow }
+            Write-Host "[$($largeBlobs.Count)] Large Blobs:" -ForegroundColor Magenta
+            $largeBlobs | ForEach-Object { Write-Host "Blob: $($_.Name) | Size: $(Convert-BytesToHumanReadable -Bytes $($_.Length))" -ForegroundColor Yellow }
         }
         else {
             Write-Host "No large BLOB files found" -ForegroundColor Green
@@ -259,15 +280,15 @@ if ( $config ) {
 
         if ( $emptyFiles ) {
             Write-Host "[$($emptyFiles.Count)] Empty Files:" -ForegroundColor Magenta
-            $emptyFiles | ForEach-Object { Write-Host "File: $($_.Name) | Size: $($_.Length) bytes" -ForegroundColor Yellow }
+            $emptyFiles | ForEach-Object { Write-Host "File: $($_.Name) | Size: $(Convert-BytesToHumanReadable -Bytes $($_.Length))" -ForegroundColor Yellow }
         }
         else {
             Write-Host "No 0kb files found in Azure File Storage" -ForegroundColor Green
         }
 
         if ( $largeFiles ) {
-            Write-Host "[$($largeFiles.Count)] Large Files (>$($largeFiles[0].Length) bytes):" -ForegroundColor Magenta
-            $largeFiles | ForEach-Object { Write-Host "File: $($_.Name) | Size: $($_.Length) bytes" -ForegroundColor Yellow }
+            Write-Host "[$($largeFiles.Count)] Large Files:" -ForegroundColor Magenta
+            $largeFiles | ForEach-Object { Write-Host "File: $($_.Name) | Size: $(Convert-BytesToHumanReadable -Bytes $($_.Length))" -ForegroundColor Yellow }
         }
         else {
             Write-Host "No large files found in Azure File Storage" -ForegroundColor Green
