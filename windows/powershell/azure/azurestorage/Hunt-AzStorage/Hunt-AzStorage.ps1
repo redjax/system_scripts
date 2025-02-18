@@ -22,6 +22,17 @@ Param(
     [int64]$SizeThreshold = 100MB
 )
 
+$DefaultConfig = [PSCustomObject]@{
+    storage_account   = "default-storage-account"
+    storage_key       = "default-storage-key"
+    subscription_id   = "default-subscription-id"
+    resource_group    = "default-resource-group"
+    tenant_id         = "default-tenant-id"
+    blob_container    = "default-blob-container"
+    file_share        = "default-file-share"
+    connection_string = $null
+}
+
 function Get-StorageConfig {
     <#
         .SYNOPSIS
@@ -37,8 +48,19 @@ function Get-StorageConfig {
     }
 
     if ( -Not ( Test-Path $ConfigPath ) ) {
-        Write-Error "Config file not found: $ConfigPath"
-        return $null
+        Write-Warning "Config file not found at path: $ConfigPath. Creating default configuration and exiting early."
+        
+        try {
+            ## Convert $DefaultConfig to JSON and write to $ConfigPath
+            $DefaultConfig | ConvertTo-Json -Depth 3 | Set-Content -Path $ConfigPath
+
+            Write-Host "Default configuration saved to '$($ConfigPath)'. Please modify this file before re-running this script." -ForegroundColor Green
+            exit 0
+        }
+        catch {
+            Write-Error "Error saving default configuration. Details: $($_.Exception.Message)"
+            return $null
+        }
     }
 
     try {
