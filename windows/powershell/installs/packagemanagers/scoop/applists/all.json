@@ -8,5 +8,20 @@
         "name": "Treesize Free",
         "id": "treesize-free",
         "description": "A file scanner/disk usage analyzer."
+    },
+    {
+        "name": "FX JSON explorer",
+        "id": "fx",
+        "description": "Explore JSON in the terminal."
+    },
+    {
+        "name": "Disk Usage Analyzer",
+        "id": "dua",
+        "description": "Analyze disk usage in the terminal. Like 'du' command on Unix."
+    },
+    {
+        "name": "GitUI",
+        "id": "gitui",
+        "description": "Terminal-based git user interface."
     }
 ]
