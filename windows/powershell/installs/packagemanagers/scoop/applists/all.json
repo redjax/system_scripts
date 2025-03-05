@@ -33,5 +33,10 @@
         "name": "Flow Launcher",
         "id": "Flow-Launcher",
         "description": "ALT+Space launcher."
+    },
+    {
+        "name": "Pinta Paint",
+        "id": "pinta",
+        "description": "Alternative to MS Paint"
     }
 ]
