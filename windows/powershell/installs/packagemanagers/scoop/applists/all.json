@@ -23,5 +23,15 @@
         "name": "GitUI",
         "id": "gitui",
         "description": "Terminal-based git user interface."
+    },
+    {
+        "name": "LazyGit",
+        "id": "lazygit",
+        "description": "Terminal-based git user interface."
+    },
+    {
+        "name": "Flow Launcher",
+        "id": "Flow-Launcher",
+        "description": "ALT+Space launcher."
     }
 ]
