@@ -1,0 +1,10 @@
+{
+    "storage_account": "<name-of-azure-storage-account>",
+    "storage_key": "<storage-account-key>",
+    "subscription_id": "<azure-subscription-id",
+    "resource_group": "<storage-account-resource-group-name>",
+    "tenant_id": "<your-tenant-id>",
+    "blob_container": "<name-of-blob-container>",
+    "file_share": "<name-of-file-share>",
+    "connection_string": "<azure-storage-connection-string>"
+}
