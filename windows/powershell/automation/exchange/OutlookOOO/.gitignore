@@ -1,0 +1,8 @@
+messages/*
+messages/internal/*
+messages/external/*
+
+!messages/internal/
+!messages/external/
+!messages/internal/default.*
+!messages/external/default.*
