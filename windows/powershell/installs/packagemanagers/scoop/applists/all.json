@@ -10,6 +10,9 @@
         "description": "A file scanner/disk usage analyzer."
     },
     {
+        "name": "GitExtensions",
+        "id": "gitextensions",
+        "description": "Git merge tool"
         "name": "FX JSON explorer",
         "id": "fx",
         "description": "Explore JSON in the terminal."

@@ -55,6 +55,9 @@
         "description": "A free (for home use) disk partitioning tool for Windows."
     },
     {
+        "name": "GitExtensions",
+        "id": "GitExtensionsTeam.GitExtensions",
+        "description": "Git repository merge tool"
         "name": "csvlens",
         "id": "YS-L.csvlens",
         "description": "Terminal-based CSV explorer."
@@ -63,10 +66,5 @@
         "name": "1Password CLI",
         "id": "1Password.1PasswordCLI",
         "description": "Command line utility for interacting with 1Password."
-    },
-    {
-        "Name": "Postman",
-        "ID": "Postman.Postman",
-        "Description": "Utility for interacting with APIs"
     }
 ]
