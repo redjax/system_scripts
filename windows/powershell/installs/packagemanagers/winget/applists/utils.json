@@ -63,5 +63,10 @@
         "name": "1Password CLI",
         "id": "1Password.1PasswordCLI",
         "description": "Command line utility for interacting with 1Password."
+    },
+    {
+        "Name": "Postman",
+        "ID": "Postman.Postman",
+        "Description": "Utility for interacting with APIs"
     }
 ]
