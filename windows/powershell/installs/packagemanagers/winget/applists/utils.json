@@ -61,5 +61,10 @@
         "name": "csvlens",
         "id": "YS-L.csvlens",
         "description": "Terminal-based CSV explorer."
+    },
+    {
+        "name": "1Password CLI",
+        "id": "1Password.1PasswordCLI",
+        "description": "Command line utility for interacting with 1Password."
     }
 ]
