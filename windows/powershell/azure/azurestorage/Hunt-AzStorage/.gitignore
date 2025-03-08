@@ -1,0 +1,3 @@
+## Ignore local file with params used for copying/pasting during development
+script_params
+params.json
