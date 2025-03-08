@@ -58,5 +58,8 @@
         "name": "GitExtensions",
         "id": "GitExtensionsTeam.GitExtensions",
         "description": "Git repository merge tool"
+        "name": "csvlens",
+        "id": "YS-L.csvlens",
+        "description": "Terminal-based CSV explorer."
     }
 ]
