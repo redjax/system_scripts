@@ -25,19 +25,14 @@
         "Description": "Connect to SCP/SFTP servers."
     },
     {
-        "Name": "Greenshot (Screenshots)",
-        "ID": "Greenshot.Greenshot",
-        "Description": "Free, open-source screenshot utility"
-    },
-    {
         "Name": "Peazip",
         "ID": "Giorgiotani.Peazip",
         "Description": "Free, open-source file archiving utility"
     },
     {
-        "Name": "Postman",
-        "ID": "Postman.Postman",
-        "Description": "Utility for interacting with APIs"
+        "Name": "HTTPie",
+        "ID": "HTTPie.HTTPie",
+        "Description": "Alternative to Postman, integrates with Github."
     },
     {
         "Name": "Notepad++",
