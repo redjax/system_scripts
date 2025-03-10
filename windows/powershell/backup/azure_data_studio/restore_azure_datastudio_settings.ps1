@@ -1,0 +1,1 @@
+Copy-Item "$env:USERPROFILE\OneDrive - Embrace Pet Insurance\Documents\_backup\app_backups\AzureDataStudio\" -Destination "$env:USERPROFILE\AppData\Roaming\azuredatastudio\User\settings.json" -Force
