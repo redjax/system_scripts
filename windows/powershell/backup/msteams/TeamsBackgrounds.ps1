@@ -71,12 +71,13 @@ function Backup-Image {
         }
     }
 
-    if ( Test-Path -Path ( Join-Path -Path $BackupLocation -ChildPath $ImgPath.Name ) ) {
+    $ImgBackupPath = ( Join-Path -Path $BackupLocation -ChildPath $ImgPath.Name )
+    if ( Test-Path -Path $ImgBackupPath ) {
         Write-Warning "Image '$($_.Name)' already exists at path '$($BackupLocation)'."
         return
     }
 
-    Write-Output "Backing up image '$($ImgPath)' to directory '$($BackupLocation)'."
+    Write-Debug "Backing up image '$($ImgPath)' to directory '$($BackupLocation)'."
     try {
         Copy-Item -Path $ImgPath -Destination $BackupLocation -Force
         Write-Output "Successfully backed up image '$($ImgPath)' to path '$($BackupLocation)'"
@@ -112,7 +113,7 @@ function Start-TeamsBackgroundsBackup {
 
     $BackgroundImages | ForEach-Object {
         try {
-            Backup-Image -ImgPath $_.FullName -BackupLocation $BackupLocation
+            Backup-Image -ImgPath $_ -BackupLocation $BackupLocation
         }
         catch {
             Write-Error "Unhandled exception backing up image [$($_.FullName)]. Details: $($_.Exception.Message)"
