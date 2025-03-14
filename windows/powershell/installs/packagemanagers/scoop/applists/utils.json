@@ -38,5 +38,10 @@
         "name": "Disk Usage Analyzer",
         "id": "dua",
         "description": "Analyze disk usage in the terminal. Like 'du' command on Unix."
+    },
+    {
+        "name": "UniGetUI",
+        "id": "extras/unigetui",
+        "description": "Unified app updater, supports Winget, Scoop, Chocolatey, and more."
     }
 ]
