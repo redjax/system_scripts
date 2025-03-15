@@ -19,6 +19,7 @@
 
 Param(
     [String]$AppList = "all",
+    [String]$AppListsPath = (Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath "app_lists"),
     [Switch]$Debug,
     [Switch]$DryRun,
     [Switch]$All
@@ -45,8 +46,8 @@ function Load-AppList {
 }
 
 ## Load the apps list from JSON file
-$JsonFilePath = "./applists/winget/$($AppList).json"
-$AppSupportApps = Load-AppList -JsonFilePath $JsonFilePath
+$JsonFilePath = "$($AppListsPath)\$($AppList).json"
+$AppsList = Load-AppList -JsonFilePath $JsonFilePath
 
 function Install-Prompt {
     <# Prompt user for Y/N response to install application. #>
@@ -186,4 +187,4 @@ function Install-Apps {
     }
 }
 
-Install-Apps -AppsList $AppSupportApps
+Install-Apps -AppsList $AppsList
