@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Playnite",
+        "description": "A game library manager",
+        "winget_id": "Playnite.Playnite",
+        "scoop_id": "playnite",
+        "choco_id": "playnite",
+        "aqua_id": ""
+    }
+]
