@@ -1,0 +1,42 @@
+[
+    {
+        "name": "LazyGit",
+        "description": "Terminal-based git user interface.",
+        "winget_id": "JesseDuffield.lazygit",
+        "scoop_id": "lazygit",
+        "choco_id": "lazygit",
+        "aqua_id": ""
+    },
+    {
+        "name": "Flow Launcher",
+        "description": "ALT+Space launcher.",
+        "winget_id": "Flow-Launcher.Flow-Launcher",
+        "scoop_id": "Flow-Launcher",
+        "choco_id": "flow-launcher",
+        "aqua_id": ""
+    },
+    {
+        "name": "Pinta Paint",
+        "description": "Alternative to MS Paint",
+        "winget_id": "",
+        "scoop_id": "pinta",
+        "choco_id": "Pinta",
+        "aqua_id": ""
+    },
+    {
+        "name": "VLC Media Player",
+        "description": "Play (almost) any type of media. Also includes tools for managing/converting media.",
+        "winget_id": "VideoLAN.VLC",
+        "scoop_id": "vlc",
+        "choco_id": "vlc",
+        "aqua_id": ""
+    },
+    {
+        "name": "Visual Studio Code",
+        "description": "Text editor/code IDE",
+        "winget_id": "Microsoft.VisualStudioCode",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    }
+]
