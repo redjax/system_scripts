@@ -1,0 +1,178 @@
+[
+    {
+        "name": "VLC Media Player",
+        "description": "Play (almost) any type of media. Also includes tools for managing/converting media",
+        "winget_id": "VideoLAN.VLC",
+        "scoop_id": "vlc",
+        "choco_id": "vlc",
+        "aqua_id": ""
+    },
+    {
+        "name": "WinSCP",
+        "description": "Connect to SCP/SFTP servers.",
+        "winget_id": "WinSCP.WinSCP",
+        "scoop_id": "winscp",
+        "choco_id": "winscp",
+        "aqua_id": ""
+    },
+    {
+        "name": "Greenshot",
+        "description": "Free, open-source screenshot utility",
+        "winget_id": "Greenshot.Greenshot",
+        "scoop_id": "greenshot",
+        "choco_id": "greenshot",
+        "aqua_id": ""
+    },
+    {
+        "name": "Sharex",
+        "description": "Open-source screenshot & screen recording utility",
+        "winget_id": "ShareX.ShareX",
+        "scoop_id": "sharex",
+        "choco_id": "sharex",
+        "aqua_id": ""
+    },
+    {
+        "name": "Peazip",
+        "description": "Giorgiotani.Peazip",
+        "winget_id": "Free, open-source file archiving utility",
+        "scoop_id": "peazip",
+        "choco_id": "peazip",
+        "aqua_id": ""
+    },
+    {
+        "name": "Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)",
+        "winget_id": "Notepad++.Notepad++",
+        "scoop_id": "notepadplusplus",
+        "choco_id": "notepad-plusplus",
+        "aqua_id": ""
+    },
+    {
+        "name": "Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories",
+        "winget_id": "Git.Git",
+        "scoop_id": "git",
+        "choco_id": "git",
+        "aqua_id": ""
+    },
+    {
+        "name": "Bitwarden",
+        "description": "Password manager",
+        "winget_id": "Bitwarden.Bitwarden",
+        "scoop_id": "bitwarden",
+        "choco_id": "bitwarden",
+        "aqua_id": ""
+    },
+    {
+        "name": "Teamviewer",
+        "description": "Remote control console",
+        "winget_id": "Teamviewer.Teamviewer",
+        "scoop_id": "teamviewer",
+        "choco_id": "teamviewer",
+        "aqua_id": ""
+    },
+    {
+        "name": "RDCMan",
+        "description": "Remote Desktop Connection Manager",
+        "winget_id": "Microsoft.Sysinternals.RDCMan",
+        "scoop_id": "sysinternals/rdcman",
+        "choco_id": "rdcman",
+        "aqua_id": ""
+    },
+    {
+        "name": "Devolustions Remote Desktop Manager",
+        "description": "Remote Desktop Connection Manager",
+        "winget_id": "Devolutions.RemoteDesktopManager",
+        "scoop_id": "",
+        "choco_id": "rdm",
+        "aqua_id": ""
+    },
+    {
+        "name": "Powertoys",
+        "description": "Windows enhancement utility from Microsoft",
+        "winget_id": "Microsoft.PowerToys",
+        "scoop_id": "powertoys",
+        "choco_id": "powertoys",
+        "aqua_id": ""
+    },
+    {
+        "name": "MiniTool Partition Wizard - Free",
+        "description": "A free (for home use) disk partitioning tool for Windows.",
+        "winget_id": "MiniTool.PartitionWizard.Free",
+        "scoop_id": "",
+        "choco_id": "partitionwizard",
+        "aqua_id": ""
+    },
+    {
+        "name": "GitExtensions",
+        "description": "Git repository merge tool",
+        "winget_id": "GitExtensionsTeam.GitExtensions",
+        "scoop_id": "gitextensions",
+        "choco_id": "gitextensions",
+        "aqua_id": ""
+    },
+    {
+        "name": "UniGetUI",
+        "description": "Unified app updater, supports Winget, Scoop, Chocolatey, and more.",
+        "winget_id": "MartiCliment.UniGetUI",
+        "scoop_id": "extras/unigetui",
+        "choco_id": "wingetui",
+        "aqua_id": ""
+    },
+    {
+        "name": "KDE Connect",
+        "description": "Open source alternative to Windows Phone Link.",
+        "winget_id": "KDE.KDEConnect",
+        "scoop_id": "kdeconnect",
+        "choco_id": "kdeconnect-kde",
+        "aqua_id": ""
+    },
+    {
+        "name": "Azure CLI",
+        "description": "Microsoft Azure CLI tool.",
+        "winget_id": "Microsoft.AzureCLI",
+        "scoop_id": "azure-cli",
+        "choco_id": "azure-cli",
+        "aqua_id": ""
+    },
+    {
+        "name": "LazyGit",
+        "description": "Terminal-based git user interface.",
+        "winget_id": "JesseDuffield.lazygit",
+        "scoop_id": "lazygit",
+        "choco_id": "lazygit",
+        "aqua_id": ""
+    },
+    {
+        "name": "1Password",
+        "description": "Password manager",
+        "winget_id": "AgileBites.1Password",
+        "scoop_id": "",
+        "choco_id": "1password",
+        "aqua_id": ""
+    },
+    {
+        "name": "1Password CLI",
+        "description": "CLI app for 1Password.",
+        "winget_id": "AgileBits.1Password.CLI",
+        "scoop_id": "1password-cli",
+        "choco_id": "1password-cli",
+        "aqua_id": ""
+    },
+    {
+        "name": "Treesize Free",
+        "description": "A file scanner/disk usage analyzer.",
+        "winget_id": "JAMSoftware.TreeSize.Free",
+        "scoop_id": "treesize-free",
+        "choco_id": "treesizefree",
+        "aqua_id": ""
+    },
+    {
+        "name": "FX JSON explorer",
+        "description": "Explore JSON in the terminal.",
+        "winget_id": "",
+        "scoop_id": "fx",
+        "choco_id": "",
+        "aqua_id": ""
+    }
+]
