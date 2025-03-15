@@ -64,7 +64,7 @@ function Install-Prompt {
         Write-Host "Prompting user for install choice." -ForegroundColor Yellow
         Write-Host "App name: $($Application.name)" -ForegroundColor Yellow
         Write-Host "App description: $($Application.description)" -ForegroundColor Yellow
-        Write-Host "App ID: $($Application.id)" -ForegroundColor Yellow
+        Write-Host "App ID: $($Application.winget_id)" -ForegroundColor Yellow
     }
 
     ## Prompt user
@@ -126,8 +126,8 @@ function Install-Apps {
                 Write-Host "-DryRun detected. No app will be installed." -ForegroundColor Magenta
                 Write-Host "App: $($app.name)" -ForegroundColor Yellow
                 Write-Host "Description: $($app.description)" -ForegroundColor Yellow
-                Write-Host "Installation ID: $($app.id)" -ForegroundColor Yellow
-                Write-Host "Install command: winget install --id=$($app.id) -e" -ForegroundColor Blue
+                Write-Host "Installation ID: $($app.winget_id)" -ForegroundColor Yellow
+                Write-Host "Install command: winget install --id=$($app.winget_id) -e" -ForegroundColor Blue
                 Write-Host ""
 
             }
@@ -158,7 +158,7 @@ function Install-Apps {
                     Write-Host "-DryRun detected. No app will be installed." -ForegroundColor Magenta
                     Write-Host "App: $($app.name)" -ForegroundColor Yellow
                     Write-Host "Description: $($app.description)" -ForegroundColor Yellow
-                    Write-Host "Installation ID: $($app.id)" -ForegroundColor Yellow
+                    Write-Host "Installation ID: $($app.winget_id)" -ForegroundColor Yellow
                     Write-Host "Install command: winget install --id=$($app.id) -e" -ForegroundColor Blue
                     Write-Host ""
                 }
@@ -171,7 +171,7 @@ function Install-Apps {
                     }
 
                     try {
-                        winget install --id=$($app.id) -e
+                        winget install --id=$($app.winget_id) -e
                     }
                     catch {
                         Write-Error "Error installing app $($app.name). Details: $($_.Exception.Message)"
