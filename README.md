@@ -1,6 +1,27 @@
 # System Scripts <!-- omit in toc -->
 
-My collection of system scripts, broken down by OS.
+<!-- Git Badges -->
+<p align="center">
+  <a href="https://github.com/redjax/system_scripts">
+    <img alt="Created At" src="https://img.shields.io/github/created-at/redjax/system_scripts">
+  </a>
+  <a href="https://github.com/redjax/system_scripts/commit">
+    <img alt="Last Commit" src="https://img.shields.io/github/last-commit/redjax/system_scripts">
+  </a>
+  <a href="https://github.com/redjax/system_scripts/commit">
+    <img alt="Commits this year" src="https://img.shields.io/github/commit-activity/y/redjax/system_scripts">
+  </a>
+  <a href="https://github.com/redjax/system_scripts">
+    <img alt="Repo size" src="https://img.shields.io/github/repo-size/redjax/system_scripts">
+  </a>
+  <!-- ![GitHub Latest Release](https://img.shields.io/github/release-date/redjax/system_scripts) -->
+  <!-- ![GitHub commits since latest release](https://img.shields.io/github/commits-since/redjax/system_scripts/latest) -->
+  <!-- ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/redjax/system_scripts/tests.yml) -->
+</p>
+
+My collection of system scripts, broken down by OS. As I write scripts I use across multiple machines, I add the generic version here for re-use. Some scripts, like [Windows package manager scripts](./windows/powershell/installs/packagemanagers/), are meant to be run as-is, and use other files in the repository for execution.
+
+Scripts cover a range of topics & purposes, from Azure and Active Directory, to backup & installation scripts, system configurations, & demo/proof-of-concept scripts.
 
 ## ⚠️ Disclaimer <!-- omit in toc -->
 
