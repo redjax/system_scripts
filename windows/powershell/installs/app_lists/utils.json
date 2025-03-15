@@ -174,5 +174,125 @@
         "scoop_id": "fx",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "Visual Studio Code",
+        "description": "Text editor/code IDE",
+        "winget_id": "Microsoft.VisualStudioCode",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Azure Data Studio",
+        "description": "Connect to data sources in Azure (databases, blob storage, etc)",
+        "winget_id": "Microsoft.AzureDataStudio",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Microsoft SQL Server Management Studio (SSMS)",
+        "description": "Connect to and manage Microsoft SQL Server databases",
+        "winget_id": "Microsoft.SqlServerManagementStudio",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "HTTPie",
+        "description": "Alternative to Postman, integrates with Github.",
+        "winget_id": "HTTPie.HTTPie",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "WinSCP",
+        "description": "Connect to SCP/SFTP servers.",
+        "winget_id": "WinSCP.WinSCP",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Ente Auth",
+        "description": "Cross platform, open source MFA app",
+        "winget_id": "ente-io.auth-desktop",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Mozilla Firefox",
+        "description": "Open source browser",
+        "winget_id": "Mozilla.Firefox",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Mozilla Thunderbird",
+        "description": "Open source email client",
+        "winget_id": "Mozilla.Thunderbird",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Neovim",
+        "description": "Neovim text editor",
+        "winget_id": "Neovim.Neovim",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "description": "Microsoft Powershell Core (7)",
+        "winget_id": "Microsoft.PowerShell",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "dBeaver",
+        "description": "A useful database connection manager",
+        "winget_id": "dbeaver.dbeaver",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Obsidian.md",
+        "description": "A cross-platform markdown notes app, with synch",
+        "winget_id": "Obsidian.Obsidian",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Ventoy",
+        "description": "A bootable USB drive manager",
+        "winget_id": "Ventoy.Ventoy",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "WinDbg",
+        "description": "Windows Debugger",
+        "winget_id": "Microsoft.WindowsDebugger",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Alacritty",
+        "description": "A cross-platform, GPU-accelerated terminal emulator",
+        "winget_id": "Alacritty.Alacritty",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
