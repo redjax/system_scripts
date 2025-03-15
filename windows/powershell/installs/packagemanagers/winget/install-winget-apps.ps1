@@ -134,7 +134,7 @@ function Install-Apps {
             else {
                 ## Live run, install app
                 try {
-                    winget install --id=$($app.id) -e
+                    winget install --id=$($app.winget_id) -e
                 }
                 catch {
                     Write-Error "Error installing app $($app.name). Details: $($_.Exception.Message)"
