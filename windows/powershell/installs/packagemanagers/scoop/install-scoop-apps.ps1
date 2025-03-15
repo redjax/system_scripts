@@ -18,6 +18,7 @@
 
 Param(
     [String]$AppList = "all",
+    [String]$AppListsPath = (Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath "app_lists"),
     [Switch]$Debug,
     [Switch]$DryRun,
     [Switch]$All
@@ -50,8 +51,8 @@ function Get-AppList {
 }
 
 ## Load the apps list from JSON file
-$JsonFilePath = "./applists/scoop/$($AppList).json"
-$AppSupportApps = Get-AppList -JsonFilePath $JsonFilePath
+$JsonFilePath = "$($AppListsPath)\$($AppList).json"
+$AppsList = Get-AppList -JsonFilePath $JsonFilePath
 
 function Install-Prompt {
     <# Prompt user for Y/N response to install application. #>
@@ -68,7 +69,7 @@ function Install-Prompt {
         Write-Host "Prompting user for install choice." -ForegroundColor Yellow
         Write-Host "App name: $($Application.name)" -ForegroundColor Yellow
         Write-Host "App description: $($Application.description)" -ForegroundColor Yellow
-        Write-Host "App ID: $($Application.id)" -ForegroundColor Yellow
+        Write-Host "App ID: $($Application.scoop_id)" -ForegroundColor Yellow
     }
 
     ## Prompt user
@@ -118,7 +119,7 @@ function Install-Apps {
 
             If ( $DryRun ) {
                 Write-Host "-DryRun detected. No app will be installed." -ForegroundColor Magenta
-                Write-Host "Install command: scoop install $($app.id)" -ForegroundColor Blue
+                Write-Host "Install command: scoop install $($app.scoop_id)" -ForegroundColor Blue
             } else {
                 try {
                     scoop install $app.id
@@ -134,7 +135,7 @@ function Install-Apps {
             If ( $Proceed ) {
                 If ( $DryRun ) {
                     Write-Host "-DryRun detected. No app will be installed." -ForegroundColor Magenta
-                    Write-Host "Install command: scoop install $($app.id)" -ForegroundColor Blue
+                    Write-Host "Install command: scoop install $($app.scoop_id)" -ForegroundColor Blue
                 } else {
                     try {
                         scoop install $app.id
@@ -149,4 +150,4 @@ function Install-Apps {
     }
 }
 
-Install-Apps -AppsList $AppSupportApps
+Install-Apps -AppsList $AppsList
