@@ -43,5 +43,10 @@
         "name": "UniGetUI",
         "id": "extras/unigetui",
         "description": "Unified app updater, supports Winget, Scoop, Chocolatey, and more."
+    },
+    {
+        "name": "KDE Connect",
+        "id ": "kdeconnect",
+        "description": "Open source alternative to Windows Phone Link."
     }
 ]
