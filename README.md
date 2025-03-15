@@ -2,13 +2,11 @@
 
 My collection of system scripts, broken down by OS.
 
-```
-!! DISCLAIMER !!
+## ⚠️ Disclaimer <!-- omit in toc -->
 
 These are my own scripts I've written for my personal use, or for specific work I do. They may or may not be useful to you, but read each script carefully before you run it.
 
 These are scripts I run on my own machines, and I am not interested in damaging my devices or infecting them with malware. That being said, many of the scripts download executables or other scripts from locations on the Internet. Care must be taken if you use any of the scripts in this repository, and if you find any issues with any of the scripts, please open an issue! :)
-```
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -36,8 +34,10 @@ As of 12/23/2024, the repository is very Windows script heavy. I have a number o
 
 ## Directories
 
-- [`scripts/`]
-  - Scripts meant to be run from the repository root, i.e. `./scripts/script_name.sh/ps1/...`
+- [`repo_scripts/`](./repo_scripts)
+  - Scripts meant to be run from the repository root, i.e. `./repo_scripts/script_name.sh/ps1/...`
 - [`windows/`](./windows/)
   - [`Powershell`](./windows/powershell/) and [`Batch`/`CMD`](./windows/batch/) scripts.
   - Includes application installs/uninstalls, automation scripts, maintenance scripts, and more
+- [`linux/`](./linux/)
+  - Scripts (mostly Bash) for Linux
