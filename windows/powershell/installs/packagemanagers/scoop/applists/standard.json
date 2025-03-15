@@ -16,7 +16,7 @@
     },
     {
         "name": "VLC Media Player",
-        "id": "VideoLAN.VLC",
+        "id": "vlc",
         "description": "Play (almost) any type of media. Also includes tools for managing/converting media"
     }
 ]
