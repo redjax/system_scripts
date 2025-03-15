@@ -138,7 +138,7 @@ function Install-Apps {
                     Write-Host "Install command: scoop install $($app.scoop_id)" -ForegroundColor Blue
                 } else {
                     try {
-                        scoop install $app.id
+                        scoop install $app.scoop_id
                     } catch {
                         Write-Error "Error installing app $($app.name). Details: $($_.Exception.Message)"
                     }
