@@ -35,8 +35,8 @@
         "name": "Visual Studio Code",
         "description": "Text editor/code IDE",
         "winget_id": "Microsoft.VisualStudioCode",
-        "scoop_id": "",
-        "choco_id": "",
+        "scoop_id": "vscode",
+        "choco_id": "vscode",
         "aqua_id": ""
     }
 ]
