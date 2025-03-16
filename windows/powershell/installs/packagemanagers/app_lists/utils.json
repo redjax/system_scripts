@@ -294,5 +294,13 @@
         "scoop_id": "",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "Zen Browser",
+        "description": "A cross-platform web browser forked from Firefox",
+        "winget_id": "ZenBrowser.ZenBrowser",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
