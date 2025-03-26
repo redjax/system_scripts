@@ -184,14 +184,6 @@
         "aqua_id": ""
     },
     {
-        "name": "Azure Data Studio",
-        "description": "Connect to data sources in Azure (databases, blob storage, etc)",
-        "winget_id": "Microsoft.AzureDataStudio",
-        "scoop_id": "",
-        "choco_id": "",
-        "aqua_id": ""
-    },
-    {
         "name": "Microsoft SQL Server Management Studio (SSMS)",
         "description": "Connect to and manage Microsoft SQL Server databases",
         "winget_id": "Microsoft.SqlServerManagementStudio",
