@@ -6,5 +6,13 @@
         "scoop_id": "playnite",
         "choco_id": "playnite",
         "aqua_id": ""
+    },
+    {
+        "name": "Steam",
+        "description": "Video game store",
+        "winget_id": "Valve.Steam",
+        "scoop_id": "games/steam",
+        "choco_id": "steam",
+        "aqua_id": ""
     }
 ]

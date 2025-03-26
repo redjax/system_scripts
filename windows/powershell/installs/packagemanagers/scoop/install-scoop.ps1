@@ -58,6 +58,7 @@ function Initialize-ScoopCli {
     try {
             scoop bucket add extras
             scoop bucket add nerd-fonts
+            scoop bucket add games
     } catch {
         Write-Error "Failed to enable 1 or more scoop buckets."
         Write-Error "Exception details: $($exc.Message)"
