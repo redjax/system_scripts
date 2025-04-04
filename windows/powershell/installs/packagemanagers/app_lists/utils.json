@@ -294,5 +294,13 @@
         "scoop_id": "",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "Azure Functions Core Tools",
+        "description": "Azure Functions Core Tools CLI, required for locally testing Azure Functions",
+        "winget_id": "",
+        "scoop_id": "azure-functions-core-tools",
+        "choco_id": "azure-functions-core-tools",
+        "aqua_id": ""
     }
 ]
