@@ -302,5 +302,13 @@
         "scoop_id": "azure-functions-core-tools",
         "choco_id": "azure-functions-core-tools",
         "aqua_id": ""
+    },
+    {
+        "name": "Sourcetree",
+        "description": "A free Git client for Windows and Mac",
+        "winget_id": "Atlassian.Sourcetree",
+        "scoop_id": "sourcetree",
+        "choco_id": "sourcetree",
+        "aqua_id": ""
     }
 ]
