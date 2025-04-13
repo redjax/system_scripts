@@ -310,5 +310,13 @@
         "scoop_id": "sourcetree",
         "choco_id": "sourcetree",
         "aqua_id": ""
+    },
+    {
+        "name": "DriverStoreExplorer",
+        "description": "",
+        "winget_id": "",
+        "scoop_id": "extras/driverstoreexplorer",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
