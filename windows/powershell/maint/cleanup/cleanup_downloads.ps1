@@ -1,3 +1,47 @@
+<#
+    .SYNOPSIS
+    Cleanup the Downloads folder.
+
+    .DESCRIPTION
+    Cleanup the Downloads folder, optionally ignoring certain directories.
+
+    Run the script with -DryRun and -SaveJson or -SaveCsv to generate a list of files to delete.
+    You can modify this file, leaving only the files you want to delete and feeding it back to script
+    with either -InputJson or -InputCsv.
+
+    .PARAMETER ExcludeDirs
+    Directories to exclude from search.
+
+    .PARAMETER DryRun
+    Enable dry run mode.
+
+    .PARAMETER SaveCsv
+    Save results to CSV.
+
+    .PARAMETER SaveJson
+    Save results to JSON.
+
+    .PARAMETER InputJson
+    Input JSON file with objects to delete. Can be generated with -DryRun -SaveJson.
+
+    .PARAMETER InputCsv
+    Input CSV file with objects to delete. Can be generated with -DryRun -SaveCsv.
+
+    .PARAMETER OlderThan
+    Delete only files older than this date (yyyy, yyyy-MM, or yyyy-MM-dd).
+
+    .PARAMETER OlderThanDays
+    Delete only files older than this many days.
+
+    .EXAMPLE
+    .\cleanup_downloads.ps1 -DryRun
+
+    .EXAMPLE
+    .\cleanup_downloads.ps1 -DryRun -SaveJson
+
+    .EXAMPLE
+    .\cleanup_downloads.ps1 -InputJson [[PATH TO SAVED JSON]]
+#>
 Param(
     [Parameter(Mandatory = $false, HelpMessage = "Directories to exclude from search")]
     [string[]]$ExcludeDirs = @("_keep"),
