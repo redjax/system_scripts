@@ -294,5 +294,29 @@
         "scoop_id": "",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "Azure Functions Core Tools",
+        "description": "Azure Functions Core Tools CLI, required for locally testing Azure Functions",
+        "winget_id": "",
+        "scoop_id": "azure-functions-core-tools",
+        "choco_id": "azure-functions-core-tools",
+        "aqua_id": ""
+    },
+    {
+        "name": "Sourcetree",
+        "description": "A free Git client for Windows and Mac",
+        "winget_id": "Atlassian.Sourcetree",
+        "scoop_id": "sourcetree",
+        "choco_id": "sourcetree",
+        "aqua_id": ""
+    },
+    {
+        "name": "DriverStoreExplorer",
+        "description": "",
+        "winget_id": "",
+        "scoop_id": "extras/driverstoreexplorer",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
