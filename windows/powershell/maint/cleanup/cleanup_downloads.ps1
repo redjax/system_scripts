@@ -252,10 +252,32 @@ if ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false -and [string]::IsNullOr
     exit 1
 }
 elseif ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false ) {
-    $DeleteObjects = @(Read-InputJson -Path $InputJson)
+    # Convert the JSON objects to FileInfo objects
+    $jsonObjects = @(Read-InputJson -Path $InputJson)
+    $DeleteObjects = foreach ($jsonObj in $jsonObjects) {
+        try {
+            # Use FullName to convert to FileInfo object
+            [System.IO.FileInfo]$fileInfo = $jsonObj.FullName
+            $fileInfo
+        } catch {
+            Write-Error "Could not convert object to FileInfo: $($jsonObj.FullName)"
+            continue  # Skip to the next object
+        }
+    }
 }
 elseif ( [string]::IsNullOrWhiteSpace($InputCsv) -eq $false ) {
-    $DeleteObjects = @(Read-InputCsv -Path $InputCsv)
+    $csvObjects = @(Read-InputCsv -Path $InputCsv)
+    # Convert CSV objects to FileInfo objects, assuming CSV has a FullName column
+    $DeleteObjects = foreach ($csvObj in $csvObjects) {
+        try {
+            # Convert to FileInfo object
+            [System.IO.FileInfo]$fileInfo = $csvObj.FullName
+            $fileInfo
+        } catch {
+            Write-Error "Could not convert object to FileInfo: $($csvObj.FullName)"
+            continue  # Skip to the next object
+        }
+    }
 }
 else {
     $DeleteObjects = Get-ChildItem -Path $DownloadsPath | Where-Object { $_.Name -notin $ExcludeDirs }
