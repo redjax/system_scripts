@@ -1,47 +1,3 @@
-<#
-    .SYNOPSIS
-    Cleanup the Downloads folder.
-
-    .DESCRIPTION
-    Cleanup the Downloads folder, optionally ignoring certain directories.
-
-    Run the script with -DryRun and -SaveJson or -SaveCsv to generate a list of files to delete.
-    You can modify this file, leaving only the files you want to delete and feeding it back to script
-    with either -InputJson or -InputCsv.
-
-    .PARAMETER ExcludeDirs
-    Directories to exclude from search.
-
-    .PARAMETER DryRun
-    Enable dry run mode.
-
-    .PARAMETER SaveCsv
-    Save results to CSV.
-
-    .PARAMETER SaveJson
-    Save results to JSON.
-
-    .PARAMETER InputJson
-    Input JSON file with objects to delete. Can be generated with -DryRun -SaveJson.
-
-    .PARAMETER InputCsv
-    Input CSV file with objects to delete. Can be generated with -DryRun -SaveCsv.
-
-    .PARAMETER DeleteOlderThan
-    Delete only files older than this date (yyyy, yyyy-MM, or yyyy-MM-dd).
-
-    .PARAMETER DeleteOlderThanDays
-    Delete only files older than this many days.
-
-    .EXAMPLE
-    .\cleanup_downloads.ps1 -DryRun
-
-    .EXAMPLE
-    .\cleanup_downloads.ps1 -DryRun -SaveJson
-
-    .EXAMPLE
-    .\cleanup_downloads.ps1 -InputJson [[PATH TO SAVED JSON]]
-#>
 Param(
     [Parameter(Mandatory = $false, HelpMessage = "Directories to exclude from search")]
     [string[]]$ExcludeDirs = @("_keep"),
@@ -59,13 +15,12 @@ Param(
     [string]$OlderThan = $null,
     [Parameter(Mandatory = $false, HelpMessage = "Delete only files older than this many days")]
     [int]$OlderThanDays = $null
-
 )
 
 function Save-DeletedJson {
     Param(
         [Parameter(Mandatory = $true)]
-        [PSCustomObject[]]$DeletedObjects,
+        [System.IO.FileInfo[]]$DeletedObjects,
         [Parameter(Mandatory = $true)]
         $timestamp
     )
@@ -82,7 +37,7 @@ function Save-DeletedJson {
 function Save-DeletedCsv {
     Param(
         [Parameter(Mandatory = $true)]
-        [PSCustomObject[]]$DeletedObjects,
+        [System.IO.FileInfo[]]$DeletedObjects,
         [Parameter(Mandatory = $true)]
         $timestamp
     )
@@ -156,16 +111,7 @@ if ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false -and [string]::IsNullOr
 } elseif ( [string]::IsNullOrWhiteSpace($InputCsv) -eq $false ) {
     $DeleteObjects = @(Read-InputCsv -Path $InputCsv)
 } else {
-    $DownloadsSearchResults = Get-ChildItem -Path $DownloadsPath | Where-Object { $_.Name -notin $ExcludeDirs }
-    $DeleteObjects = foreach ($item in $DownloadsSearchResults) {
-        [PSCustomObject]@{
-            Name         = $item.Name
-            FullPath     = $item.FullName
-            Type         = if ($item.PSIsContainer) { "Directory" } else { "File" }
-            LastWriteTime= $item.LastWriteTime
-            Size         = if ($item.PSIsContainer) { $null } else { $item.Length }
-        }
-    }
+    $DeleteObjects = Get-ChildItem -Path $DownloadsPath | Where-Object { $_.Name -notin $ExcludeDirs }
 }
 
 if ( $cutoffDate ) {
@@ -180,7 +126,7 @@ if ( $DeleteObjects.Count -eq 0 ) {
     exit(0)
 }
 
-$DeleteObjects | Format-Table -Property Type, Size, FullPath -AutoSize
+$DeleteObjects | Format-Table -Property Name, FullName, LastWriteTime, Length -AutoSize
 
 if ( $SaveCsv -or $SaveJson ) {
     ## Generate timestamp for filename
@@ -197,7 +143,7 @@ if ( $SaveCsv -or $SaveJson ) {
 
 if ( $DryRun ) {
     $DeleteObjects | ForEach-Object {
-        Write-Host "Would delete $($_.Type.ToLower()): $($_.FullPath)" -ForegroundColor Yellow
+        Write-Host "Would delete $($_.FullName)" -ForegroundColor Yellow
     }
 
     Write-Host "`n> Script would have deleted $($DeleteObjects.Count) file(s)/dir(s)." -ForegroundColor Yellow
@@ -206,21 +152,25 @@ if ( $DryRun ) {
     $DeletedCount = 0
 
     $DeleteObjects | ForEach-Object {
-        $_File = $_
         try {
-            Remove-Item -Path $_File.FullPath -Recurse -Force -ErrorAction Stop
-            Write-Host "Deleted $($_.Type.ToLower()): $($_.FullPath)" -ForegroundColor Green
+            Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction Stop
+            Write-Host "Deleted $($_.FullName)" -ForegroundColor Green
             $DeletedCount++
         } catch {
-            if ($_.Exception -is [System.IO.FileNotFoundException] -or $_.Exception -is [System.Management.Automation.ItemNotFoundException]) {
-                Write-Host "$($_.Type) not found: $($_.FullPath)" -ForegroundColor Red
-            } else {
-                Write-Host "Error deleting $($_.FullPath): $($_.Exception.Message)" -ForegroundColor Red
+            if ($_.Exception -is [System.IO.FileNotFoundException] -or
+                $_.Exception -is [System.Management.Automation.ItemNotFoundException]) {
+                Write-Host "File not found: $($_.FullName)" -ForegroundColor Red
+                continue
+            }  elseif ($_.Exception -is [System.UnauthorizedAccessException]) {
+                  Write-Host "Access denied deleting $($_.FullName).  Check permissions." -ForegroundColor Red
+                  continue
             }
-            continue
+            else {
+                Write-Host "Error deleting $($_.FullName): $($_.Exception.Message)" -ForegroundColor Red
+                continue
+            }
         }
     }
-    
 
     Write-Host "Deleted $DeletedCount file(s)/dir(s)." -ForegroundColor Green
 }
