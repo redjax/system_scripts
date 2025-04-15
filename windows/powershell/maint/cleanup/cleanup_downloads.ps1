@@ -73,7 +73,8 @@ function Save-DeletedJson {
     try {
         $DeletedObjects | ConvertTo-Json -Depth 3 | Set-Content -Path $jsonPath
         Write-Host "Saved JSON: $jsonPath" -ForegroundColor Green
-    } catch {
+    }
+    catch {
         Write-Error "Error saving JSON: $($_.Exception.Message)"
     }
 }
@@ -90,7 +91,8 @@ function Save-DeletedCsv {
     try {
         $DeletedObjects | Export-Csv -Path $csvPath -NoTypeInformation
         Write-Host "Saved CSV: $csvPath" -ForegroundColor Green
-    } catch {
+    }
+    catch {
         Write-Error "Error saving CSV: $($_.Exception.Message)"
     }
 }
@@ -105,7 +107,8 @@ function Read-InputJson {
 
     try {
         return Get-Content -Path $Path | ConvertFrom-Json
-    } catch {
+    }
+    catch {
         Write-Error "Error loading JSON: $($_.Exception.Message)"
     }
 }
@@ -120,7 +123,8 @@ function Read-InputCsv {
 
     try {
         return Import-Csv -Path $Path
-    } catch {
+    }
+    catch {
         Write-Error "Error loading CSV: $($_.Exception.Message)"
     }
 }
@@ -130,15 +134,19 @@ $cutoffDate = $null
 
 if ( $OlderThanDays ) {
     $cutoffDate = (Get-Date).AddDays(-$OlderThanDays)
-} elseif ( -not [string]::IsNullOrWhiteSpace($OlderThan) ) {
+}
+elseif ( -not [string]::IsNullOrWhiteSpace($OlderThan) ) {
     # Try to parse as yyyy-MM-dd, yyyy-MM, or yyyy
     if ( $OlderThan -match '^\d{4}-\d{2}-\d{2}$' ) {
         $cutoffDate = [datetime]::ParseExact($OlderThan, 'yyyy-MM-dd', $null)
-    } elseif ( $OlderThan -match '^\d{4}-\d{2}$' ) {
+    }
+    elseif ( $OlderThan -match '^\d{4}-\d{2}$' ) {
         $cutoffDate = [datetime]::ParseExact($OlderThan, 'yyyy-MM', $null)
-    } elseif ( $OlderThan -match '^\d{4}$' ) {
+    }
+    elseif ( $OlderThan -match '^\d{4}$' ) {
         $cutoffDate = [datetime]::ParseExact($OlderThan, 'yyyy', $null)
-    } else {
+    }
+    else {
         Write-Error "Invalid date format for -OlderThan. Use yyyy, yyyy-MM, or yyyy-MM-dd."
         exit 1
     }
@@ -150,11 +158,14 @@ Write-Host "Downloads path: $DownloadsPath" -ForegroundColor Cyan
 if ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false -and [string]::IsNullOrWhiteSpace($InputCsv) -eq $false ) {
     Write-Error "Only one of -InputJson or -InputCsv can be specified."
     exit 1
-} elseif ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false ) {
+}
+elseif ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false ) {
     $DeleteObjects = @(Read-InputJson -Path $InputJson)
-} elseif ( [string]::IsNullOrWhiteSpace($InputCsv) -eq $false ) {
+}
+elseif ( [string]::IsNullOrWhiteSpace($InputCsv) -eq $false ) {
     $DeleteObjects = @(Read-InputCsv -Path $InputCsv)
-} else {
+}
+else {
     $DeleteObjects = Get-ChildItem -Path $DownloadsPath | Where-Object { $_.Name -notin $ExcludeDirs }
 }
 
@@ -191,27 +202,27 @@ if ( $DryRun ) {
     }
 
     Write-Host "`n> Script would have deleted $($DeleteObjects.Count) file(s)/dir(s)." -ForegroundColor Yellow
-} else {
+}
+else {
     Write-Host "Deleting $($DeleteObjects.Count) file(s)." -ForegroundColor Cyan
     $DeletedCount = 0
 
     $DeleteObjects | ForEach-Object {
         try {
-            Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction Stop
+            Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction Stop
             Write-Host "Deleted $($_.FullName)" -ForegroundColor Green
             $DeletedCount++
-        } catch {
+        }
+        catch {
             if ($_.Exception -is [System.IO.FileNotFoundException] -or
                 $_.Exception -is [System.Management.Automation.ItemNotFoundException]) {
                 Write-Host "File not found: $($_.FullName)" -ForegroundColor Red
-                continue
-            }  elseif ($_.Exception -is [System.UnauthorizedAccessException]) {
-                  Write-Host "Access denied deleting $($_.FullName).  Check permissions." -ForegroundColor Red
-                  continue
+            }
+            elseif ($_.Exception -is [System.UnauthorizedAccessException]) {
+                Write-Host "Access denied deleting $($_.FullName). Check permissions." -ForegroundColor Red
             }
             else {
                 Write-Host "Error deleting $($_.FullName): $($_.Exception.Message)" -ForegroundColor Red
-                continue
             }
         }
     }
