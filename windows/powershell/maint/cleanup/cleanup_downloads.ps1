@@ -27,6 +27,12 @@
     .PARAMETER InputCsv
     Input CSV file with objects to delete. Can be generated with -DryRun -SaveCsv.
 
+    .PARAMETER DeleteOlderThan
+    Delete only files older than this date (yyyy, yyyy-MM, or yyyy-MM-dd).
+
+    .PARAMETER DeleteOlderThanDays
+    Delete only files older than this many days.
+
     .EXAMPLE
     .\cleanup_downloads.ps1 -DryRun
 
@@ -48,7 +54,12 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Input JSON file with objects to delete. Can be generated with -DryRun -SaveJson")]
     [string]$InputJson = $null,
     [Parameter(Mandatory = $false, HelpMessage = "Input CSV file with objects to delete. Can be generated with -DryRun -SaveCsv")]
-    [string]$InputCsv = $null
+    [string]$InputCsv = $null,
+    [Parameter(Mandatory = $false, HelpMessage = "Delete only files older than this date (yyyy, yyyy-MM, or yyyy-MM-dd)")]
+    [string]$OlderThan = $null,
+    [Parameter(Mandatory = $false, HelpMessage = "Delete only files older than this many days")]
+    [int]$OlderThanDays = $null
+
 )
 
 function Save-DeletedJson {
@@ -115,6 +126,25 @@ function Read-InputCsv {
     }
 }
 
+## Determine cutoff date
+$cutoffDate = $null
+
+if ( $OlderThanDays ) {
+    $cutoffDate = (Get-Date).AddDays(-$OlderThanDays)
+} elseif ( -not [string]::IsNullOrWhiteSpace($OlderThan) ) {
+    # Try to parse as yyyy-MM-dd, yyyy-MM, or yyyy
+    if ( $OlderThan -match '^\d{4}-\d{2}-\d{2}$' ) {
+        $cutoffDate = [datetime]::ParseExact($OlderThan, 'yyyy-MM-dd', $null)
+    } elseif ( $OlderThan -match '^\d{4}-\d{2}$' ) {
+        $cutoffDate = [datetime]::ParseExact($OlderThan, 'yyyy-MM', $null)
+    } elseif ( $OlderThan -match '^\d{4}$' ) {
+        $cutoffDate = [datetime]::ParseExact($OlderThan, 'yyyy', $null)
+    } else {
+        Write-Error "Invalid date format for -OlderThan. Use yyyy, yyyy-MM, or yyyy-MM-dd."
+        exit 1
+    }
+}
+
 $DownloadsPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 Write-Host "Downloads path: $DownloadsPath" -ForegroundColor Cyan
 
@@ -137,7 +167,19 @@ if ( [string]::IsNullOrWhiteSpace($InputJson) -eq $false -and [string]::IsNullOr
         }
     }
 }
+
+if ( $cutoffDate ) {
+    ## Limit files by cutoff date
+    $DeleteObjects = $DeleteObjects | Where-Object { $_.LastWriteTime -lt $cutoffDate }
+}
+
 Write-Host "Found $($DeleteObjects.Count) file(s)." -ForegroundColor Cyan
+
+if ( $DeleteObjects.Count -eq 0 ) {
+    Write-Host "No files to delete." -ForegroundColor Green
+    exit(0)
+}
+
 $DeleteObjects | Format-Table -Property Type, Size, FullPath -AutoSize
 
 if ( $SaveCsv -or $SaveJson ) {
@@ -153,7 +195,7 @@ if ( $SaveCsv -or $SaveJson ) {
     }
 }
 
-if ($DryRun) {
+if ( $DryRun ) {
     $DeleteObjects | ForEach-Object {
         Write-Host "Would delete $($_.Type.ToLower()): $($_.FullPath)" -ForegroundColor Yellow
     }
@@ -166,19 +208,19 @@ if ($DryRun) {
     $DeleteObjects | ForEach-Object {
         $_File = $_
         try {
-            Remove-Item -Path $_.FullPath -Recurse -Force -ErrorAction Stop
+            Remove-Item -Path $_File.FullPath -Recurse -Force -ErrorAction Stop
             Write-Host "Deleted $($_.Type.ToLower()): $($_.FullPath)" -ForegroundColor Green
             $DeletedCount++
         } catch {
-            if ($_.Exception -is [System.IO.FileNotFoundException] -or
-                $_.Exception -is [System.Management.Automation.ItemNotFoundException]) {
-
-                Write-Host "$($_File.Type) not found: $($_File.FullPath)" -ForegroundColor Red
+            if ($_.Exception -is [System.IO.FileNotFoundException] -or $_.Exception -is [System.Management.Automation.ItemNotFoundException]) {
+                Write-Host "$($_.Type) not found: $($_.FullPath)" -ForegroundColor Red
             } else {
-                Write-Host "Error deleting $($_File.FullPath): $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "Error deleting $($_.FullPath): $($_.Exception.Message)" -ForegroundColor Red
             }
+            continue
         }
     }
+    
 
     Write-Host "Deleted $DeletedCount file(s)/dir(s)." -ForegroundColor Green
 }
