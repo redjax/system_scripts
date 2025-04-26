@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Signal Messenger",
+        "description": "Private, secure messaging.",
+        "winget_id": "OpenWhisperSystems.Signal",
+        "scoop_id": "signal",
+        "choco_id": "signal",
+        "aqua_id": ""
+    },
+    {
+        "name": "Element Matrix Client",
+        "description": "GUI for Matrix chat protocol.",
+        "winget_id": "Element.Element",
+        "scoop_id": "extras/element",
+        "choco_id": "element-desktop",
+        "aqua_id": ""
+    },
+    {
+        "name": "Revolt",
+        "description": "Private alternative to Discord",
+        "winget_id": "Revolt.RevoltDesktop",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    }
+]
