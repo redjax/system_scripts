@@ -1,4 +1,26 @@
+<#
+    .SYNOPSIS
+    Disables Windows Recall via registry.
+
+    .DESCRIPTION
+    Disables Windows Recall via registry. Checks for presence of key and creates if missing, then sets value to 0.
+
+    .EXAMPLE
+    Disable-RecallViaRegistry
+#>
+
 function Disable-RecallViaRegistry {
+    <#
+        .SYNOPSIS
+        Disables Windows Recall via registry.
+
+        .DESCRIPTION
+        Disables Windows Recall via registry. Checks for presence of key and creates if missing, then sets value to 0.
+
+        .EXAMPLE
+        Disable-RecallViaRegistry
+    #>
+
     ## Path to folder in registry where key will be created
     [string]$regPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI"
     ## Name of key to be created
