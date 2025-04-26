@@ -318,5 +318,21 @@
         "scoop_id": "extras/driverstoreexplorer",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "Docker Desktop",
+        "description": "",
+        "winget_id": "Docker.DockerDesktop",
+        "scoop_id": "",
+        "choco_id": "docker-desktop",
+        "aqua_id": ""
+    },
+    {
+        "name": "Docker CLI",
+        "description": "",
+        "winget_id": "Docker.DockerCLI",
+        "scoop_id": "main/docker",
+        "choco_id": "docker-cli",
+        "aqua_id": ""
     }
 ]
