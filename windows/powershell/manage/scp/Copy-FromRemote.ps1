@@ -8,16 +8,19 @@ Param(
     $LocalPath = $null
 )
 
+## Validate inputs
 if ( $null -eq $RemoteHost -or $null -eq $RemotePath -or $null -eq $LocalPath ) {
     Write-Error "Missing required parameters. Please provide a remote host, remote path, and local path."
     throw
 }
 
+## Test if scp is installed
 if ( -not ( Get-Command scp -ErrorAction SilentlyContinue ) ) {
     Write-Error "scp command not found. Please install OpenSSH."
     throw
 }
 
+## Copy from remote
 Write-Information "Copying from $($RemoteHost):$($RemotePath) to $($LocalPath)"
 try {
     scp -r "$($RemoteHost):$($RemotePath)" "$($LocalPath)"
