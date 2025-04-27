@@ -20,19 +20,11 @@ if ( -not ( Get-Command scp -ErrorAction SilentlyContinue ) ) {
     throw
 }
 
-## Test if remote path is a directory
-$isDir = (Invoke-Command { Test-Path -Path $RemotePath -Directory }).Value
-
 ## Copy from remote
 Write-Information "Copying from $($RemoteHost):$($RemotePath) to $($LocalPath)"
 try {
-    if ($isDir) {
-        ## Copy recursively if remote path is a directory
-        scp -r "$($RemoteHost):$($RemotePath)" "$($LocalPath)"
-    } else {
-        ## Copy single file
-        scp "$($RemoteHost):$($RemotePath)" "$($LocalPath)"
-    }
+    ## Copy path from remote
+    scp -r "$($RemoteHost):$($RemotePath)" "$($LocalPath)"
 
     Write-Information "Successfully copied from $($RemoteHost):$($RemotePath) to $($LocalPath)"
 }
