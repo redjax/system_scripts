@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Vivaldi",
+    "description": "Highly customizable, privacy-oriented Chromium browser.",
+    "winget_id": "Vivaldi.Vivaldi",
+    "scoop_id": "vivaldi",
+    "choco_id": "vivaldi",
+    "aqua_id": ""
+  },
+  {
+    "name": "Brave",
+    "description": "Fully open source, privacy & security focused Chromium browser.",
+    "winget_id": "Brave.Brave",
+    "scoop_id": "brave",
+    "choco_id": "brave",
+    "aqua_id": ""
+  },
+  {
+    "name": "Firefox",
+    "description": "",
+    "winget_id": "Mozilla.Firefox",
+    "scoop_id": "firefox",
+    "choco_id": "firefox",
+    "aqua_id": ""
+  },
+  {
+    "name": "Waterfox",
+    "description": "Privacy-focused Firefox fork.",
+    "winget_id": "Waterfox.Waterfox",
+    "scoop_id": "waterfox",
+    "choco_id": "waterfox",
+    "aqua_id": ""
+  },
+  {
+    "name": "Zen Browser",
+    "description": "A cross-platform web browser forked from Firefox",
+    "winget_id": "ZenBrowser.ZenBrowser",
+    "scoop_id": "",
+    "choco_id": "",
+    "aqua_id": ""
+  },
+]
