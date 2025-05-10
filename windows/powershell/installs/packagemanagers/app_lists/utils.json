@@ -80,7 +80,7 @@
         "aqua_id": ""
     },
     {
-        "name": "Devolustions Remote Desktop Manager",
+        "name": "Devolutions Remote Desktop Manager",
         "description": "Remote Desktop Connection Manager",
         "winget_id": "Devolutions.RemoteDesktopManager",
         "scoop_id": "",
@@ -200,14 +200,6 @@
         "aqua_id": ""
     },
     {
-        "name": "WinSCP",
-        "description": "Connect to SCP/SFTP servers.",
-        "winget_id": "WinSCP.WinSCP",
-        "scoop_id": "",
-        "choco_id": "",
-        "aqua_id": ""
-    },
-    {
         "name": "Ente Auth",
         "description": "Cross platform, open source MFA app",
         "winget_id": "ente-io.auth-desktop",
@@ -301,6 +293,14 @@
         "winget_id": "",
         "scoop_id": "azure-functions-core-tools",
         "choco_id": "azure-functions-core-tools",
+        "aqua_id": ""
+    },
+    {
+        "name": "Azure VPN",
+        "description": "VPN tunnel to Azure network",
+        "winget_id": "9NP355QT2SQB",
+        "scoop_id": "",
+        "choco_id": "",
         "aqua_id": ""
     },
     {
