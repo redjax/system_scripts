@@ -304,6 +304,14 @@
         "aqua_id": ""
     },
     {
+        "name": "Azure VPN",
+        "description": "VPN tunnel to Azure network",
+        "winget_id": "9NP355QT2SQB",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
         "name": "Sourcetree",
         "description": "A free Git client for Windows and Mac",
         "winget_id": "Atlassian.Sourcetree",
