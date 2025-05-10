@@ -200,14 +200,6 @@
         "aqua_id": ""
     },
     {
-        "name": "WinSCP",
-        "description": "Connect to SCP/SFTP servers.",
-        "winget_id": "WinSCP.WinSCP",
-        "scoop_id": "",
-        "choco_id": "",
-        "aqua_id": ""
-    },
-    {
         "name": "Ente Auth",
         "description": "Cross platform, open source MFA app",
         "winget_id": "ente-io.auth-desktop",
