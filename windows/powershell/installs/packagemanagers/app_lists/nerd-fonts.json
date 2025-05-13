@@ -14,5 +14,13 @@
         "scoop_id": "UbuntuMono-NF-Mono",
         "choco_id": "nerd-fonts-UbuntuMono",
         "aqua_id": ""
+    },
+    {
+        "name": "Hack Mono",
+        "description": "Monospaced NerdFont",
+        "winget_id": "",
+        "scoop_id": "Hack-NF-Mono",
+        "choco_id": "nerd-fonts-Hack",
+        "aqua_id": ""
     }
 ]
