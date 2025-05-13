@@ -38,5 +38,109 @@
         "scoop_id": "vscode",
         "choco_id": "vscode",
         "aqua_id": ""
+    },
+    {
+        "name": "Vivaldi",
+        "description": "Highly customizable, privacy-oriented Chromium browser.",
+        "winget_id": "Vivaldi.Vivaldi",
+        "scoop_id": "vivaldi",
+        "choco_id": "vivaldi",
+        "aqua_id": ""
+    },
+    {
+        "name": "Hack Mono",
+        "description": "Monospaced NerdFont",
+        "winget_id": "",
+        "scoop_id": "Hack-NF-Mono",
+        "choco_id": "nerd-fonts-Hack",
+        "aqua_id": ""
+    },
+    {
+        "name": "WinSCP",
+        "description": "Connect to SCP/SFTP servers.",
+        "winget_id": "WinSCP.WinSCP",
+        "scoop_id": "winscp",
+        "choco_id": "winscp",
+        "aqua_id": ""
+    },
+    {
+        "name": "Sharex",
+        "description": "Open-source screenshot & screen recording utility",
+        "winget_id": "ShareX.ShareX",
+        "scoop_id": "sharex",
+        "choco_id": "sharex",
+        "aqua_id": ""
+    },
+    {
+        "name": "Peazip",
+        "description": "Giorgiotani.Peazip",
+        "winget_id": "Free, open-source file archiving utility",
+        "scoop_id": "peazip",
+        "choco_id": "peazip",
+        "aqua_id": ""
+    },
+    {
+        "name": "Notepad++",
+        "description": "Improved notepad, with persistence & code features (auto-format, syntax highlighting, line numbers, etc)",
+        "winget_id": "Notepad++.Notepad++",
+        "scoop_id": "notepadplusplus",
+        "choco_id": "notepad-plusplus",
+        "aqua_id": ""
+    },
+    {
+        "name": "Git",
+        "description": "Git source control. Needed to interact with Azure DevOps repositories",
+        "winget_id": "Git.Git",
+        "scoop_id": "git",
+        "choco_id": "git",
+        "aqua_id": ""
+    },
+    {
+        "name": "GitExtensions",
+        "description": "Git repository merge tool",
+        "winget_id": "GitExtensionsTeam.GitExtensions",
+        "scoop_id": "gitextensions",
+        "choco_id": "gitextensions",
+        "aqua_id": ""
+    },
+    {
+        "name": "HTTPie",
+        "description": "Alternative to Postman, integrates with Github.",
+        "winget_id": "HTTPie.HTTPie",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Obsidian.md",
+        "description": "A cross-platform markdown notes app, with synch",
+        "winget_id": "Obsidian.Obsidian",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "dBeaver",
+        "description": "A useful database connection manager",
+        "winget_id": "dbeaver.dbeaver",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Neovim",
+        "description": "Neovim text editor",
+        "winget_id": "Neovim.Neovim",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name": "Microsoft Powershell Core",
+        "description": "Microsoft Powershell Core (7)",
+        "winget_id": "Microsoft.PowerShell",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
