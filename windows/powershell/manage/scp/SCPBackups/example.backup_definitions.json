@@ -1,0 +1,24 @@
+[
+    {
+        "remote_host": "host1",
+        "definitions": [
+            {
+                "direction": "pull",
+                "type": "directory",
+                "remote": "/path/on/remote/host",
+                "local": "C:\\Backup\\host1\\backup_destination"
+            }
+        ]
+    },
+    {
+        "remote_host": "host2",
+        "definitions": [
+            {
+                "direction": "push",
+                "type": "file",
+                "remote": "C:\\path\\on\\local\\host\\file.txt",
+                "local": "/path/on/remote/host/file.txt"
+            }
+        ]
+    }
+]
