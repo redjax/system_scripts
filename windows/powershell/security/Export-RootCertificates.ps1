@@ -96,11 +96,13 @@ Next steps:
 
   1. Open WSL and copy your converted certificates to /usr/local/share/ca-certificates/roots.crt (example below assumes c:\temp for the output path)
         cp /mnt/c/temp/roots.pem /usr/local/share/ca-certificates/roots.crt
-  3. Install the ca-certificates package in WSL (if not already installed)
+
+  2. Install the ca-certificates package in WSL (if not already installed)
         (Debian/Ubuntu) sudo apt-get install ca-certificates
         (Fedora) sudo dnf install ca-certificates
         (Alpine) sudo apk add ca-certificates
-  2. Run update-ca-certificates to update the CA store in WSL.
+  
+  3. Run update-ca-certificates to update the CA store in WSL.
         update-ca-certificates
 "@ -ForegroundColor Green
 
