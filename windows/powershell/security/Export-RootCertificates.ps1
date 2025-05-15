@@ -12,7 +12,15 @@ Param(
 
 $OutputFile = Join-Path -Path $OutputPath -ChildPath $OutputFilename
 $pemFile = Join-Path -Path $OutputPath -ChildPath "roots.pem"
+$splitDir = Join-Path -Path $OutputPath -ChildPath "roots_split"
 $tempDir = Join-Path -Path $OutputPath -ChildPath "certs_temp"
+
+function Start-Cleanup {
+    Write-Host "Cleaning up temporary files..." -ForegroundColor Yellow
+    Remove-Item -Path $OutputFile -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path ( Join-Path -Path $OutputPath -ChildPath "roots.pem" ) -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 ## Export root certificates using certutil
 try {
@@ -56,6 +64,7 @@ or Git for Windows (which includes OpenSSL).
     }
 
     New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+    New-Item -ItemType Directory -Path $splitDir -Force | Out-Null
 
     Write-Host "Converting certificates to PEM format..." -ForegroundColor Magenta
 
@@ -90,12 +99,34 @@ or Git for Windows (which includes OpenSSL).
             Add-Content -Path $pemFile -Value ""
         }
 
+        # Split combined PEM into individual CRT files
+        Write-Host "Splitting PEM file into individual certificates..." -ForegroundColor Cyan
+        $certIndex = 1
+        $certLines = @()
+        $inCert = $false
+
+        Get-Content $pemFile | ForEach-Object {
+            if ($_ -match "^-+BEGIN CERTIFICATE-+$") {
+                $inCert = $true
+                $certLines = @($_)
+            } elseif ($_ -match "^-+END CERTIFICATE-+$") {
+                $certLines += $_
+                $outFile = Join-Path $splitDir ("root-cert-{0:D3}.crt" -f $certIndex)
+                $certLines | Set-Content -Encoding ascii $outFile
+                $certIndex++
+                $inCert = $false
+            } elseif ($inCert) {
+                $certLines += $_
+            }
+        }
+
         Write-Host "Certificates converted to PEM format at $pemFile" -ForegroundColor Green
+        Write-Host "Split certificates created in: $splitDir" -ForegroundColor Green
         Write-Host @"
 Next steps:
 
-  1. Open WSL and copy your converted certificates to /usr/local/share/ca-certificates/roots.crt (example below assumes c:\temp for the output path)
-        cp /mnt/c/temp/roots.pem /usr/local/share/ca-certificates/roots.crt
+  1. Open WSL and copy split certificates to /usr/local/share/ca-certificates/
+        sudo cp /mnt/c/temp/roots_split/*.crt /usr/local/share/ca-certificates/
 
   2. Install the ca-certificates package in WSL (if not already installed)
         (Debian/Ubuntu) sudo apt-get install ca-certificates
@@ -103,7 +134,10 @@ Next steps:
         (Alpine) sudo apk add ca-certificates
   
   3. Run update-ca-certificates to update the CA store in WSL.
-        update-ca-certificates
+        sudo update-ca-certificates
+
+  4. Verify installation (optional)
+        ls -l /etc/ssl/certs/ | grep -i roots
 "@ -ForegroundColor Green
 
     }
@@ -115,6 +149,7 @@ Next steps:
         if ($tempStore) {
             $tempStore.Close()
         }
-        Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+
+        Start-Cleanup
     }
 }
