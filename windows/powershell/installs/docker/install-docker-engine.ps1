@@ -298,7 +298,7 @@ catch {
     exit 1
 }
 
-Write-Host "Docker installed. Restart your Powershell session, then run dockerd --register-service as an administrator to register the Docker service." -ForegroundColor Green
+Write-Host "Docker installed. Restart your Powershell session, then run dockerd --register-service as an administrator to register the Docker service. Finally, as an administrator, start the service with Start-Service docker" -ForegroundColor Green
 
 ## Do cleanup
 if ( $Cleanup ) {
