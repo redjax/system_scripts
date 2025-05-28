@@ -1,3 +1,36 @@
+<#
+    .SYNOPSIS
+    Installs Docker Engine on Windows.
+
+    .DESCRIPTION
+    This script installs Docker Engine on a Windows machine. It downloads the latest Docker release, extracts it to a specified directory, and adds Docker to the system PATH.
+
+    .PARAMETER DockerVersion
+    The version of Docker to install. Defaults to "latest".
+
+    .PARAMETER InstallPath
+    The directory where Docker will be installed. Defaults to "C:\docker".
+
+    .PARAMETER CPUArch
+    The CPU architecture for Docker. Defaults to "x86_64".
+
+    .PARAMETER Cleanup
+    If specified, the script will remove the downloaded zip file after installation. Defaults to false.
+
+    .PARAMETER Update
+    If specified, the script will update Docker if it is already installed. Defaults to false.
+
+    .EXAMPLE
+    Install-DockerEngine -DockerVersion "20.10.7" -InstallPath "C:\docker" -CPUArch "x86_64" -Cleanup -Update
+
+    Installs Docker version 20.10.7 to C:\docker, cleans up the downloaded zip file, and updates Docker if it is already installed.
+
+    .EXAMPLE
+    Install-DockerEngine -DockerVersion "latest" -InstallPath "C:\docker" -CPUArch "x86_64"
+
+    Installs the latest version of Docker to C:\docker without cleaning up the downloaded zip file and without updating if Docker is already installed.
+#>
+
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory = $false, HelpMessage = "Version of Docker to install (default: latest)")]
