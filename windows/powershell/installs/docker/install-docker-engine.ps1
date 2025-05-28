@@ -26,29 +26,35 @@ function Get-LatestDockerVersion {
         exit 1
     }
 
-    ## Extract all href links ending in .zip
-    Write-Debug "Extracting zip links from the HTML content"
+    Write-Debug "Retrieved HTML:`n$html"
+
+    Write-Debug "Extracting zip filenames using regex"
     try {
-        $ZipLinks = ($html.Links | Where-Object { $_.href -match "\\.zip$" }).href
+        ## Match all docker-<version>.zip filenames
+        $VersionMatches = [regex]::Matches($html.Content, "docker-(\d+\.\d+\.\d+)\.zip")
+        
+        if ($VersionMatches.Count -eq 0) {
+            Write-Error "No Docker zip files found in the HTML content."
+            exit 1
+        }
+
+        
+        $zipFiles = $VersionMatches | ForEach-Object {
+            [PSCustomObject]@{
+                FileName = $_.Value
+                Version  = [version]$_.Groups[1].Value
+            }
+        }
+
+        $latest = $zipFiles | Sort-Object Version | Select-Object -Last 1
+        return $latest.FileName
+
     }
     catch {
-        Write-Error "Failed to extract zip links from the HTML content. Details: $($_.Exception.Message)"
+        Write-Error "Failed to extract or sort Docker zip files. Details: $($_.Exception.Message)"
         exit 1
     }
 
-    ## Sort and get the latest version (assuming the list is sorted by version/date)
-    Write-Debug "Determining the latest Docker zip file"
-    try {
-        $LatestZip = $ZipLinks | Sort-Object | Select-Object -Last 1
-    }
-    catch {
-        Write-Error "Failed to determine the latest Docker zip file. Details: $($_.Exception.Message)"
-        exit 1
-    }
-
-    Write-Debug "Latest Docker zip file: $LatestZip"
-
-    $LatestZip
 }
 
 function Start-DockerDownload {
@@ -59,13 +65,39 @@ function Start-DockerDownload {
 
 
     if ( -not $DockerVersion -or $DockerVersion -eq "latest") {
-        $ZipRelease = Get-LatestDockerVersion
+        try {
+            $ZipRelease = Get-LatestDockerVersion
+        }
+        catch {
+            Write-Error "Failed to extract Docker version from the HTML content. Please check the URL or your internet connection. Details: $($_.Exception.Message)"
+            exit 1
+        }
+
+        ## Ensure a version was found
+        if ( -Not $ZipRelease ) {
+            Write-Error "No Docker zip files found in the HTML content. Please check the URL or your internet connection."
+            exit 1
+        }
+
         ## Construct the full download URL
         $DownloadUrl = $BaseUrl + $ZipRelease
         Write-Debug "Download URL: $DownloadUrl"
     }
     else {
-        $ZipRelease = $DockerVersion + ".zip"
+        try {
+            $ZipRelease = $DockerVersion + ".zip"
+        }
+        catch {
+            Write-Error "Failed to construct Docker version zip file name. Please check the provided version format. Details: $($_.Exception.Message)"
+            exit 1
+        }
+
+        ## Ensure a version was found
+        if ( -Not $ZipRelease ) {
+            Write-Error "No Docker zip files found in the HTML content. Please check the URL or your internet connection."
+            exit 1
+        }
+
         ## Construct the full download URL
         $DownloadUrl = $BaseUrl + "" + "docker-$($ZipRelease).zip"
         Write-Debug "Download URL: $DownloadUrl"
@@ -168,7 +200,8 @@ if ( Test-Path -Path $InstallPath ) {
         try {
             Remove-Item -Recurse -Force -Path $installPath
             Write-Host "Removed existing Docker installation at $installPath"
-        } catch {
+        }
+        catch {
             Write-Error "Failed to remove existing Docker installation at $installPath. Please check your permissions or if the path is correct. Details: $($_.Exception.Message)"
             exit 1
         }
