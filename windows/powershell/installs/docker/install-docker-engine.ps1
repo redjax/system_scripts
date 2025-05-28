@@ -164,10 +164,12 @@ function Start-DockerDownload {
     Write-Host "Downloaded latest Docker for Windows release to $OutputFile"
 }
 
+
 function Start-ExtractDockerZip {
     Param(
         [string]$ZipFile = "docker-latest.zip",
-        [string]$DestinationPath = $InstallPath
+        [string]$DestinationPath = $InstallPath,
+        [switch]$Cleanup = $false
     )
 
     if ( -not ( Test-Path -Path $ZipFile ) ) {
@@ -175,18 +177,50 @@ function Start-ExtractDockerZip {
         exit 1
     }
 
-    Write-Host "Extracting Docker zip file to $DestinationPath" -ForegroundColor Cyan
+    # Create a temporary extraction path
+    $tempPath = Join-Path -Path $env:TEMP -ChildPath "docker-extract"
+    if ( Test-Path $tempPath ) {
+        Remove-Item -Recurse -Force -Path $tempPath
+    }
+    New-Item -ItemType Directory -Path $tempPath | Out-Null
 
+    Write-Host "Extracting Docker zip file to temporary path: $tempPath" -ForegroundColor Cyan
     try {
-        Expand-Archive -Path $ZipFile -DestinationPath $DestinationPath -Force
+        Expand-Archive -Path $ZipFile -DestinationPath $tempPath -Force
     }
     catch {
-        Write-Error "Failed to extract the Docker zip file. Please check the zip file and destination path. Details: $($_.Exception.Message)"
+        Write-Error "Failed to extract the Docker zip file. Details: $($_.Exception.Message)"
         exit 1
     }
 
+    ## Move contents of the inner 'docker' folder to the final destination
+    $innerDockerPath = Join-Path -Path $tempPath -ChildPath "docker"
+    
+    if ( -not ( Test-Path $innerDockerPath ) ) {
+        Write-Error "Expected 'docker' folder not found in the archive."
+        exit 1
+    }
+
+    if ( -not ( Test-Path $DestinationPath ) ) {
+        New-Item -ItemType Directory -Path $DestinationPath | Out-Null
+    }
+
+    Write-Host "Moving Docker files to $DestinationPath" -ForegroundColor Cyan
+    Get-ChildItem -Path $innerDockerPath -Recurse | Move-Item -Destination $DestinationPath -Force
+
+    ## Clean up
+    if ( $Cleanup ) {
+        try {
+            Remove-Item -Recurse -Force -Path $tempPath
+        } catch {
+            Write-Error "Failed to clean up temporary extraction path: $tempPath. Details: $($_.Exception.Message)"
+            exit 1
+        }
+    } 
+
     Write-Host "Docker has been extracted to $DestinationPath"
 }
+
 
 function Add-DockerToPath {
     Param(
@@ -248,7 +282,7 @@ if ( Test-Path -Path $InstallPath ) {
 
 ## Extract to install location
 try {
-    Start-ExtractDockerZip -ZipFile "docker-latest.zip" -DestinationPath $InstallPath
+    Start-ExtractDockerZip -ZipFile "docker-latest.zip" -DestinationPath $InstallPath -Cleanup:$Cleanup
 }
 catch {
     Write-Error "An error occurred while trying to extract Docker: $($_.Exception.Message)"
@@ -264,6 +298,8 @@ catch {
     exit 1
 }
 
+Write-Host "Docker installed. Restart your Powershell session, then run dockerd --register-service as an administrator to register the Docker service." -ForegroundColor Green
+
 ## Do cleanup
 if ( $Cleanup ) {
     Write-Host "Cleaning up downloaded files..." -ForegroundColor Cyan
@@ -278,4 +314,5 @@ if ( $Cleanup ) {
 }
 else {
     Write-Host "Cleanup skipped. The downloaded zip file remains in the current directory." -ForegroundColor Yellow
+    exit 0
 }
