@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../",
+			"name": "Git Root"
+		},
+		{
+			"path": "../linux/bash",
+			"name": "Bash"
+		},
+		{
+			"path": "../windows/powershell",
+			"name": "Powershell"
+		}
+	],
+	"settings": {}
+}
