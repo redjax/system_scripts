@@ -61,4 +61,4 @@ As of 12/23/2024, the repository is very Windows script heavy. I have a number o
   - [`Powershell`](./windows/powershell/) and [`Batch`/`CMD`](./windows/batch/) scripts.
   - Includes application installs/uninstalls, automation scripts, maintenance scripts, and more
 - [`linux/`](./linux/)
-  - Scripts (mostly Bash) for Linux
+  - Scripts (mostly [Bash](./linux/bash/)) for Linux
