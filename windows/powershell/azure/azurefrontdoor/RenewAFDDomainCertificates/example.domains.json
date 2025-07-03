@@ -1,0 +1,16 @@
+[
+    {
+        "AzSubscription": "subscription1",
+        "ResourceGroup": "rg-name",
+        "FrontDoorName": "frontdoor-name",
+        "CustomDomainName": "www.example.com",
+        "CertificateName": "kv-secret-name-latest"
+    },
+    {
+        "AzSubscription": "subscription2",
+        "ResourceGroup": "rg-name-different",
+        "FrontDoorName": "another-frontdoor-name",
+        "CustomDomainName": "example.com",
+        "CertificateName": "kv-another-secret-name-latest"
+    }
+]
