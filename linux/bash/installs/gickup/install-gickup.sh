@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+## i.e. git{hub,lab}.com/username/repositoryname
 REPO="cooperspencer/gickup"
 
 ## Check for required commands
@@ -39,10 +40,13 @@ case "$(uname -s)" in
 esac
 
 ## Check if gickup is already installed
-if command -v gickup &>/dev/null; then
-  echo "gickup is already installed."
-  exit 0
+GICKUP_INSTALLED=$(command -v gickup)
+
+if [ -n "GICKUP_INSTALLED" ]; then
+  echo "gickup is already installed. Update will be applied if a new version is available."
 fi
+
+echo "Checking latest gickup version"
 
 ## Get latest gickup release version (strip leading 'v')
 RAW_VERSION=$(curl -s https://api.github.com/repos/$REPO/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
@@ -53,7 +57,7 @@ if [ -z "$GICKUP_VERSION" ]; then
   exit 1
 fi
 
-echo "Latest gickup version: $GICKUP_VERSION"
+echo "Latest: $GICKUP_VERSION"
 
 ## Compose asset and checksum filenames/URLs
 ASSET_FILE="gickup_${GICKUP_VERSION}_${ASSET_OS}_${ASSET_ARCH}.tar.gz"
@@ -73,6 +77,7 @@ else
   echo "$ASSET_FILE already exists in $TMPDIR, skipping download."
 fi
 
+echo "Downloading checksum file"
 ## Download checksum if not present
 if [ ! -f "$TMPDIR/$CHECKSUM_FILE" ]; then
   echo "Downloading $CHECKSUM_FILE..."
@@ -86,11 +91,13 @@ cd "$TMPDIR"
 echo "Verifying checksum..."
 sha256sum -c "$CHECKSUM_FILE" --ignore-missing
 
-echo "Extracting gickup binary..."
+echo "Extracting gickup binary"
 tar -xzf "$ASSET_FILE"
 
 BIN_NAME="gickup"
 if [ -f "$BIN_NAME" ]; then
+  echo "Updating gickup"
+
   sudo mv "$BIN_NAME" /usr/local/bin/
   sudo chmod +x /usr/local/bin/$BIN_NAME
 else
@@ -100,6 +107,8 @@ else
     echo "Could not find gickup binary in the archive."
     exit 1
   fi
+
+  echo "Installing gickup to /usr/local/bin/$BIN_NAME"
   sudo mv "$BIN_PATH" /usr/local/bin/$BIN_NAME
   sudo chmod +x /usr/local/bin/$BIN_NAME
 fi
