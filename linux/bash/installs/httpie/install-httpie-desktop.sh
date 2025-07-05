@@ -30,6 +30,5 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-
 echo "Installed HTTPie desktop flatpak"
 exit 0
