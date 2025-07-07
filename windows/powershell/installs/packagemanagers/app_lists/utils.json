@@ -334,5 +334,13 @@
         "scoop_id": "main/docker",
         "choco_id": "docker-cli",
         "aqua_id": ""
+    },
+    {
+        "name": "TermSCP",
+        "description": "TUI for SCP, (S)FTP, S3, & more",
+        "winget_id": "",
+        "scoop_id": "termscp",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
