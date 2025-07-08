@@ -1,0 +1,27 @@
+[
+    {
+        "name": "termscp",
+        "username": "veeso",
+        "repo": "termscp",
+        "platforms": [
+            "linux",
+            "windows"
+        ],
+        "asset_strings": [
+            {
+                "os": "linux",
+                "asset": "termscp-v{version}-{cpu_arch}-unknown-linux-gnu.tar.gz"
+            },
+            {
+                "os": "darwin",
+                "asset": "termscp-v{version}-{cpu_arch}-apple-darwin.tar.gz"
+            }
+        ],
+        "tag_transforms": [
+            {
+                "search": "^v",
+                "replace": ""
+            }
+        ]
+    }
+]
