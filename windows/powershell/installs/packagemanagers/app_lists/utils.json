@@ -342,5 +342,13 @@
         "scoop_id": "termscp",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name" : "Clipboard",
+        "description": "A smart, beautiful clipboard manager TUI.",
+        "winget_id": "",
+        "scoop_id": "clipboard",
+        "choco_id": "",
+        "aqua_id" : ""
     }
 ]
