@@ -355,7 +355,7 @@
         "name": "Git Credential Manager",
         "description": "Git's credential manager for cloning/pushing repositories",
         "winget_id": "Git.GCM",
-        "scoop_id": "",
+        "scoop_id": "git-credential-manager",
         "choco_id": "",
         "aqua_id": ""
     }
