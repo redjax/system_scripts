@@ -346,9 +346,18 @@
     {
         "name" : "Clipboard",
         "description": "A smart, beautiful clipboard manager TUI.",
-        "winget_id": "",
+        "winget_id": "Slackadays.Clipboard",
         "scoop_id": "clipboard",
         "choco_id": "",
         "aqua_id" : ""
+    },
+    {
+        "name": "Git Credential Manager",
+        "description": "Git's credential manager for cloning/pushing repositories",
+        "winget_id": "Git.GCM",
+        "scoop_id": "",
+        "choco_id": "",
+        "aqua_id": ""
     }
+
 ]
