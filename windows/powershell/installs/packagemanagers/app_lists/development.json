@@ -150,5 +150,13 @@
         "scoop_id": "sourcegit",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "UV",
+        "description": "Python project manager",
+        "winget_id": "astral-sh.uv",
+        "scoop_ip": "uv",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
