@@ -334,5 +334,30 @@
         "scoop_id": "main/docker",
         "choco_id": "docker-cli",
         "aqua_id": ""
+    },
+    {
+        "name": "TermSCP",
+        "description": "TUI for SCP, (S)FTP, S3, & more",
+        "winget_id": "",
+        "scoop_id": "termscp",
+        "choco_id": "",
+        "aqua_id": ""
+    },
+    {
+        "name" : "Clipboard",
+        "description": "A smart, beautiful clipboard manager TUI.",
+        "winget_id": "Slackadays.Clipboard",
+        "scoop_id": "clipboard",
+        "choco_id": "",
+        "aqua_id" : ""
+    },
+    {
+        "name": "Git Credential Manager",
+        "description": "Git's credential manager for cloning/pushing repositories",
+        "winget_id": "Git.GCM",
+        "scoop_id": "git-credential-manager",
+        "choco_id": "",
+        "aqua_id": ""
     }
+
 ]
