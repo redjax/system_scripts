@@ -23,11 +23,12 @@ My collection of system scripts, broken down by OS. As I write scripts I use acr
 
 Scripts cover a range of topics & purposes, from Azure and Active Directory, to backup & installation scripts, system configurations, & demo/proof-of-concept scripts.
 
-## ⚠️ Disclaimer <!-- omit in toc -->
+<section class="warning">
 
-These are my own scripts I've written for my personal use, or for specific work I do. They may or may not be useful to you, but read each script carefully before you run it.
-
-These are scripts I run on my own machines, and I am not interested in damaging my devices or infecting them with malware. That being said, many of the scripts download executables or other scripts from locations on the Internet. Care must be taken if you use any of the scripts in this repository, and if you find any issues with any of the scripts, please open an issue! :)
+> [!WARNING]
+> These are my own scripts I've written for my personal use, or for specific work I do. They may or may not be useful to you, but read each script carefully before you run it.
+>
+> These are scripts I run on my own machines, and I am not interested in damaging my devices or infecting them with malware. That being said, many of the scripts download executables or other scripts from locations on the Internet. Care must be taken if you use any of the scripts in this repository, and if you find any issues with any of the scripts, please open an issue or PR! :)</section>
 
 ## Table of Contents <!-- omit in toc -->
 
