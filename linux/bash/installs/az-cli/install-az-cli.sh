@@ -40,13 +40,22 @@ detect_distro() {
     fi
 }
 
+disable_az_telemetry() {
+  if [[ ! -f /usr/sbin/az ]]; then
+  else
+    /usr/sbin/az config set core.collect_telemetry=no
+  fi
+}
+
 distro=$(detect_distro)
 install_azure_cli "$distro"
 if [[ $? -ne 0 ]]; then
   echo "Failed installing the Azure CLI on distro: $distro"
   exit $?
 else
-  echo "Installed the Azure CLI"
-  exit 0
+  echo "Installed the Azure CLI. Disabling telemetry & exiting"
 fi
+
+disable_az_telemetry
+exit 0
 
