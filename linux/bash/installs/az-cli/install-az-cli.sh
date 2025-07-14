@@ -42,6 +42,16 @@ detect_distro() {
 
 disable_az_telemetry() {
   if [[ ! -f /usr/sbin/az ]]; then
+    echo "Could not find az command at /usr/sbin/az. Searching for az & running telemetry disable if found."
+    _az=$(which az)
+
+    if [[ -z $_az ]]; then
+      echo "Could not find az cli installed on this system."
+      return 1
+    else
+      echo "Found az at ${_az}. Disabling telemetry"
+      $_az config set core.collect_telemetry=no
+    fi
   else
     /usr/sbin/az config set core.collect_telemetry=no
   fi
