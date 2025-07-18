@@ -1,5 +1,3 @@
-# System Scripts <!-- omit in toc -->
-
 <!-- Repo Banner -->
 <p align="center">
   <picture>
