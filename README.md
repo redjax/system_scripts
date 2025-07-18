@@ -1,5 +1,13 @@
 # System Scripts <!-- omit in toc -->
 
+<!-- Repo Banner -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".assets/img/github-header-image.png">
+    <img src=".assets/img/github-header-image.png" height="200">
+  </picture>
+</p>
+
 <!-- Git Badges -->
 <p align="center">
   <a href="https://github.com/redjax/system_scripts">
