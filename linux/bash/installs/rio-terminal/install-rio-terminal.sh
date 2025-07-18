@@ -1,10 +1,65 @@
 #!/usr/bin/env bash
 
-# set -e
+function install_rio_themes() {
+    echo ""
+    if [ -z "$TMPDIR" ]; then
+      TMPDIR=$(mktemp -d)
+      echo "TMPDIR: $TMPDIR"
+    fi
+
+    if ! command -v git &>/dev/null; then
+      echo "git is not installed."
+      return 1
+    fi
+
+    echo "Cloning rio-themes repo..."
+
+    git clone https://github.com/raphamorim/rio-terminal-themes "$TMPDIR/rio-terminal-themes"
+    if [[ $? -ne 0 ]]; then
+      echo "[ERROR] Failed to clone rio-themes repo."
+      return 1
+    fi
+
+    echo "Moving $TMPDIR/rio-terminal-themes/themes to ~/.config/rio/themes"
+
+    mkdir -p ~/.config/rio/themes
+    mv "$TMPDIR/rio-terminal-themes/themes" ~/.config/rio
+
+    echo "Rio themes installed successfully!"
+
+    return 0
+}
 
 if ! command -v curl &>/dev/null; then
   echo "curl is not installed."
   exit 1
+fi
+
+if command -v rio &>/dev/null || [ -f "/usr/local/bin/rio" ] || which rio &>/dev/null; then
+    if [[ ! -d "$HOME/.config/rio/themes" ]]; then
+      echo "Rio themes dir not found."
+      read -p "Install default Rio themes from https://github.com/raphamorim/rio-terminal-themes? (y/n)" -n 1 -r
+
+      case $REPLY in
+        [Yy] | [Yy][Ee][Ss])
+            install_rio_themes
+            if [[ $? -ne 0 ]]; then
+                echo "[ERROR] Failed to install rio themes."
+                exit 1
+            else
+                echo "Rio themes installed successfully!"
+                exit 0
+            fi
+            ;;
+        *)
+            echo "Skipping themes install"
+            exit 1
+            ;;
+      esac
+    else
+        echo "Rio terminal is installed and themes exist at $HOME/.config/rio/themes. Nothing to do."
+        exit 0
+    fi
 fi
 
 OS="$(uname -s)"
@@ -81,8 +136,6 @@ Darwin)
   ;;
 esac
 
-TMPDIR=$(mktemp -d)
-
 ## Download the release
 URL="https://github.com/raphamorim/rio/releases/download/v${RIO_VERSION}/$FILE"
 ARCHIVE="$TMPDIR/$FILE"
@@ -125,5 +178,25 @@ if [[ $? -ne 0 ]]; then
   exit 1
 else
     echo "Rio installed successfully!"
-    exit 0
 fi
+
+echo ""
+read -p "Install Rio themes from the https://github.com/raphomorim/rio-themes repo? (y/n) " -n 1 -r
+echo ""
+
+case $REPLY in
+  [Yy] | [Yy][Ee][Ss])
+    install_rio_themes
+    if [[ $? -ne 0 ]]; then
+      echo "[ERROR] Failed to install rio themes."
+      exit 1
+    else
+      echo "Rio themes installed successfully!"
+      exit 0
+    fi
+    ;;
+  *)
+    echo "Skipping themes download."
+    exit 0
+  ;;
+esac
