@@ -67,7 +67,6 @@ function install_sshpass {
   fi
 }
 
-
 if command -v termscp &>/dev/null; then
   echo "termscp is already installed. Upgrade by running termscp --upgrade"
   install_sshpass
