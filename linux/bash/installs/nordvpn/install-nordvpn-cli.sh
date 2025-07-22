@@ -15,4 +15,8 @@ fi
 echo "Installing NordVPN (CLI)"
 sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh)
 
+echo "Creating group 'nordvpn' & adding user $USER"
+sudo groupadd nordvpn
+sudo usermod -aG nordvpn $USER
+
 exit 0
