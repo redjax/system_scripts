@@ -18,5 +18,6 @@ sh <(wget -qO - https://downloads.nordcdn.com/apps/linux/install.sh) -p nordvpn-
 echo "Creating group 'nordvpn' & adding user $USER"
 sudo groupadd nordvpn
 sudo usermod -aG nordvpn $USER
+newgrp nordvpn
 
 exit 0
