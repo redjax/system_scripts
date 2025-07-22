@@ -15,4 +15,8 @@ fi
 echo "Installing NordVPN (GUI)"
 sh <(wget -qO - https://downloads.nordcdn.com/apps/linux/install.sh) -p nordvpn-gui
 
+echo "Creating group 'nordvpn' & adding user $USER"
+sudo groupadd nordvpn
+sudo usermod -aG nordvpn $USER
+
 exit 0
