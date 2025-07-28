@@ -12,3 +12,17 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+if [[ -d $HOME/.go ]] && [[ ! -e $HOME/.local/bin/go ]]; then
+  mkdir -p "$HOME/.local/bin"
+  echo "Creating symlink from ~/.go/bin/go to ~/.local/bin/go to appease VSCode"
+  ln -s "$HOME/.go/bin/go" "$HOME/.local/bin/go"
+fi
+
+if [[ -d $HOME/.go ]] && [[ ! -e $HOME/.local/bin/gofmt ]]; then
+  mkdir -p "$HOME/.local/bin"
+  echo "Creating symlink from ~/.go/bin/go to ~/.local/bin/go to appease VSCode"
+  ln -s "$HOME/.go/bin/go" "$HOME/.local/bin/go"
+fi
+
+echo "Go installed successfully. You might need to add \$HOME/.go/bin to your \$PATH."
+exit 0
