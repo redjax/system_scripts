@@ -1,0 +1,12 @@
+## Copy this file to /etc/logrotate.d/cron_backup_logrotate
+#  Make sure the output dir exists with mkdir -p /var/log/crontab_backup
+/var/log/crontab_backup/cron_all_users_backup.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root adm
+}
+
