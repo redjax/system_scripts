@@ -51,6 +51,8 @@ If you want to save the results, add `&> /var/log/crontab_backup.log` to the end
 }
 ```
 
+You can also copy the [included `cron_backup_logrotate` file](./cron_backup_logrotate) to `/etc/logrotate.d/cron_backup_logrotate`.
+
 ## Restore
 
 Restoring a crontab is as easy as running `crontab /path/to/cron/backup`. Similarly, to restore another user's crontab, run `sudo crontab /path/to/cron/backup -u $USERNAME`
