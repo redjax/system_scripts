@@ -8,13 +8,25 @@
     .PARAMETER BackupDir
     The directory where the backup files will be stored. Defaults to `$env:USERPROFILE\VSCodeBackup`.
 
+    .PARAMETER Retain
+    The number of backup files to retain. Defaults to 3. Older backups will be deleted if this number is exceeded.
+
+    .PARAMETER Trim
+    If specified, the script will delete older backups beyond the retention limit.
+
     .EXAMPLE
     PS> .\backup_vscode.ps1 -BackupDir "C:\Backups\VSCode"
     This command will back up VS Code settings, keybinds, and extensions to the specified directory.
 #>
 [CmdletBinding()]
 Param(
-    [string]$BackupDir = "$env:USERPROFILE\VSCodeBackup"
+    [Parameter(Mandatory = $false, HelpMessage = "Directory to store VS Code backups.")]
+    [string]$BackupDir = "$env:USERPROFILE\VSCodeBackup",
+    [Parameter(Mandatory = $false, HelpMessage = "Number of backup files to retain.")]
+    [ValidateRange(1, 100)]
+    [int]$Retain = 3,
+    [Parameter(Mandatory = $false, HelpMessage = "Trim older backups beyond the retention limit.")]
+    [switch]$Trim
 )
 
 function Get-Timestamp {
@@ -27,6 +39,57 @@ function Get-Timestamp {
         [string]$Fmt = "yyyyMMdd_HHmmss"
     )
     return Get-Date -Format $Fmt
+}
+
+function Start-BackupsCleanup {
+    <#
+        .SYNOPSIS
+        Clean up old VS Code backup files.
+
+        .PARAMETER Dir
+        The directory where the backups are stored. Defaults to `$BackupDir`.
+
+        .PARAMETER RetainCount
+        The number of backup files to retain. Defaults to 3.
+
+        .EXAMPLE
+        PS> Start-BackupsCleanup -Dir "C:\Backups\VSCode"
+        This command will remove older backup files beyond the specified retention count.
+    #>
+    [CmdletBinding()]
+    Param(
+        [string]$Dir,
+        [int]$RetainCount = 3
+    )
+
+    Write-Host "Cleaning up old VS Code backups in directory: $Dir" -ForegroundColor Cyan
+
+    $types = @{
+        "settings"  = "*_settings.json"
+        "keybinds"  = "*_keybinds.json"
+        "extensions"= "*_extensions.txt"
+    }
+
+    ForEach ( $type in $types.Keys ) {
+        $pattern = $types[$type]
+        Write-Debug "Processing pattern: $pattern for type: $type"
+
+        ## List files in path matching pattern
+        $files = Get-ChildItem -Path $Dir -Filter $pattern | Sort-Object Name -Descending
+        
+        if ($files.Count -gt $RetainCount) {
+            $toDelete = $files | Select-Object -Skip $RetainCount
+
+            ForEach ( $file in $toDelete ) {
+                try {
+                    Write-Host "Trimming $type backup: Removing $($file.FullName)" -ForegroundColor Yellow
+                    Remove-Item $file.FullName -Force
+                } catch {
+                    Write-Warning "Failed to remove $($file.FullName): $($_.Exception.Message)"
+                }
+            }
+        }
+    }
 }
 
 function Start-VSCodeExtensionsBackup {
@@ -89,7 +152,7 @@ function Start-VSCodeSettingsBackup {
         }
     }
 
-    Write-Host "Backing up VS Code user settings to path '$SettingsDest'"
+    Write-Host "Backing up VS Code user settings to path '$SettingsDest'" -ForegroundColor Cyan
     try {
         Copy-Item $SettingsSource -Destination $SettingsDest -ErrorAction SilentlyContinue
     } catch {
@@ -133,7 +196,7 @@ function Start-VSCodeKeybindsBackup {
         }
     }
 
-    Write-Host "Backing up VS Code keybinds to path '$KeybindsDest'"
+    Write-Host "Backing up VS Code keybinds to path '$KeybindsDest'" -ForegroundColor Cyan
     try {
         Copy-Item $KeybindsSource -Destination $KeybindsDest -ErrorAction SilentlyContinue
     } catch {
@@ -184,4 +247,9 @@ try {
     Start-VSCodeKeybindsBackup
 } catch {
     Write-Error "Failed backing up VS Code keybinds: $($_.Exception.Message)"
+}
+
+## Trim backups if requested
+if ( $Trim ) {
+    Start-BackupsCleanup -Dir $BackupDir -RetainCount $Retain
 }
