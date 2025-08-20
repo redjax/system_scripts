@@ -2,6 +2,10 @@
 
 Script to create backup of VS Code extensions, keybinds, & settings.
 
+## Requirements
+
+- `jq` (for parsing profile names from VSCode profile JSON files)
+
 ## Usage
 
 *Run with `-h/--help` to print usage menu.*
