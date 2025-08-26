@@ -1,0 +1,35 @@
+{
+  "export_version": 3,
+  "packages": [
+    {
+      "Id": "GoLang.Go",
+      "Name": "Go Programming Language",
+      "Version": "1.25.0",
+      "Source": "winget",
+      "ManagerName": "Winget"
+    },
+    {
+      "Id": "Microsoft.PowerShell",
+      "Name": "PowerShell",
+      "Version": "7.5.2.0",
+      "Source": "winget",
+      "ManagerName": "Winget"
+    },
+    {
+      "Id": "astral-sh.uv",
+      "Name": "uv",
+      "Version": "0.8.13",
+      "Source": "winget",
+      "ManagerName": "Winget"
+    },
+    {
+      "Id": "nvm",
+      "Name": "Nvm",
+      "Version": "1.2.2",
+      "Source": "main",
+      "ManagerName": "Scoop"
+    }
+  ],
+  "incompatible_packages_info": "Incompatible packages cannot be installed from UniGetUI, either because they came from a local source (for example Local PC) or because the package manager was unavailable. Nevertheless, they have been listed here for logging purposes.",
+  "incompatible_packages": []
+}
