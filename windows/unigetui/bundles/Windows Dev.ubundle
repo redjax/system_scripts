@@ -689,6 +689,13 @@
     },
     {
       "Id": "DBeaver.DBeaver.Community",
+      "Name": "DBeaver",
+      "Version": "25.1.5",
+      "Source": "winget",
+      "ManagerName": "Winget"
+    },
+    {
+      "Id": "DBeaver.DBeaver.Community",
       "Name": "DBeaver 25.1.2 (current user)",
       "Version": "25.1.2",
       "Source": "winget",
