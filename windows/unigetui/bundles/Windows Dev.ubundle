@@ -30,20 +30,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Accounts",
-      "Name": "Az.Accounts",
-      "Version": "4.0.2",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.Advisor",
-      "Name": "Az.Advisor",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Advisor",
       "Name": "Az.Advisor",
       "Version": "2.1.0",
@@ -58,13 +44,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Aks",
-      "Name": "Az.Aks",
-      "Version": "6.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.AnalysisServices",
       "Name": "Az.AnalysisServices",
       "Version": "1.2.0",
@@ -72,32 +51,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.AnalysisServices",
-      "Name": "Az.AnalysisServices",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.ApiManagement",
-      "Name": "Az.ApiManagement",
-      "Version": "4.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ApiManagement",
       "Name": "Az.ApiManagement",
       "Version": "4.1.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.App",
-      "Name": "Az.App",
-      "Version": "2.0.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.App",
@@ -114,20 +72,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.AppConfiguration",
-      "Name": "Az.AppConfiguration",
-      "Version": "1.4.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.ApplicationInsights",
-      "Name": "Az.ApplicationInsights",
-      "Version": "2.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ApplicationInsights",
       "Name": "Az.ApplicationInsights",
       "Version": "2.3.0",
@@ -139,21 +83,7 @@
       "Name": "Az.ArcResourceBridge",
       "Version": "1.1.0",
       "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.ArcResourceBridge",
-      "Name": "Az.ArcResourceBridge",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Attestation",
-      "Name": "Az.Attestation",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Attestation",
@@ -168,13 +98,6 @@
       "Version": "1.1.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Automanage",
-      "Name": "Az.Automanage",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Automation",
@@ -184,32 +107,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Automation",
-      "Name": "Az.Automation",
-      "Version": "1.11.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.Batch",
-      "Name": "Az.Batch",
-      "Version": "3.7.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Batch",
       "Name": "Az.Batch",
       "Version": "3.7.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Billing",
-      "Name": "Az.Billing",
-      "Version": "2.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Billing",
@@ -226,25 +128,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Cdn",
-      "Name": "Az.Cdn",
-      "Version": "3.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.CloudService",
       "Name": "Az.CloudService",
       "Version": "2.1.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.CloudService",
-      "Name": "Az.CloudService",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.CognitiveServices",
@@ -252,13 +140,6 @@
       "Version": "1.16.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.CognitiveServices",
-      "Name": "Az.CognitiveServices",
-      "Version": "1.15.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Compute",
@@ -268,20 +149,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Compute",
-      "Name": "Az.Compute",
-      "Version": "9.0.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.ConfidentialLedger",
-      "Name": "Az.ConfidentialLedger",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ConfidentialLedger",
       "Name": "Az.ConfidentialLedger",
       "Version": "1.1.0",
@@ -293,21 +160,7 @@
       "Name": "Az.ConnectedMachine",
       "Version": "1.1.1",
       "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.ConnectedMachine",
-      "Name": "Az.ConnectedMachine",
-      "Version": "1.1.1",
-      "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.ContainerInstance",
-      "Name": "Az.ContainerInstance",
-      "Version": "4.1.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.ContainerInstance",
@@ -322,13 +175,6 @@
       "Version": "4.3.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.ContainerRegistry",
-      "Name": "Az.ContainerRegistry",
-      "Version": "4.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.CosmosDB",
@@ -338,25 +184,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.CosmosDB",
-      "Name": "Az.CosmosDB",
-      "Version": "1.16.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.DataBoxEdge",
       "Name": "Az.DataBoxEdge",
       "Version": "1.2.1",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.DataBoxEdge",
-      "Name": "Az.DataBoxEdge",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.DataFactory",
@@ -366,30 +198,9 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.DataFactory",
-      "Name": "Az.DataFactory",
-      "Version": "1.19.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.DataLakeAnalytics",
       "Name": "Az.DataLakeAnalytics",
       "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.DataLakeAnalytics",
-      "Name": "Az.DataLakeAnalytics",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.DataLakeStore",
-      "Name": "Az.DataLakeStore",
-      "Version": "1.4.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
     },
@@ -398,7 +209,7 @@
       "Name": "Az.DataLakeStore",
       "Version": "1.4.0",
       "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
+      "ManagerName": "PowerShell"
     },
     {
       "Id": "Az.DataProtection",
@@ -408,13 +219,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.DataProtection",
-      "Name": "Az.DataProtection",
-      "Version": "2.6.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.DataShare",
       "Name": "Az.DataShare",
       "Version": "1.1.1",
@@ -422,37 +226,9 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.DataShare",
-      "Name": "Az.DataShare",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Databricks",
       "Name": "Az.Databricks",
       "Version": "1.10.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.Databricks",
-      "Name": "Az.Databricks",
-      "Version": "1.10.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.DesktopVirtualizat.",
-      "Name": "Az.DesktopVirtualizat.",
-      "Version": "5.4.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.DesktopVirtualization",
-      "Name": "Az.DesktopVirtualization",
-      "Version": "5.4.1",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
     },
@@ -461,14 +237,7 @@
       "Name": "Az.DesktopVirtualization",
       "Version": "5.4.1",
       "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.DevCenter",
-      "Name": "Az.DevCenter",
-      "Version": "2.0.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
+      "ManagerName": "PowerShell"
     },
     {
       "Id": "Az.DevCenter",
@@ -485,20 +254,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.DevTestLabs",
-      "Name": "Az.DevTestLabs",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.Dns",
-      "Name": "Az.Dns",
-      "Version": "1.3.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Dns",
       "Name": "Az.Dns",
       "Version": "1.3.1",
@@ -511,13 +266,6 @@
       "Version": "1.1.1",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.DnsResolver",
-      "Name": "Az.DnsResolver",
-      "Version": "1.1.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.ElasticSan",
@@ -527,25 +275,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.ElasticSan",
-      "Name": "Az.ElasticSan",
-      "Version": "1.2.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.EventGrid",
       "Name": "Az.EventGrid",
       "Version": "2.2.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.EventGrid",
-      "Name": "Az.EventGrid",
-      "Version": "2.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.EventHub",
@@ -555,25 +289,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.EventHub",
-      "Name": "Az.EventHub",
-      "Version": "5.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.FrontDoor",
       "Name": "Az.FrontDoor",
       "Version": "1.13.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.FrontDoor",
-      "Name": "Az.FrontDoor",
-      "Version": "1.12.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Functions",
@@ -583,20 +303,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Functions",
-      "Name": "Az.Functions",
-      "Version": "4.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.HDInsight",
-      "Name": "Az.HDInsight",
-      "Version": "6.3.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.HDInsight",
       "Name": "Az.HDInsight",
       "Version": "6.3.1",
@@ -604,32 +310,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.HealthDataAIServic.",
-      "Name": "Az.HealthDataAIServic.",
-      "Version": "1.0.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.HealthDataAIServices",
-      "Name": "Az.HealthDataAIServices",
-      "Version": "1.0.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.HealthDataAIServices",
       "Name": "Az.HealthDataAIServices",
       "Version": "1.0.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.HealthcareApis",
-      "Name": "Az.HealthcareApis",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.HealthcareApis",
@@ -646,20 +331,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.IotHub",
-      "Name": "Az.IotHub",
-      "Version": "2.8.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.KeyVault",
-      "Name": "Az.KeyVault",
-      "Version": "6.3.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.KeyVault",
       "Name": "Az.KeyVault",
       "Version": "6.3.1",
@@ -672,20 +343,6 @@
       "Version": "2.4.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Kusto",
-      "Name": "Az.Kusto",
-      "Version": "2.4.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.LoadTesting",
-      "Name": "Az.LoadTesting",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.LoadTesting",
@@ -702,39 +359,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.LogicApp",
-      "Name": "Az.LogicApp",
-      "Version": "1.6.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.MachineLearning",
       "Name": "Az.MachineLearning",
       "Version": "1.2.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.MachineLearning",
-      "Name": "Az.MachineLearning",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.MachineLearningSer.",
-      "Name": "Az.MachineLearningSer.",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.MachineLearningServices",
-      "Name": "Az.MachineLearningServices",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.MachineLearningServices",
@@ -751,32 +380,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Maintenance",
-      "Name": "Az.Maintenance",
-      "Version": "1.5.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.ManagedServiceIden.",
-      "Name": "Az.ManagedServiceIden.",
-      "Version": "1.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ManagedServiceIdentity",
       "Name": "Az.ManagedServiceIdentity",
       "Version": "2.0.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.ManagedServiceIdentity",
-      "Name": "Az.ManagedServiceIdentity",
-      "Version": "1.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.ManagedServices",
@@ -786,13 +394,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.ManagedServices",
-      "Name": "Az.ManagedServices",
-      "Version": "3.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.MarketplaceOrdering",
       "Name": "Az.MarketplaceOrdering",
       "Version": "2.2.0",
@@ -800,25 +401,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.MarketplaceOrdering",
-      "Name": "Az.MarketplaceOrdering",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Media",
       "Name": "Az.Media",
       "Version": "1.2.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Media",
-      "Name": "Az.Media",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Migrate",
@@ -828,25 +415,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Migrate",
-      "Name": "Az.Migrate",
-      "Version": "2.6.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Monitor",
       "Name": "Az.Monitor",
       "Version": "6.0.2",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Monitor",
-      "Name": "Az.Monitor",
-      "Version": "6.0.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.MySql",
@@ -856,13 +429,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.MySql",
-      "Name": "Az.MySql",
-      "Version": "1.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Network",
       "Name": "Az.Network",
       "Version": "7.18.0",
@@ -870,25 +436,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Network",
-      "Name": "Az.Network",
-      "Version": "7.12.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.NetworkCloud",
       "Name": "Az.NetworkCloud",
       "Version": "1.1.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.NetworkCloud",
-      "Name": "Az.NetworkCloud",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Nginx",
@@ -898,32 +450,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Nginx",
-      "Name": "Az.Nginx",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.NotificationHubs",
-      "Name": "Az.NotificationHubs",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.NotificationHubs",
       "Name": "Az.NotificationHubs",
       "Version": "1.2.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.OperationalInsights",
-      "Name": "Az.OperationalInsights",
-      "Version": "3.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.OperationalInsights",
@@ -938,13 +469,6 @@
       "Version": "1.2.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Oracle",
-      "Name": "Az.Oracle",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.PolicyInsights",
@@ -954,13 +478,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.PolicyInsights",
-      "Name": "Az.PolicyInsights",
-      "Version": "1.7.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.PostgreSql",
       "Name": "Az.PostgreSql",
       "Version": "1.3.0",
@@ -968,20 +485,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.PostgreSql",
-      "Name": "Az.PostgreSql",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.PowerBIEmbedded",
-      "Name": "Az.PowerBIEmbedded",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.PowerBIEmbedded",
       "Name": "Az.PowerBIEmbedded",
       "Version": "2.1.0",
@@ -993,21 +496,7 @@
       "Name": "Az.PrivateDns",
       "Version": "1.2.0",
       "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.PrivateDns",
-      "Name": "Az.PrivateDns",
-      "Version": "1.2.0",
-      "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.RecoveryServices",
-      "Name": "Az.RecoveryServices",
-      "Version": "7.7.2",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.RecoveryServices",
@@ -1022,20 +511,6 @@
       "Version": "1.11.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.RedisCache",
-      "Name": "Az.RedisCache",
-      "Version": "1.11.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.RedisEnterpriseCac.",
-      "Name": "Az.RedisEnterpriseCac.",
-      "Version": "1.2.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.RedisEnterpriseCache",
@@ -1045,13 +520,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.RedisEnterpriseCache",
-      "Name": "Az.RedisEnterpriseCache",
-      "Version": "1.2.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Relay",
       "Name": "Az.Relay",
       "Version": "2.1.1",
@@ -1059,13 +527,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Relay",
-      "Name": "Az.Relay",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ResourceGraph",
       "Name": "Az.ResourceGraph",
       "Version": "1.2.1",
@@ -1073,25 +534,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.ResourceGraph",
-      "Name": "Az.ResourceGraph",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ResourceMover",
       "Name": "Az.ResourceMover",
       "Version": "1.3.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.ResourceMover",
-      "Name": "Az.ResourceMover",
-      "Version": "1.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.Resources",
@@ -1101,32 +548,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Resources",
-      "Name": "Az.Resources",
-      "Version": "7.8.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Security",
       "Name": "Az.Security",
       "Version": "1.8.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Security",
-      "Name": "Az.Security",
-      "Version": "1.8.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.SecurityInsights",
-      "Name": "Az.SecurityInsights",
-      "Version": "3.2.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.SecurityInsights",
@@ -1143,32 +569,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.ServiceBus",
-      "Name": "Az.ServiceBus",
-      "Version": "4.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.ServiceFabric",
       "Name": "Az.ServiceFabric",
       "Version": "3.5.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.ServiceFabric",
-      "Name": "Az.ServiceFabric",
-      "Version": "3.5.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.SignalR",
-      "Name": "Az.SignalR",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.SignalR",
@@ -1185,20 +590,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Sql",
-      "Name": "Az.Sql",
-      "Version": "6.0.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.SqlVirtualMachine",
-      "Name": "Az.SqlVirtualMachine",
-      "Version": "2.4.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.SqlVirtualMachine",
       "Name": "Az.SqlVirtualMachine",
       "Version": "2.4.0",
@@ -1211,20 +602,6 @@
       "Version": "2.6.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.StackHCI",
-      "Name": "Az.StackHCI",
-      "Version": "2.5.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.StackHCIVM",
-      "Name": "Az.StackHCIVM",
-      "Version": "1.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.StackHCIVM",
@@ -1241,25 +618,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Storage",
-      "Name": "Az.Storage",
-      "Version": "9.0.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.StorageAction",
       "Name": "Az.StorageAction",
       "Version": "1.0.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.StorageMover",
-      "Name": "Az.StorageMover",
-      "Version": "1.5.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.StorageMover",
@@ -1276,29 +639,8 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.StorageSync",
-      "Name": "Az.StorageSync",
-      "Version": "2.4.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.StreamAnalytics",
       "Name": "Az.StreamAnalytics",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.StreamAnalytics",
-      "Name": "Az.StreamAnalytics",
-      "Version": "2.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.Support",
-      "Name": "Az.Support",
       "Version": "2.1.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
@@ -1308,7 +650,7 @@
       "Name": "Az.Support",
       "Version": "2.1.0",
       "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
+      "ManagerName": "PowerShell"
     },
     {
       "Id": "Az.Synapse",
@@ -1316,20 +658,6 @@
       "Version": "3.2.1",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Az.Synapse",
-      "Name": "Az.Synapse",
-      "Version": "3.1.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Az.TrafficManager",
-      "Name": "Az.TrafficManager",
-      "Version": "1.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Az.TrafficManager",
@@ -1346,32 +674,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Az.Websites",
-      "Name": "Az.Websites",
-      "Version": "3.3.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Az.Workloads",
       "Name": "Az.Workloads",
       "Version": "1.0.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Azure",
-      "Name": "Azure",
-      "Version": "5.1.2",
-      "Source": "https://www.power...",
-      "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "AzureResourceInventory",
-      "Name": "AzureResourceInventory",
-      "Version": "3.6.9",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "AzureResourceInventory",
@@ -1500,46 +807,11 @@
       "ManagerName": "Winget"
     },
     {
-      "Id": "Microsoft.Graph",
-      "Name": "Microsoft.Graph",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Appli.",
-      "Name": "Microsoft.Graph.Appli.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Applicati.",
-      "Name": "Microsoft.Graph.Applicati.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.Applications",
       "Name": "Microsoft.Graph.Applications",
       "Version": "2.28.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Microsoft.Graph.Authe.",
-      "Name": "Microsoft.Graph.Authe.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Authentic.",
-      "Name": "Microsoft.Graph.Authentic.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Microsoft.Graph.Authentication",
@@ -1549,20 +821,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Backu.",
-      "Name": "Microsoft.Graph.Backu.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.BackupRes.",
-      "Name": "Microsoft.Graph.BackupRes.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.BackupRestore",
       "Name": "Microsoft.Graph.BackupRestore",
       "Version": "2.28.0",
@@ -1570,251 +828,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Beta",
-      "Name": "Microsoft.Graph.Beta",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta..",
-      "Name": "Microsoft.Graph.Beta..",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Appl.",
-      "Name": "Microsoft.Graph.Beta.Appl.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Back.",
-      "Name": "Microsoft.Graph.Beta.Back.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Book.",
-      "Name": "Microsoft.Graph.Beta.Book.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Busi.",
-      "Name": "Microsoft.Graph.Beta.Busi.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Cale.",
-      "Name": "Microsoft.Graph.Beta.Cale.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Chan.",
-      "Name": "Microsoft.Graph.Beta.Chan.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Clou.",
-      "Name": "Microsoft.Graph.Beta.Clou.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Comp.",
-      "Name": "Microsoft.Graph.Beta.Comp.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Cros.",
-      "Name": "Microsoft.Graph.Beta.Cros.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Devi.",
-      "Name": "Microsoft.Graph.Beta.Devi.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Dire.",
-      "Name": "Microsoft.Graph.Beta.Dire.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Educ.",
-      "Name": "Microsoft.Graph.Beta.Educ.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Files",
-      "Name": "Microsoft.Graph.Beta.Files",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Fina.",
-      "Name": "Microsoft.Graph.Beta.Fina.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Grou.",
-      "Name": "Microsoft.Graph.Beta.Grou.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Iden.",
-      "Name": "Microsoft.Graph.Beta.Iden.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Mail",
-      "Name": "Microsoft.Graph.Beta.Mail",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Mana.",
-      "Name": "Microsoft.Graph.Beta.Mana.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Netw.",
-      "Name": "Microsoft.Graph.Beta.Netw.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Notes",
-      "Name": "Microsoft.Graph.Beta.Notes",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Peop.",
-      "Name": "Microsoft.Graph.Beta.Peop.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Pers.",
-      "Name": "Microsoft.Graph.Beta.Pers.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Plan.",
-      "Name": "Microsoft.Graph.Beta.Plan.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Repo.",
-      "Name": "Microsoft.Graph.Beta.Repo.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Sche.",
-      "Name": "Microsoft.Graph.Beta.Sche.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Sear.",
-      "Name": "Microsoft.Graph.Beta.Sear.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Secu.",
-      "Name": "Microsoft.Graph.Beta.Secu.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Sites",
-      "Name": "Microsoft.Graph.Beta.Sites",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Teams",
-      "Name": "Microsoft.Graph.Beta.Teams",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.User.",
-      "Name": "Microsoft.Graph.Beta.User.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Users",
-      "Name": "Microsoft.Graph.Beta.Users",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Beta.Wind.",
-      "Name": "Microsoft.Graph.Beta.Wind.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Booki.",
-      "Name": "Microsoft.Graph.Booki.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.Bookings",
       "Name": "Microsoft.Graph.Bookings",
       "Version": "2.28.0",
@@ -1822,46 +835,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Bookings",
-      "Name": "Microsoft.Graph.Bookings",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Calen.",
-      "Name": "Microsoft.Graph.Calen.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.Calendar",
       "Name": "Microsoft.Graph.Calendar",
       "Version": "2.28.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Microsoft.Graph.Calendar",
-      "Name": "Microsoft.Graph.Calendar",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Chang.",
-      "Name": "Microsoft.Graph.Chang.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.ChangeNot.",
-      "Name": "Microsoft.Graph.ChangeNot.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Microsoft.Graph.ChangeNotifications",
@@ -1871,20 +849,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Cloud.",
-      "Name": "Microsoft.Graph.Cloud.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.CloudComm.",
-      "Name": "Microsoft.Graph.CloudComm.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.CloudCommunications",
       "Name": "Microsoft.Graph.CloudCommunications",
       "Version": "2.28.0",
@@ -1892,13 +856,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Compl.",
-      "Name": "Microsoft.Graph.Compl.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.Compliance",
       "Name": "Microsoft.Graph.Compliance",
       "Version": "2.28.0",
@@ -1906,53 +863,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Compliance",
-      "Name": "Microsoft.Graph.Compliance",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Cross.",
-      "Name": "Microsoft.Graph.Cross.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.CrossDevi.",
-      "Name": "Microsoft.Graph.CrossDevi.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.CrossDeviceExper...",
       "Name": "Microsoft.Graph.CrossDeviceExper...",
       "Version": "2.27.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Microsoft.Graph.Devic.",
-      "Name": "Microsoft.Graph.Devic.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.DeviceMan.",
-      "Name": "Microsoft.Graph.DeviceMan.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Devices.C.",
-      "Name": "Microsoft.Graph.Devices.C.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Microsoft.Graph.Devices.CloudPrint",
@@ -1969,13 +884,6 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Devices.S.",
-      "Name": "Microsoft.Graph.Devices.S.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.Devices.ServiceA...",
       "Name": "Microsoft.Graph.Devices.ServiceA...",
       "Version": "2.27.0",
@@ -1983,207 +891,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "Microsoft.Graph.Direc.",
-      "Name": "Microsoft.Graph.Direc.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Directory.",
-      "Name": "Microsoft.Graph.Directory.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Educa.",
-      "Name": "Microsoft.Graph.Educa.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Education",
-      "Name": "Microsoft.Graph.Education",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Files",
-      "Name": "Microsoft.Graph.Files",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Groups",
-      "Name": "Microsoft.Graph.Groups",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Ident.",
-      "Name": "Microsoft.Graph.Ident.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Identity..",
-      "Name": "Microsoft.Graph.Identity..",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Mail",
-      "Name": "Microsoft.Graph.Mail",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Notes",
-      "Name": "Microsoft.Graph.Notes",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.People",
-      "Name": "Microsoft.Graph.People",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Perso.",
-      "Name": "Microsoft.Graph.Perso.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.PersonalC.",
-      "Name": "Microsoft.Graph.PersonalC.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Plann.",
-      "Name": "Microsoft.Graph.Plann.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Planner",
-      "Name": "Microsoft.Graph.Planner",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Repor.",
-      "Name": "Microsoft.Graph.Repor.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Reports",
-      "Name": "Microsoft.Graph.Reports",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Schem.",
-      "Name": "Microsoft.Graph.Schem.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.SchemaExt.",
-      "Name": "Microsoft.Graph.SchemaExt.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Search",
-      "Name": "Microsoft.Graph.Search",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Secur.",
-      "Name": "Microsoft.Graph.Secur.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Security",
-      "Name": "Microsoft.Graph.Security",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Sites",
-      "Name": "Microsoft.Graph.Sites",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Teams",
-      "Name": "Microsoft.Graph.Teams",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "Microsoft.Graph.Users",
       "Name": "Microsoft.Graph.Users",
       "Version": "2.28.0",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "Microsoft.Graph.Users",
-      "Name": "Microsoft.Graph.Users",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Users.",
-      "Name": "Microsoft.Graph.Users.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Users.Act.",
-      "Name": "Microsoft.Graph.Users.Act.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
-      "Id": "Microsoft.Graph.Users.Fun.",
-      "Name": "Microsoft.Graph.Users.Fun.",
-      "Version": "2.26.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Microsoft.PowerShell",
@@ -2257,8 +969,22 @@
     },
     {
       "Id": "Microsoft.VisualStudioCode",
+      "Name": "Microsoft Visual Studio Code",
+      "Version": "1.103.2",
+      "Source": "winget",
+      "ManagerName": "Winget"
+    },
+    {
+      "Id": "Microsoft.VisualStudioCode",
       "Name": "Microsoft Visual Studio Code (User)",
       "Version": "1.102.3",
+      "Source": "winget",
+      "ManagerName": "Winget"
+    },
+    {
+      "Id": "Microsoft.VisualStudioCode.CLI",
+      "Name": "Microsoft Visual Studio Code CLI",
+      "Version": "1.103.2",
       "Source": "winget",
       "ManagerName": "Winget"
     },
@@ -2312,13 +1038,6 @@
       "ManagerName": "Winget"
     },
     {
-      "Id": "PSEverything",
-      "Name": "PSEverything",
-      "Version": "3.2.1",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "PSFramework",
       "Name": "PSFramework",
       "Version": "1.12.346",
@@ -2326,25 +1045,11 @@
       "ManagerName": "PowerShell"
     },
     {
-      "Id": "PSFramework",
-      "Name": "PSFramework",
-      "Version": "1.12.3.",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
-    },
-    {
       "Id": "PSModuleDevelopment",
       "Name": "PSModuleDevelopment",
       "Version": "2.2.13.176",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "PSModuleDevelopment",
-      "Name": "PSModuleDevelopment",
-      "Version": "2.2.12.",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "Postman.Postman",
@@ -2359,13 +1064,6 @@
       "Version": "1.2.5",
       "Source": "PSGallery",
       "ManagerName": "PowerShell"
-    },
-    {
-      "Id": "PowerShellGet",
-      "Name": "PowerShellGet",
-      "Version": "1.1.0.0",
-      "Source": "PSGallery",
-      "ManagerName": "PowerShell7"
     },
     {
       "Id": "ShiningLight.OpenSSL.Light",
@@ -2782,5 +1480,1134 @@
     }
   ],
   "incompatible_packages_info": "Incompatible packages cannot be installed from UniGetUI, either because they came from a local source (for example Local PC) or because the package manager was unavailable. Nevertheless, they have been listed here for logging purposes.",
-  "incompatible_packages": []
+  "incompatible_packages": [
+    {
+      "Id": "Az.Accounts",
+      "Name": "Az.Accounts",
+      "Version": "4.0.2",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Advisor",
+      "Name": "Az.Advisor",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Aks",
+      "Name": "Az.Aks",
+      "Version": "6.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.AnalysisServices",
+      "Name": "Az.AnalysisServices",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ApiManagement",
+      "Name": "Az.ApiManagement",
+      "Version": "4.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.App",
+      "Name": "Az.App",
+      "Version": "2.0.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.AppConfiguration",
+      "Name": "Az.AppConfiguration",
+      "Version": "1.4.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ApplicationInsights",
+      "Name": "Az.ApplicationInsights",
+      "Version": "2.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ArcResourceBridge",
+      "Name": "Az.ArcResourceBridge",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Attestation",
+      "Name": "Az.Attestation",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Automanage",
+      "Name": "Az.Automanage",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Automation",
+      "Name": "Az.Automation",
+      "Version": "1.11.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Batch",
+      "Name": "Az.Batch",
+      "Version": "3.7.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Billing",
+      "Name": "Az.Billing",
+      "Version": "2.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Cdn",
+      "Name": "Az.Cdn",
+      "Version": "3.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.CloudService",
+      "Name": "Az.CloudService",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.CognitiveServices",
+      "Name": "Az.CognitiveServices",
+      "Version": "1.15.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Compute",
+      "Name": "Az.Compute",
+      "Version": "9.0.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ConfidentialLedger",
+      "Name": "Az.ConfidentialLedger",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ConnectedMachine",
+      "Name": "Az.ConnectedMachine",
+      "Version": "1.1.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ContainerInstance",
+      "Name": "Az.ContainerInstance",
+      "Version": "4.1.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ContainerRegistry",
+      "Name": "Az.ContainerRegistry",
+      "Version": "4.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.CosmosDB",
+      "Name": "Az.CosmosDB",
+      "Version": "1.16.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DataBoxEdge",
+      "Name": "Az.DataBoxEdge",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DataFactory",
+      "Name": "Az.DataFactory",
+      "Version": "1.19.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DataLakeAnalytics",
+      "Name": "Az.DataLakeAnalytics",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DataLakeStore",
+      "Name": "Az.DataLakeStore",
+      "Version": "1.4.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DataProtection",
+      "Name": "Az.DataProtection",
+      "Version": "2.6.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DataShare",
+      "Name": "Az.DataShare",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Databricks",
+      "Name": "Az.Databricks",
+      "Version": "1.10.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DesktopVirtualizat.",
+      "Name": "Az.DesktopVirtualizat.",
+      "Version": "5.4.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DesktopVirtualization",
+      "Name": "Az.DesktopVirtualization",
+      "Version": "5.4.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DevCenter",
+      "Name": "Az.DevCenter",
+      "Version": "2.0.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DevTestLabs",
+      "Name": "Az.DevTestLabs",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Dns",
+      "Name": "Az.Dns",
+      "Version": "1.3.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.DnsResolver",
+      "Name": "Az.DnsResolver",
+      "Version": "1.1.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ElasticSan",
+      "Name": "Az.ElasticSan",
+      "Version": "1.2.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.EventGrid",
+      "Name": "Az.EventGrid",
+      "Version": "2.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.EventHub",
+      "Name": "Az.EventHub",
+      "Version": "5.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.FrontDoor",
+      "Name": "Az.FrontDoor",
+      "Version": "1.12.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Functions",
+      "Name": "Az.Functions",
+      "Version": "4.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.HDInsight",
+      "Name": "Az.HDInsight",
+      "Version": "6.3.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.HealthDataAIServic.",
+      "Name": "Az.HealthDataAIServic.",
+      "Version": "1.0.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.HealthDataAIServices",
+      "Name": "Az.HealthDataAIServices",
+      "Version": "1.0.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.HealthcareApis",
+      "Name": "Az.HealthcareApis",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.IotHub",
+      "Name": "Az.IotHub",
+      "Version": "2.8.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.KeyVault",
+      "Name": "Az.KeyVault",
+      "Version": "6.3.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Kusto",
+      "Name": "Az.Kusto",
+      "Version": "2.4.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.LoadTesting",
+      "Name": "Az.LoadTesting",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.LogicApp",
+      "Name": "Az.LogicApp",
+      "Version": "1.6.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.MachineLearning",
+      "Name": "Az.MachineLearning",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.MachineLearningSer.",
+      "Name": "Az.MachineLearningSer.",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.MachineLearningServices",
+      "Name": "Az.MachineLearningServices",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Maintenance",
+      "Name": "Az.Maintenance",
+      "Version": "1.5.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ManagedServiceIden.",
+      "Name": "Az.ManagedServiceIden.",
+      "Version": "1.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ManagedServiceIdentity",
+      "Name": "Az.ManagedServiceIdentity",
+      "Version": "1.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ManagedServices",
+      "Name": "Az.ManagedServices",
+      "Version": "3.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.MarketplaceOrdering",
+      "Name": "Az.MarketplaceOrdering",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Media",
+      "Name": "Az.Media",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Migrate",
+      "Name": "Az.Migrate",
+      "Version": "2.6.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Monitor",
+      "Name": "Az.Monitor",
+      "Version": "6.0.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.MySql",
+      "Name": "Az.MySql",
+      "Version": "1.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Network",
+      "Name": "Az.Network",
+      "Version": "7.12.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.NetworkCloud",
+      "Name": "Az.NetworkCloud",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Nginx",
+      "Name": "Az.Nginx",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.NotificationHubs",
+      "Name": "Az.NotificationHubs",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.OperationalInsights",
+      "Name": "Az.OperationalInsights",
+      "Version": "3.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Oracle",
+      "Name": "Az.Oracle",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.PolicyInsights",
+      "Name": "Az.PolicyInsights",
+      "Version": "1.7.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.PostgreSql",
+      "Name": "Az.PostgreSql",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.PowerBIEmbedded",
+      "Name": "Az.PowerBIEmbedded",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.PrivateDns",
+      "Name": "Az.PrivateDns",
+      "Version": "1.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.RecoveryServices",
+      "Name": "Az.RecoveryServices",
+      "Version": "7.7.2",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.RedisCache",
+      "Name": "Az.RedisCache",
+      "Version": "1.11.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.RedisEnterpriseCac.",
+      "Name": "Az.RedisEnterpriseCac.",
+      "Version": "1.2.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.RedisEnterpriseCache",
+      "Name": "Az.RedisEnterpriseCache",
+      "Version": "1.2.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Relay",
+      "Name": "Az.Relay",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ResourceGraph",
+      "Name": "Az.ResourceGraph",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ResourceMover",
+      "Name": "Az.ResourceMover",
+      "Version": "1.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Resources",
+      "Name": "Az.Resources",
+      "Version": "7.8.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Security",
+      "Name": "Az.Security",
+      "Version": "1.8.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.SecurityInsights",
+      "Name": "Az.SecurityInsights",
+      "Version": "3.2.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ServiceBus",
+      "Name": "Az.ServiceBus",
+      "Version": "4.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.ServiceFabric",
+      "Name": "Az.ServiceFabric",
+      "Version": "3.5.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.SignalR",
+      "Name": "Az.SignalR",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Sql",
+      "Name": "Az.Sql",
+      "Version": "6.0.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.SqlVirtualMachine",
+      "Name": "Az.SqlVirtualMachine",
+      "Version": "2.4.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.StackHCI",
+      "Name": "Az.StackHCI",
+      "Version": "2.5.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.StackHCIVM",
+      "Name": "Az.StackHCIVM",
+      "Version": "1.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Storage",
+      "Name": "Az.Storage",
+      "Version": "9.0.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.StorageMover",
+      "Name": "Az.StorageMover",
+      "Version": "1.5.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.StorageSync",
+      "Name": "Az.StorageSync",
+      "Version": "2.4.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.StreamAnalytics",
+      "Name": "Az.StreamAnalytics",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Support",
+      "Name": "Az.Support",
+      "Version": "2.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Synapse",
+      "Name": "Az.Synapse",
+      "Version": "3.1.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.TrafficManager",
+      "Name": "Az.TrafficManager",
+      "Version": "1.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Az.Websites",
+      "Name": "Az.Websites",
+      "Version": "3.3.0",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Azure",
+      "Name": "Azure",
+      "Version": "5.1.2",
+      "Source": "https://www.power..."
+    },
+    {
+      "Id": "AzureResourceInventory",
+      "Name": "AzureResourceInventory",
+      "Version": "3.6.9",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph",
+      "Name": "Microsoft.Graph",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Appli.",
+      "Name": "Microsoft.Graph.Appli.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Applicati.",
+      "Name": "Microsoft.Graph.Applicati.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Authe.",
+      "Name": "Microsoft.Graph.Authe.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Authentic.",
+      "Name": "Microsoft.Graph.Authentic.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Backu.",
+      "Name": "Microsoft.Graph.Backu.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.BackupRes.",
+      "Name": "Microsoft.Graph.BackupRes.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta",
+      "Name": "Microsoft.Graph.Beta",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta..",
+      "Name": "Microsoft.Graph.Beta..",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Appl.",
+      "Name": "Microsoft.Graph.Beta.Appl.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Back.",
+      "Name": "Microsoft.Graph.Beta.Back.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Book.",
+      "Name": "Microsoft.Graph.Beta.Book.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Busi.",
+      "Name": "Microsoft.Graph.Beta.Busi.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Cale.",
+      "Name": "Microsoft.Graph.Beta.Cale.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Chan.",
+      "Name": "Microsoft.Graph.Beta.Chan.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Clou.",
+      "Name": "Microsoft.Graph.Beta.Clou.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Comp.",
+      "Name": "Microsoft.Graph.Beta.Comp.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Cros.",
+      "Name": "Microsoft.Graph.Beta.Cros.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Devi.",
+      "Name": "Microsoft.Graph.Beta.Devi.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Dire.",
+      "Name": "Microsoft.Graph.Beta.Dire.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Educ.",
+      "Name": "Microsoft.Graph.Beta.Educ.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Files",
+      "Name": "Microsoft.Graph.Beta.Files",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Fina.",
+      "Name": "Microsoft.Graph.Beta.Fina.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Grou.",
+      "Name": "Microsoft.Graph.Beta.Grou.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Iden.",
+      "Name": "Microsoft.Graph.Beta.Iden.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Mail",
+      "Name": "Microsoft.Graph.Beta.Mail",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Mana.",
+      "Name": "Microsoft.Graph.Beta.Mana.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Netw.",
+      "Name": "Microsoft.Graph.Beta.Netw.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Notes",
+      "Name": "Microsoft.Graph.Beta.Notes",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Peop.",
+      "Name": "Microsoft.Graph.Beta.Peop.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Pers.",
+      "Name": "Microsoft.Graph.Beta.Pers.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Plan.",
+      "Name": "Microsoft.Graph.Beta.Plan.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Repo.",
+      "Name": "Microsoft.Graph.Beta.Repo.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Sche.",
+      "Name": "Microsoft.Graph.Beta.Sche.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Sear.",
+      "Name": "Microsoft.Graph.Beta.Sear.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Secu.",
+      "Name": "Microsoft.Graph.Beta.Secu.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Sites",
+      "Name": "Microsoft.Graph.Beta.Sites",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Teams",
+      "Name": "Microsoft.Graph.Beta.Teams",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.User.",
+      "Name": "Microsoft.Graph.Beta.User.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Users",
+      "Name": "Microsoft.Graph.Beta.Users",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Beta.Wind.",
+      "Name": "Microsoft.Graph.Beta.Wind.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Booki.",
+      "Name": "Microsoft.Graph.Booki.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Bookings",
+      "Name": "Microsoft.Graph.Bookings",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Calen.",
+      "Name": "Microsoft.Graph.Calen.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Calendar",
+      "Name": "Microsoft.Graph.Calendar",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Chang.",
+      "Name": "Microsoft.Graph.Chang.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.ChangeNot.",
+      "Name": "Microsoft.Graph.ChangeNot.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Cloud.",
+      "Name": "Microsoft.Graph.Cloud.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.CloudComm.",
+      "Name": "Microsoft.Graph.CloudComm.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Compl.",
+      "Name": "Microsoft.Graph.Compl.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Compliance",
+      "Name": "Microsoft.Graph.Compliance",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Cross.",
+      "Name": "Microsoft.Graph.Cross.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.CrossDevi.",
+      "Name": "Microsoft.Graph.CrossDevi.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Devic.",
+      "Name": "Microsoft.Graph.Devic.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.DeviceMan.",
+      "Name": "Microsoft.Graph.DeviceMan.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Devices.C.",
+      "Name": "Microsoft.Graph.Devices.C.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Devices.S.",
+      "Name": "Microsoft.Graph.Devices.S.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Direc.",
+      "Name": "Microsoft.Graph.Direc.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Directory.",
+      "Name": "Microsoft.Graph.Directory.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Educa.",
+      "Name": "Microsoft.Graph.Educa.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Education",
+      "Name": "Microsoft.Graph.Education",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Files",
+      "Name": "Microsoft.Graph.Files",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Groups",
+      "Name": "Microsoft.Graph.Groups",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Ident.",
+      "Name": "Microsoft.Graph.Ident.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Identity..",
+      "Name": "Microsoft.Graph.Identity..",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Mail",
+      "Name": "Microsoft.Graph.Mail",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Notes",
+      "Name": "Microsoft.Graph.Notes",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.People",
+      "Name": "Microsoft.Graph.People",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Perso.",
+      "Name": "Microsoft.Graph.Perso.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.PersonalC.",
+      "Name": "Microsoft.Graph.PersonalC.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Plann.",
+      "Name": "Microsoft.Graph.Plann.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Planner",
+      "Name": "Microsoft.Graph.Planner",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Repor.",
+      "Name": "Microsoft.Graph.Repor.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Reports",
+      "Name": "Microsoft.Graph.Reports",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Schem.",
+      "Name": "Microsoft.Graph.Schem.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.SchemaExt.",
+      "Name": "Microsoft.Graph.SchemaExt.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Search",
+      "Name": "Microsoft.Graph.Search",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Secur.",
+      "Name": "Microsoft.Graph.Secur.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Security",
+      "Name": "Microsoft.Graph.Security",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Sites",
+      "Name": "Microsoft.Graph.Sites",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Teams",
+      "Name": "Microsoft.Graph.Teams",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Users",
+      "Name": "Microsoft.Graph.Users",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Users.",
+      "Name": "Microsoft.Graph.Users.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Users.Act.",
+      "Name": "Microsoft.Graph.Users.Act.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "Microsoft.Graph.Users.Fun.",
+      "Name": "Microsoft.Graph.Users.Fun.",
+      "Version": "2.26.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "PSEverything",
+      "Name": "PSEverything",
+      "Version": "3.2.1",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "PSFramework",
+      "Name": "PSFramework",
+      "Version": "1.12.3.",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "PSModuleDevelopment",
+      "Name": "PSModuleDevelopment",
+      "Version": "2.2.12.",
+      "Source": "PSGallery"
+    },
+    {
+      "Id": "PowerShellGet",
+      "Name": "PowerShellGet",
+      "Version": "1.1.0.0",
+      "Source": "PSGallery"
+    }
+  ]
 }
