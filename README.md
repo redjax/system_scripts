@@ -58,8 +58,6 @@ Found a problem? [Open an issue](https://github.com/redjax/system_scripts/issues
 
 As I write/find scripts I want to use across machines (work or personal), I add them to this repository. Scripts can be copy/pasted from the Github repository, or the whole repository can be cloned & scripts can be launched from the cloned repository.
 
-As of 12/23/2024, the repository is very Windows script heavy. I have a number of Bash scripts to add, but they are scattered across other repositories and machines and I have spent most of the effort putting this repository together with new Windows scripts I write.
-
 ## Directories
 
 - [`repo_scripts/`](./repo_scripts)
