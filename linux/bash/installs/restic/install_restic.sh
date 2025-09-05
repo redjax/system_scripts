@@ -97,9 +97,11 @@ function install_restic_macos() {
 function main() {
     OS=$(uname -s)
 
-    RESTIC_INSTALLED="false"
-    RCLONE_INSTALLED="false"
-
+    local RESTIC_INSTALLED="false"
+    local RCLONE_INSTALLED="false"
+    local AUTORESTIC_INSTALLED="false"
+    local INSTALL_RCLONE="false"
+    local INSTALL_AUTORESTIC="false"
 
     if command -v restic &>/dev/null; then
         echo "Restic is already installed."
@@ -108,15 +110,37 @@ function main() {
 
     if command -v rclone &>/dev/null; then
         echo "Rclone is already installed."
+    fi
+
+    if command -v autorestic &>/dev/null; then
+        echo "Autorestic is already installed."
 
         return 0
     fi
 
-    read -rp "Do you want to install rclone as a backend for restic? [y/N]: " reply
-    if [[ "$reply" =~ ^[Yy]$ ]]; then
-        INSTALL_RCLONE=true
-    else
-        INSTALL_RCLONE=false
+    if command -v autorestic &>/dev/null; then
+        echo "Autorestic is already installed."
+        AUTORESTIC_INSTALLED=true
+    fi
+
+    if [[ "$RCLONE_INSTALLED" = "false" ]]; then
+        read -rp "Do you want to install rclone as a backend for restic? [y/N]: " rclone_reply
+        
+        if [[ "$rclone_reply" =~ ^[Yy]$ ]]; then
+            INSTALL_RCLONE=true
+        else
+            INSTALL_RCLONE=false
+        fi
+    fi
+
+    if [[ "$AUTORESTIC_INSTALLED" = "false" ]]; then
+        read -rp "Do you want to install autorestic? [y/N]: " reply
+        
+        if [[ "$reply" =~ ^[Yy]$ ]]; then
+            INSTALL_AUTORESTIC=true
+        else
+            INSTALL_AUTORESTIC=false
+        fi
     fi
 
     case "$OS" in
@@ -139,6 +163,14 @@ function main() {
                     fi
                 fi
             fi
+
+            if [[ "$INSTALL_AUTORESTIC" = "true" ]]; then
+                install_autorestic
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install autorestic."
+                    return 1
+                fi
+            fi
             ;;
         Darwin)
             if [[ ! "$RESTIC_INSTALLED" = "true" ]]; then
@@ -158,6 +190,14 @@ function main() {
                         echo "Failed to install rclone."
                         return 1
                     fi
+                fi
+            fi
+
+            if [[ "$INSTALL_AUTORESTIC" = "true" ]]; then
+                install_autorestic
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install autorestic."
+                    return 1
                 fi
             fi
             ;;
