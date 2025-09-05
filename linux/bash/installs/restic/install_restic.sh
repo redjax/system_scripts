@@ -27,7 +27,7 @@ function install_rclone_linux() {
             ;;
         *)
             echo "Linux distribution $DISTRO is not supported."
-            echo "Please install rclone manually: https://rclone.org/downloads/"
+            echo "Please install rclone manually: https://rclone.org/install/"
             ;;
     esac
 }
@@ -76,7 +76,7 @@ function install_rclone_macos() {
         echo "Installing rclone using Homebrew..."
         brew install rclone
     else
-        echo "Homebrew not found. Please install Homebrew or install rclone manually: https://rclone.org/downloads/"
+        echo "Homebrew not found. Please install Homebrew or install rclone manually: https://rclone.org/install/"
         echo ""
         return 1
     fi
