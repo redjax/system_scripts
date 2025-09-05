@@ -71,16 +71,13 @@ function install_restic_linux() {
     esac
 }
 
-function install_restic_macos() {
-    if [ "${INSTALL_RCLONE:-false}" = "true" ]; then
-        install_rclone_macos
-    fi
+function install_rclone_macos() {
     if command -v brew >/dev/null 2>&1; then
-        echo "Installing restic using Homebrew..."
-        brew install restic
+        echo "Installing rclone using Homebrew..."
+        brew install rclone
     else
-        echo "Homebrew not found. Please install Homebrew or install restic manually:"
-        echo "https://restic.readthedocs.io/en/latest/020_installation.html"
+        echo "Homebrew not found. Please install Homebrew or install rclone manually: https://rclone.org/downloads/"
+        echo ""
         return 1
     fi
 }
