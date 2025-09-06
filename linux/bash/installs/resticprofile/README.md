@@ -221,6 +221,21 @@ b2_example:
     B2_ACCOUNT_ID: "{{ .Env.MY_CUSTOM_ID }}"
     B2_APPLICATION_KEY: "{{ .Env.MY_CUSTOM_KEY }}"
 
+## Example rclone backup
+rclone_backup:
+  inherit: default
+  repository: "rclone:your-remote:restic-backups"
+  backup:
+    source:
+      - "/home/username"
+    tags:
+      - rclone
+      - home
+      - userland
+  env:
+    ## Set path to rclone.conf file. Looks in ~/.config/rclone/rclone.conf by default
+    RCLONE_CONFIG: "{{ .Env.RCLONE_CONFIG | or \"~/.config/rclone/rclone.conf\" }}"
+
 ```
 
 ## Links
