@@ -236,6 +236,38 @@ rclone_backup:
     ## Set path to rclone.conf file. Looks in ~/.config/rclone/rclone.conf by default
     RCLONE_CONFIG: "{{ .Env.RCLONE_CONFIG | or \"~/.config/rclone/rclone.conf\" }}"
 
+## Example pcloud backup
+pcloud-backup:
+  inherit: default
+  repository: "rclone:pcloud:restic-backups"
+  backup:
+    source:
+      - "/home/username"
+    tags:
+      - pcloud
+      - home
+      - userland
+  env:
+    RCLONE_CONFIG: "{{ .Env.RCLONE_CONFIG | or \"~/.config/rclone/rclone.pcloud.conf\" }}"
+
+## Example SSH/SFTP backup
+#  You should configure an entry in ~/.ssh/config and copy your keys in advance
+sftp-backup:
+  inherit: default
+  ## You can parametrize this, i.e.
+  #  repository: "sftp:{{ .Env.SFTP_USER }}@{{ .Env.SFTP_HOST }}:{{ .Env.SFTP_PATH }}"
+  repository: "sftp:user@host:/path/to/restic-repo"
+  backup:
+    source:
+      - "/home/username"
+    tags:
+      - sftp
+  env:
+    ## Optional SSH config file path or overrides.
+    #  Using key-based auth may fail if this is not set.
+    #  Specific to UNIX-like OSes (Linux, macOS).
+    SSH_AUTH_SOCK: "{{ .Env.SSH_AUTH_SOCK }}"
+
 ```
 
 ## Links
