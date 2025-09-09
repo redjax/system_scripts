@@ -2,6 +2,11 @@
 
 set -e
 
+if command -v gitleaks &>/dev/null; then
+    echo "Gitleaks is already installed."
+    exit 1
+fi
+
 # Detect OS and architecture for asset name suffix
 case "$(uname -s)" in
     Linux*)
@@ -51,24 +56,33 @@ if [[ -z "$download_url" ]]; then
     exit 1
 fi
 
+# Create a temporary directory
+temp_dir=$(mktemp -d)
+echo "Created temporary directory $temp_dir"
+
+# Download the asset to the temp directory
+temp_archive="$temp_dir/$asset"
 echo "Downloading $asset ..."
-curl -L -o "$asset" "$download_url"
+curl -L -o "$temp_archive" "$download_url"
 
+# Extract inside the temporary directory
 echo "Extracting $asset ..."
-tar -xzf "$asset"
+tar -xzf "$temp_archive" -C "$temp_dir"
 
-if [[ ! -f gitleaks ]]; then
-    echo "Failed to extract gitleaks binary."
+# Confirm binary exists
+if [[ ! -f "$temp_dir/gitleaks" ]]; then
+    echo "Failed to find gitleaks binary after extraction"
     exit 1
 fi
 
 echo "Installing gitleaks to /usr/local/bin (requires sudo)..."
-chmod +x gitleaks
-sudo mv gitleaks /usr/local/bin/
+chmod +x "$temp_dir/gitleaks"
+sudo mv "$temp_dir/gitleaks" /usr/local/bin/
 
-echo "Cleaning up ..."
-rm -f "$asset"
+# Cleanup
+echo "Cleaning up temporary directory ..."
+rm -rf "$temp_dir"
 
-echo "Installation complete. Gitleaks version:"
+echo "Installation complete. Installed gitleaks version:"
 gitleaks version
 
