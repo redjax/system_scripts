@@ -6,6 +6,16 @@
 
 set -euo pipefail
 
+## Detect distro using /etc/os-release
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
+  DISTRO=$ID
+else
+  echo "Cannot detect Linux distribution."
+  exit 1
+fi
+echo "Detected distro: $DISTRO"
+
 function install_rclone_linux() {
     case $DISTRO in
         ubuntu|debian)
