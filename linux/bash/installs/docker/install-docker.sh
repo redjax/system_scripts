@@ -106,11 +106,13 @@ echo "Docker installed and Docker service started."
 read -p "Add your user to the docker group to run docker without sudo? (y/n): " add_to_docker_group
 if [[ "$add_to_docker_group" =~ ^[Yy]$ ]]; then
   sudo usermod -aG docker "$USER"
-  echo "User $USER added to docker group. You may need to log out and back in for this to take effect."
+  echo "User $USER added to docker group. You may need to log out and back in for this to take effect. You can also try running: newgrp docker"
 
 else
     echo "To add your user to the docker group without sudo, run the following command:"
     echo "  sudo usermod -aG docker \$USER"
+    echo "  To reload your shell without logging out after adding to the docker group, run:"
+    echo "  newgrp docker"
 fi
 
 echo "Docker installed."
