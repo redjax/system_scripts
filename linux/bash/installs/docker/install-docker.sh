@@ -115,4 +115,4 @@ else
     echo "  newgrp docker"
 fi
 
-echo "Docker installed."
+echo "Docker installed. If you get permission errors when trying to run Devpods, try restarting your computer to finish applying changes. The newgrp command does not always fix this."
