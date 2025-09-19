@@ -1,0 +1,6 @@
+.venv/
+.gitignore
+*.log
+*.yml
+*.sh
+*.ps1
