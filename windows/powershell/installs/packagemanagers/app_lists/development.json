@@ -158,5 +158,13 @@
         "scoop_ip": "uv",
         "choco_id": "",
         "aqua_id": ""
+    },
+    {
+        "name": "Azure Developer CLI",
+        "description": "CLI for developing and deploying cloud applications on Azure.",
+        "winget_id": "winget install microsoft.azd",
+        "scoop_id": "azure-developer-cli",
+        "choco_id": "azd",
+        "aqua_id": ""
     }
 ]
