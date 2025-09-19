@@ -1,0 +1,13 @@
+github:
+  token: "ghp_yourgithubtokenhere"
+  user: "github_username"
+
+codeberg:
+  token: "codeberg_api_token_here"
+  user: "codeberg_username"
+
+repositories:
+  - github: "repo1"
+    codeberg: "repo1"
+  - github: "repo2"
+    codeberg: "repo2"
