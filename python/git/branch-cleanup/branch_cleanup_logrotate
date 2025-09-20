@@ -1,0 +1,12 @@
+## Copy this file to /etc/logrotate.d/git_branch_cleanup
+#  Make sure the output dir exists with mkdir -p /var/log/git/branch_cleanup.log
+/var/log/git/branch_cleanup.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root adm
+}
+
