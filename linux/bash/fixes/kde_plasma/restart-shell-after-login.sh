@@ -16,8 +16,10 @@ if ! command -v kstart &> /dev/null; then
 fi
 
 ## Try kstart plasmashell first
-echo "Attempting to run: kstart plasmashell"
+echo "Running 'kstart plasmashell' and waiting 5 seconds..."
 kstart plasmashell
+
+sleep 5
 
 ## Prompt user to check if the issue is fixed
 while true; do
@@ -37,6 +39,9 @@ sleep 1
 kstart plasmashell
 
 echo "Fallback executed: killall plasmashell && kstart plasmashell"
+echo "Pausing for 3 seconds..."
+
+sleep 3
 
 ## Prompt user to check if the issue is fixed
 while true; do
@@ -50,3 +55,4 @@ while true; do
 done
 
 echo "Unable to fix the issue. If Plasma shell has not started yet, it may soon, otherwise you should reboot to resolve the issue."
+
