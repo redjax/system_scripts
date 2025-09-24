@@ -3,16 +3,49 @@
 ## Sometimes after logging back into KDE, especially after the machine goes to sleep,
 #  the shell is not restarted. This script forces the shell to restart.
 
-## Check if KDE Plasma desktop session is running
-if [[ "$XDG_CURRENT_DESKTOP" != *KDE* ]] && [[ "$DESKTOP_SESSION" != *plasma* ]]; then
-  echo "KDE Plasma does not appear to be running on this session."
-  exit 1
-fi
-
 ## Check if kstart command is available
 if ! command -v kstart &> /dev/null; then
   echo "kstart not found. Please ensure KDE and kstart are installed."
   exit 2
+fi
+
+## Check if KDE Plasma desktop session is running
+if [[ "$XDG_CURRENT_DESKTOP" != *KDE* ]] && [[ "$DESKTOP_SESSION" != *plasma* ]]; then
+  echo "KDE Plasma does not appear to be running on this session."
+
+  read -p "Do you want to start Plasma? (yes/no): " yn
+
+  case $yn in
+    [Yy]* )
+      echo "Starting plasma server with 'kstart plasma shell'"
+      kstart plasmashell
+
+      sleep 3
+
+      read -p "Did Plasma startt? (yes/no): " yn
+      case $yn in
+        [Yy]* )
+          exit 0
+          ;;
+        [Nn]* )
+          echo "You may need to log out/back in, or restart your machine."
+          exit 1
+          ;;
+        * )
+          echo "Please answer 'yes' or 'no'"
+          ;;
+      esac
+      ;;
+
+    [Nn]* )
+      exit 0
+      ;;
+    * )
+      echo "Please answer yes or no."
+      ;;
+  esac
+
+  exit 1
 fi
 
 ## Try kstart plasmashell first
