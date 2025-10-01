@@ -7,6 +7,16 @@
 
 set -euo pipefail
 
+function detect_distro() {
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        echo "$ID"
+    else
+        echo "unknown"
+    fi
+}
+
+
 function install_rclone_linux() {
     case $DISTRO in
         ubuntu|debian)
@@ -169,6 +179,7 @@ function install_resticprofile_macos() {
 
 function main() {
     OS=$(uname -s)
+    DISTRO=$(detect_distro)
 
     local RESTIC_INSTALLED="false"
     local RCLONE_INSTALLED="false"
