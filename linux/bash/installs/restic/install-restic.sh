@@ -173,6 +173,21 @@ function main() {
     if command -v restic &>/dev/null; then
         echo "Restic is already installed."
         RESTIC_INSTALLED="true"
+    else
+        case "$OS" in
+            Linux)
+                install_restic_linux
+                ;;
+            Darwin)
+                install_restic_macos
+                ;;
+            *)
+                echo "Operating system $OS is not supported by this script."
+                echo "Please install restic manually: https://restic.readthedocs.io/en/latest/020_installation.html"
+
+                return 1
+                ;;
+        esac
     fi
 
     ## Check rclone is installed
