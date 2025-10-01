@@ -16,32 +16,15 @@ function detect_distro() {
     fi
 }
 
-
 function install_rclone_linux() {
-    case $DISTRO in
-        ubuntu|debian)
-            sudo apt update
-            sudo apt install -y rclone
-            ;;
-        fedora)
-            sudo dnf install -y rclone
-            ;;
-        centos|rhel)
-            sudo yum install -y epel-release
-            sudo yum install -y rclone
-            ;;
-        arch|manjaro)
-            sudo pacman -Sy --noconfirm rclone
-            ;;
-        alpine)
-            sudo apk add rclone
-            ;;
-        *)
-            echo "Linux distribution $DISTRO is not supported."
-            echo "Please install rclone manually: https://rclone.org/install/"
-            return 1 ## ensure exit code is failure
-            ;;
-    esac
+    echo "Installing rclone using official install script..."
+    # Runs as root, downloads latest stable binary, installs globally
+    if ! curl -s https://rclone.org/install.sh | sudo bash; then
+        echo "Failed to install rclone using official script."
+        return 1
+    fi
+    echo "rclone installed successfully."
+    return 0
 }
 
 function install_resticprofile_linux() {
