@@ -84,6 +84,37 @@ function install_restic_linux() {
     esac
 }
 
+function install_autorestic() {
+    if command -v wget >/dev/null 2>&1; then
+        WGET_INSTALLED="true"
+    fi
+
+    if command -v curl >/dev/null 2>&1; then
+        CURL_INSTALLED="true"
+    fi
+
+    if [[ "$WGET_INSTALLED" == "" ]] && [[ "$CURL_INSTALLED" == "" ]]; then
+        echo "[ERROR] Missing both wget & curl. Install one or both and try again."
+        exit 1
+    fi
+
+    if [[ "$WGET_INSTALLED" == "true" ]]; then
+        echo "Installing autorestic"
+        wget -qO - https://raw.githubusercontent.com/cupcakearmy/autorestic/master/install.sh | sudo bash
+
+        if [[ $? -ne 0 ]]; then
+            echo "[ERROR] Failed to install autorestic."
+        fi
+    elif [[ "$CURL_INSTALLED" == "true" ]]; then
+        echo "Installing autorestic"
+        curl -LsSf https://raw.githubusercontent.com/cupcakearmy/autorestic/master/install.sh | sudo bash
+
+        if [[ $? -ne 0 ]]; then
+            echo "[ERROR] Failed to install autorestic."
+        fi
+    fi
+}
+
 function install_rclone_macos() {
     if command -v brew >/dev/null 2>&1; then
         echo "Installing rclone using Homebrew..."
@@ -129,7 +160,7 @@ function main() {
     local INSTALL_RESTIC="false"
     local INSTALL_RCLONE="false"
     local INSTALL_AUTORESTIC="false"
-    local INSTALL_RESTICPROFILE="falsse"
+    local INSTALL_RESTICPROFILE="false"
 
     ## Check restic is installed
     if command -v restic &>/dev/null; then
@@ -219,7 +250,7 @@ function main() {
 
             if [[ "$INSTALL_RESTICPROFILE" = "true" ]]; then
                 if [[ "$RESTICPROFILE_INSTALLED" = "false" ]]; then
-                    install_resticprofile
+                    install_resticprofile_linux
 
                     if [[ $? -ne 0 ]]; then
                         echo "Failed to install resticprofile."
