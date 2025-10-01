@@ -48,42 +48,52 @@ function install_resticprofile_linux() {
 }
 
 function install_restic_linux() {
-    ## Detect distro and install using native package managers
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        DISTRO=$ID
-        VERSION_ID=$VERSION_ID
-    else
-        echo "Cannot detect Linux distribution."
+    echo "Determining latest Restic release..."
+
+    # Get latest version tag using GitHub API
+    RESTIC_VERSION=$(curl -s https://api.github.com/repos/restic/restic/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+    if [[ -z "$RESTIC_VERSION" ]]; then
+        echo "Failed to retrieve latest Restic version."
         return 1
     fi
 
-    echo "Detected Linux distro: $DISTRO version $VERSION_ID"
+    echo "Latest Restic version is $RESTIC_VERSION"
 
-    case $DISTRO in
-        ubuntu|debian)
-            sudo apt update
-            sudo apt install -y restic
-            ;;
-        fedora)
-            sudo dnf install -y restic
-            ;;
-        centos|rhel)
-            sudo yum install -y epel-release
-            sudo yum install -y restic
-            ;;
-        arch|manjaro)
-            sudo pacman -Sy --noconfirm restic
-            ;;
-        alpine)
-            sudo apk add restic
-            ;;
-        *)
-            echo "Linux distribution $DISTRO is not supported by this script."
-            echo "Please install restic manually: https://restic.readthedocs.io/en/latest/020_installation.html"
-            return 1 ## exit code should be consistent
-            ;;
-    esac
+    # Remove leading 'v' if present for URL construction
+    RESTIC_VERSION_CLEAN=${RESTIC_VERSION#v}
+
+    # Construct download URL
+    URL="https://github.com/restic/restic/releases/download/${RESTIC_VERSION}/restic_${RESTIC_VERSION_CLEAN}_linux_amd64.bz2"
+
+    # Create temporary directory
+    TMPDIR=$(mktemp -d)
+
+    # Download binary
+    echo "Downloading Restic from $URL..."
+    curl -L "$URL" -o "${TMPDIR}/restic.bz2"
+    if [[ $? -ne 0 ]]; then
+        echo "Failed to download restic binary."
+        rm -rf "$TMPDIR"
+        return 1
+    fi
+
+    # Extract the binary
+    bunzip2 "${TMPDIR}/restic.bz2"
+    if [[ $? -ne 0 ]]; then
+        echo "Failed to decompress restic binary."
+        rm -rf "$TMPDIR"
+        return 1
+    fi
+
+    # Move to /usr/local/bin and mark executable
+    sudo mv "${TMPDIR}/restic" /usr/local/bin/restic
+    sudo chmod +x /usr/local/bin/restic
+
+    # Cleanup temporary directory
+    rm -rf "$TMPDIR"
+
+    echo "Restic installed to /usr/local/bin/restic"
+    return 0
 }
 
 function install_autorestic() {
