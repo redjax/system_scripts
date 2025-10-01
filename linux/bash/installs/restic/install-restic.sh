@@ -174,20 +174,7 @@ function main() {
         echo "Restic is already installed."
         RESTIC_INSTALLED="true"
     else
-        case "$OS" in
-            Linux)
-                install_restic_linux
-                ;;
-            Darwin)
-                install_restic_macos
-                ;;
-            *)
-                echo "Operating system $OS is not supported by this script."
-                echo "Please install restic manually: https://restic.readthedocs.io/en/latest/020_installation.html"
-
-                return 1
-                ;;
-        esac
+        INSTALL_RESTIC="true"  ## Set this so install runs below in OS case block
     fi
 
     ## Check rclone is installed
@@ -196,7 +183,6 @@ function main() {
         RCLONE_INSTALLED="true"
     else
         read -rp "Do you want to install rclone as a backend for restic? [y/N]: " rclone_reply
-
         if [[ "$rclone_reply" =~ ^[Yy]$ ]]; then
             INSTALL_RCLONE="true"
         fi
@@ -208,7 +194,6 @@ function main() {
         AUTORESTIC_INSTALLED="true"
     else
         read -rp "Do you want to install autorestic? [y/N]: " reply
-
         if [[ "$reply" =~ ^[Yy]$ ]]; then
             INSTALL_AUTORESTIC="true"
         fi
@@ -220,16 +205,15 @@ function main() {
         RESTICPROFILE_INSTALLED="true"
     else
         read -rp "Do you want to install resticprofile? [y/N]: " reply
-
         if [[ "$reply" =~ ^[Yy]$ ]]; then
             INSTALL_RESTICPROFILE="true"
         fi
     fi
 
-    ## Detect OS
+    ## Detect OS and install accordingly
     case "$OS" in
         Linux)
-            if [[ "$RESTIC_INSTALLED" == "false" ]]; then
+            if [[ "$INSTALL_RESTIC" == "true" ]]; then
                 install_restic_linux
                 if [[ $? -ne 0 ]]; then
                     echo "Failed to install restic."
@@ -237,44 +221,32 @@ function main() {
                 fi
             fi
 
-            if [[ "$INSTALL_RCLONE" == "true" ]]; then
-                if [[ "$RCLONE_INSTALLED" == "false" ]]; then
-                    install_rclone_linux
-                    if [[ $? -ne 0 ]]; then
-                        echo "Failed to install rclone."
-                        return 1
-                    fi
-                else
-                    echo "Rclone is already installed."
+            if [[ "$INSTALL_RCLONE" == "true" && "$RCLONE_INSTALLED" == "false" ]]; then
+                install_rclone_linux
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install rclone."
+                    return 1
                 fi
             fi
 
-            if [[ "$INSTALL_AUTORESTIC" == "true" ]]; then
-                if [[ "$AUTORESTIC_INSTALLED" == "false" ]]; then
-                    install_autorestic
-                    if [[ $? -ne 0 ]]; then
-                        echo "Failed to install autorestic."
-                        return 1
-                    fi
-                else
-                    echo "Autorestic is already installed."
+            if [[ "$INSTALL_AUTORESTIC" == "true" && "$AUTORESTIC_INSTALLED" == "false" ]]; then
+                install_autorestic
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install autorestic."
+                    return 1
                 fi
             fi
 
-            if [[ "$INSTALL_RESTICPROFILE" == "true" ]]; then
-                if [[ "$RESTICPROFILE_INSTALLED" == "false" ]]; then
-                    install_resticprofile_linux
-                    if [[ $? -ne 0 ]]; then
-                        echo "Failed to install resticprofile."
-                        return 1
-                    fi
-                else
-                    echo "Resticprofile is already installed."
+            if [[ "$INSTALL_RESTICPROFILE" == "true" && "$RESTICPROFILE_INSTALLED" == "false" ]]; then
+                install_resticprofile_linux
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install resticprofile."
+                    return 1
                 fi
             fi
             ;;
         Darwin)
-            if [[ "$RESTIC_INSTALLED" == "false" ]]; then
+            if [[ "$INSTALL_RESTIC" == "true" ]]; then
                 install_restic_macos
                 if [[ $? -ne 0 ]]; then
                     echo "Failed to install restic."
@@ -282,39 +254,27 @@ function main() {
                 fi
             fi
 
-            if [[ "$INSTALL_RCLONE" == "true" ]]; then
-                if [[ "$RCLONE_INSTALLED" == "false" ]]; then
-                    install_rclone_macos
-                    if [[ $? -ne 0 ]]; then
-                        echo "Failed to install rclone."
-                        return 1
-                    fi
-                else
-                    echo "Rclone is already installed."
+            if [[ "$INSTALL_RCLONE" == "true" && "$RCLONE_INSTALLED" == "false" ]]; then
+                install_rclone_macos
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install rclone."
+                    return 1
                 fi
             fi
 
-            if [[ "$INSTALL_AUTORESTIC" == "true" ]]; then
-                if [[ "$AUTORESTIC_INSTALLED" == "false" ]]; then
-                    install_autorestic
-                    if [[ $? -ne 0 ]]; then
-                        echo "Failed to install autorestic."
-                        return 1
-                    fi
-                else
-                    echo "Autorestic is already installed."
+            if [[ "$INSTALL_AUTORESTIC" == "true" && "$AUTORESTIC_INSTALLED" == "false" ]]; then
+                install_autorestic
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install autorestic."
+                    return 1
                 fi
             fi
 
-            if [[ "$INSTALL_RESTICPROFILE" == "true" ]]; then
-                if [[ "$RESTICPROFILE_INSTALLED" == "false" ]]; then
-                    install_resticprofile_macos
-                    if [[ $? -ne 0 ]]; then
-                        echo "Failed to install resticprofile."
-                        return 1
-                    fi
-                else
-                    echo "Resticprofile is already installed."
+            if [[ "$INSTALL_RESTICPROFILE" == "true" && "$RESTICPROFILE_INSTALLED" == "false" ]]; then
+                install_resticprofile_macos
+                if [[ $? -ne 0 ]]; then
+                    echo "Failed to install resticprofile."
+                    return 1
                 fi
             fi
             ;;
@@ -325,17 +285,9 @@ function main() {
     esac
 
     echo "Restic installation completed."
-    if [[ "$INSTALL_RCLONE" == "true" ]]; then
-        echo "Rclone installation completed."
-    fi
-
-    if [[ "$INSTALL_AUTORESTIC" == "true" ]]; then
-        echo "Autorestic installation completed."
-    fi
-
-    if [[ "$INSTALL_RESTICPROFILE" == "true" ]]; then
-        echo "Resticprofile installation completed."
-    fi
+    [[ "$INSTALL_RCLONE" == "true" ]] && echo "Rclone installation completed."
+    [[ "$INSTALL_AUTORESTIC" == "true" ]] && echo "Autorestic installation completed."
+    [[ "$INSTALL_RESTICPROFILE" == "true" ]] && echo "Resticprofile installation completed."
 }
 
 main
