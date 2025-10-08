@@ -1,0 +1,21 @@
+[flavor]
+
+## Dark options
+# kanagawa
+# catppuccin-macchiato
+# catppuccin-frappe
+# dracula
+# gruvbox-dark
+# ayu-dark
+# flexoki-dark
+# vscode-dark-modern
+# vscode-dark-plus
+dark = "kanagawa"
+
+## Light options
+# catppuccin-latte
+# kanagawa-lotus
+# flexoki-light
+# vscode-light-modern
+# vscode-light-plus
+light = "kanagawa-lotus"
