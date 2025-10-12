@@ -4,7 +4,7 @@
 #  the shell is not restarted. This script forces the shell to restart.
 
 ## Check if kstart command is available
-if ! command -v kstart &> /dev/null; then
+if ! command -v kstart &>/dev/null; then
   echo "kstart not found. Please ensure KDE and kstart are installed."
   exit 2
 fi
@@ -16,33 +16,33 @@ if [[ "$XDG_CURRENT_DESKTOP" != *KDE* ]] && [[ "$DESKTOP_SESSION" != *plasma* ]]
   read -p "Do you want to start Plasma? (yes/no): " yn
 
   case $yn in
-    [Yy]* )
-      echo "Starting plasma server with 'kstart plasma shell'"
-      kstart plasmashell
+  [Yy]*)
+    echo "Starting plasma server with 'kstart plasma shell'"
+    kstart plasmashell
 
-      sleep 3
+    sleep 3
 
-      read -p "Did Plasma startt? (yes/no): " yn
-      case $yn in
-        [Yy]* )
-          exit 0
-          ;;
-        [Nn]* )
-          echo "You may need to log out/back in, or restart your machine."
-          exit 1
-          ;;
-        * )
-          echo "Please answer 'yes' or 'no'"
-          ;;
-      esac
-      ;;
-
-    [Nn]* )
+    read -n 1 -r -p "Did Plasma start? (yes/no): " yn
+    case $yn in
+    [Yy]*)
       exit 0
       ;;
-    * )
-      echo "Please answer yes or no."
+    [Nn]*)
+      echo "You may need to log out/back in, or restart your machine."
+      exit 1
       ;;
+    *)
+      echo "Please answer 'yes' or 'no'"
+      ;;
+    esac
+    ;;
+
+  [Nn]*)
+    exit 0
+    ;;
+  *)
+    echo "Please answer yes or no."
+    ;;
   esac
 
   exit 1
@@ -56,11 +56,15 @@ sleep 5
 
 ## Prompt user to check if the issue is fixed
 while true; do
-  read -p "Did running 'kstart plasmashell' fix the panel issue? (yes/no): " yn
+  read -n 1 -r -p "Did running 'kstart plasmashell' fix the panel issue? (yes/no): " yn
   case $yn in
-    [Yy]* ) echo "Exiting script."; exit 0;;
-    [Nn]* )  break;;
-    * )   echo "Please answer yes or no.";;
+  [Yy]*)
+    echo ""
+    echo "Exiting script."
+    exit 0
+    ;;
+  [Nn]*) break ;;
+  *) echo "Please answer yes or no." ;;
   esac
 done
 
@@ -81,11 +85,13 @@ while true; do
   read -p "Did running 'killall plasmashell && kstart plasmashell' fix the panel issue? (yes/no): " yn
 
   case $yn in
-    [Yy]* ) echo "Exiting script."; exit 0;;
-    [Nn]* )  break;;
-    * )   echo "Please answer yes or no.";;
+  [Yy]*)
+    echo "Exiting script."
+    exit 0
+    ;;
+  [Nn]*) break ;;
+  *) echo "Please answer yes or no." ;;
   esac
 done
 
 echo "Unable to fix the issue. If Plasma shell has not started yet, it may soon, otherwise you should reboot to resolve the issue."
-
