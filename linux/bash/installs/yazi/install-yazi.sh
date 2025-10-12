@@ -10,7 +10,6 @@ if ! command -v unzip &>/dev/null; then
     exit 1
 fi
 
-# Detect platform and architecture
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 
@@ -27,7 +26,6 @@ Darwin)
     ;;
 esac
 
-# Normalize arch names
 if [[ "$ARCH" == "x86_64" ]]; then
     ARCH="x86_64"
 elif [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
@@ -37,56 +35,69 @@ else
     exit 1
 fi
 
-# Query latest release asset from GitHub API for the correct zip
-LATEST_JSON=$(curl -s https://api.github.com/repos/sxyazi/yazi/releases/latest)
-ASSET="yazi-${ARCH}-${PLATFORM}.zip"
-ASSET_URL=$(echo "$LATEST_JSON" | grep "browser_download_url" | grep "${ASSET}" | sed -E 's/.*"(https:[^"]+)".*/\1/')
-
-if [[ -z "$ASSET_URL" ]]; then
-    echo "Could not find release asset for $ARCH-$PLATFORM"
-    exit 1
+# Detect if Debian-based (for adding debian.griffo.io repo)
+IS_DEBIAN=0
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+    if [[ "$ID" == "debian" || "$ID_LIKE" == *"debian"* ]]; then
+        IS_DEBIAN=1
+    fi
 fi
 
-# Create a temporary directory and cleanup on exit
-TMPDIR="$(mktemp -d)"
-trap 'rm -rf "$TMPDIR"' EXIT
+if [[ "$IS_DEBIAN" -eq 1 ]]; then
+    echo "Detected Debian-based system. Installing Yazi from debian.griffo.io repo..."
 
-echo "Downloading $ASSET_URL to $TMPDIR/$ASSET"
-curl -L -o "$TMPDIR/$ASSET" "$ASSET_URL"
+    # Add GPG key
+    curl -sS https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/debian.griffo.io.gpg
 
-echo "Extracting $ASSET in $TMPDIR"
-unzip -q -o "$TMPDIR/$ASSET" -d "$TMPDIR"
+    # Add repository to sources list
+    echo "deb https://debian.griffo.io/apt $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list
 
-# Find yazi and ya binaries after extraction
-YAZI_BIN=$(find "$TMPDIR" -type f -name "yazi" | head -n 1)
-YA_BIN=$(find "$TMPDIR" -type f -name "ya" | head -n 1)
+    sudo apt-get update
 
-if [[ -z "$YAZI_BIN" ]]; then
-    echo "ERROR: 'yazi' binary not found after extraction."
-    exit 1
+    # Install yazi and dependencies from repo
+    sudo apt-get install -y yazi
+
+else
+    # Fallback: install from GitHub release zip
+
+    LATEST_JSON=$(curl -s https://api.github.com/repos/sxyazi/yazi/releases/latest)
+    ASSET="yazi-${ARCH}-${PLATFORM}.zip"
+    ASSET_URL=$(echo "$LATEST_JSON" | grep "browser_download_url" | grep "${ASSET}" | sed -E 's/.*"(https:[^"]+)".*/\1/')
+
+    if [[ -z "$ASSET_URL" ]]; then
+        echo "Could not find release asset for $ARCH-$PLATFORM"
+        exit 1
+    fi
+
+    TMPDIR=$(mktemp -d)
+    trap 'rm -rf "$TMPDIR"' EXIT
+
+    echo "Downloading $ASSET_URL to $TMPDIR/$ASSET"
+    curl -L -o "$TMPDIR/$ASSET" "$ASSET_URL"
+
+    echo "Extracting $ASSET in $TMPDIR"
+    unzip -q -o "$TMPDIR/$ASSET" -d "$TMPDIR"
+
+    YAZI_BIN=$(find "$TMPDIR" -type f -name "yazi" | head -n 1)
+    YA_BIN=$(find "$TMPDIR" -type f -name "ya" | head -n 1)
+
+    if [[ -z "$YAZI_BIN" ]]; then
+        echo "ERROR: 'yazi' binary not found after extraction."
+        exit 1
+    fi
+
+    if [[ -z "$YA_BIN" ]]; then
+        echo "ERROR: 'ya' binary not found after extraction."
+        exit 1
+    fi
+
+    chmod +x "$YAZI_BIN" "$YA_BIN"
+    echo "Moving binaries to /usr/local/bin/"
+    sudo mv "$YAZI_BIN" /usr/local/bin/yazi
+    sudo mv "$YA_BIN" /usr/local/bin/ya
+    echo "Binaries installed to /usr/local/bin/"
 fi
-
-if [[ -z "$YA_BIN" ]]; then
-    echo "ERROR: 'ya' binary not found after extraction."
-    exit 1
-fi
-
-# Validate binary file type
-if ! file "$YAZI_BIN" | grep -Eq 'ELF|Mach-O'; then
-    echo "ERROR: Extracted 'yazi' is not a valid binary."
-    exit 1
-fi
-
-if ! file "$YA_BIN" | grep -Eq 'ELF|Mach-O'; then
-    echo "ERROR: Extracted 'ya' is not a valid binary."
-    exit 1
-fi
-
-chmod +x "$YAZI_BIN" "$YA_BIN"
-echo "Moving binaries to /usr/local/bin/"
-sudo mv "$YAZI_BIN" /usr/local/bin/yazi
-sudo mv "$YA_BIN" /usr/local/bin/ya
-echo "Binaries installed to /usr/local/bin/"
 
 # Handle completions directory if exists
 COMPLETIONS_DIR=$(find "$TMPDIR" -type d -name "completions" | head -n 1)
