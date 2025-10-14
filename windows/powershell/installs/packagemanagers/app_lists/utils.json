@@ -366,5 +366,12 @@
         "scoop_id": "azure-developer-cli",
         "choco_id": "azd",
         "aqua_id": ""
+    },
+    {
+        "name": "Superfile",
+        "description": "Terminal-based file explorer",
+        "winget_id": "yorukot.superfile,""scoop_id": "superfile",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
