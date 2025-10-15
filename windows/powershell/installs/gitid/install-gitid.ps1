@@ -6,7 +6,7 @@ if ($arch -notin @('x64', 'arm64')) {
     exit 1
 }
 
-# Map architecture to common release asset string format
+# Map architecture to common release asset string format used in gitid releases
 switch ($arch) {
     "x64" { $archStr = "amd64" }
     "arm64" { $archStr = "arm64" }
@@ -19,20 +19,20 @@ switch ($arch) {
 $repo = "nathabonfim59/gitid"
 $apiUrl = "https://api.github.com/repos/$repo/releases/latest"
 
-# Temporary directory for download and extraction
+# Create a temporary directory for download and extraction
 $tmpDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath()) -Name ("gitid_install_" + [guid]::NewGuid().ToString()) -Force
 
 try {
-    Write-Host "Fetching latest release info..."
+    Write-Host "Fetching latest release info from GitHub..."
     $release = Invoke-RestMethod -Uri $apiUrl
 
-    # Find matching asset for Windows + arch
+    # Find the first asset matching "windows" and the architecture string
     $asset = $release.assets | Where-Object {
         $_.name -match "windows" -and $_.name -match $archStr
     } | Select-Object -First 1
 
     if (-not $asset) {
-        Write-Error "No suitable release asset found for Windows and architecture $archStr"
+        Write-Error "No suitable release asset found for Windows and architecture '$archStr'"
         exit 1
     }
 
@@ -42,27 +42,26 @@ try {
     Write-Host "Downloading $($asset.name) ..."
     Invoke-WebRequest -Uri $assetUrl -OutFile $fileName
 
-    # Prepare install directory
-    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid"
+    # Define install directory ("%LOCALAPPDATA%\Programs\gitid\bin")
+    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid\bin"
     if (-not (Test-Path $installDir)) {
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
     }
 
-    # Extract depending on file extension
-    Write-Host "Extracting..."
+    Write-Host "Extracting downloaded archive..."
     if ($fileName -like "*.zip") {
         Expand-Archive -Path $fileName -DestinationPath $tmpDir -Force
     } elseif ($fileName -like "*.tar.gz") {
-        # Requires tar on system (Windows 10+)
+        # Requires tar available (Windows 10+)
         tar -xzf $fileName -C $tmpDir
     } else {
-        # Assume it's executable binary directly
-        Copy-Item $fileName -Destination $installDir\gitid.exe -Force
+        # If it's a single executable, copy directly
+        Copy-Item $fileName -Destination (Join-Path $installDir "gitid.exe") -Force
         Write-Host "Installed gitid to $installDir\gitid.exe"
         exit 0
     }
 
-    # Find extracted gitid.exe
+    # Locate the extracted gitid.exe
     $exePath = Get-ChildItem -Path $tmpDir -Recurse -Filter "gitid.exe" | Select-Object -First 1
 
     if (-not $exePath) {
@@ -70,13 +69,28 @@ try {
         exit 1
     }
 
-    # Move executable to install directory
+    # Move gitid.exe to install directory
     Move-Item -Path $exePath.FullName -Destination (Join-Path $installDir "gitid.exe") -Force
-
     Write-Host "gitid installed to $installDir\gitid.exe"
-    Write-Host "Make sure to add '$installDir' to your PATH environment variable if not already present, so you can run 'gitid' from any command line."
+
+    # Update User PATH environment variable if needed
+    $currentUserPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $paths = $currentUserPath -split ';'
+    if ($paths -notcontains $installDir) {
+        $newUserPath = if ([string]::IsNullOrEmpty($currentUserPath)) {
+            $installDir
+        } else {
+            "$currentUserPath;$installDir"
+        }
+        [Environment]::SetEnvironmentVariable('Path', $newUserPath, 'User')
+        Write-Host "Added $installDir to User PATH environment variable."
+        Write-Host "Restart your terminal or log off/on for changes to take effect."
+    } else {
+        Write-Host "$installDir is already in the User PATH."
+    }
 } finally {
-    # Cleanup temp directory
+    # Clean up temporary directory
     Remove-Item -Path $tmpDir -Recurse -Force
 }
+
 
