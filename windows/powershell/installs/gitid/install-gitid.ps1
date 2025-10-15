@@ -57,7 +57,6 @@ try {
         # If single executable, just copy it
         Copy-Item -Path $fileName -Destination (Join-Path $installDir "gitid.exe") -Force
         Write-Host "Installed gitid to $installDir\gitid.exe"
-        exit 0
     }
 
     # Locate extracted gitid.exe
