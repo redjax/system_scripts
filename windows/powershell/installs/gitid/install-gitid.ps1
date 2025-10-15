@@ -43,7 +43,7 @@ try {
     Invoke-WebRequest -Uri $assetUrl -OutFile $fileName
 
     # Prepare install directory
-    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid\bin"
+    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid"
     if (-not (Test-Path $installDir)) {
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
     }
