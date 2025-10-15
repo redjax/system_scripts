@@ -1,17 +1,17 @@
 # Detect CPU architecture (x64 or arm64)
-$arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLower()
+$archRaw = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLower()
 
-if ($arch -notin @('x64', 'arm64')) {
-    Write-Error "Unsupported architecture: $arch"
+if ($archRaw -notin @('x64', 'arm64')) {
+    Write-Error "Unsupported architecture: $archRaw"
     exit 1
 }
 
-# Map architecture to release asset string format
-switch ($arch) {
+# Map .NET architecture to release asset naming scheme
+switch ($archRaw) {
     "x64" { $archStr = "amd64" }
     "arm64" { $archStr = "arm64" }
     default {
-        Write-Error "Unsupported architecture mapping: $arch"
+        Write-Error "Unsupported architecture mapping: $archRaw"
         exit 1
     }
 }
@@ -19,20 +19,20 @@ switch ($arch) {
 $repo = "nathabonfim59/gitid"
 $apiUrl = "https://api.github.com/repos/$repo/releases/latest"
 
-# Create temp directory for download and extraction
+# Create temp directory for download/extraction
 $tmpDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath()) -Name ("gitid_install_" + [guid]::NewGuid().ToString()) -Force
 
 try {
     Write-Host "Fetching latest release info from GitHub..."
     $release = Invoke-RestMethod -Uri $apiUrl
 
-    # Select first Windows asset matching architecture
-    $asset = $release.assets | Where-Object {
-        $_.name -match "windows" -and $_.name -match $archStr
+    # Pick first asset matching windows and architecture
+    $asset = $release.assets | Where-Object { 
+        $_.name -match "windows" -and $_.name -match $archStr 
     } | Select-Object -First 1
 
     if (-not $asset) {
-        Write-Error "No suitable release asset found for Windows and architecture '$archStr'"
+        Write-Error "No suitable release asset found for Windows and architecture '$archStr'."
         exit 1
     }
 
@@ -42,8 +42,8 @@ try {
     Write-Host "Downloading $($asset.name)..."
     Invoke-WebRequest -Uri $assetUrl -OutFile $fileName
 
-    # Define install directory: %LOCALAPPDATA%\Programs\gitid\bin
-    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid\bin"
+    # Define and create install directory
+    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid"
     if (-not (Test-Path $installDir)) {
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
     }
@@ -54,13 +54,13 @@ try {
     } elseif ($fileName -like "*.tar.gz") {
         tar -xzf $fileName -C $tmpDir
     } else {
-        # Assume single executable, copy directly
-        Copy-Item $fileName -Destination (Join-Path $installDir "gitid.exe") -Force
+        # If single executable, just copy it
+        Copy-Item -Path $fileName -Destination (Join-Path $installDir "gitid.exe") -Force
         Write-Host "Installed gitid to $installDir\gitid.exe"
         exit 0
     }
 
-    # Find extracted gitid.exe
+    # Locate extracted gitid.exe
     $exePath = Get-ChildItem -Path $tmpDir -Recurse -Filter "gitid.exe" | Select-Object -First 1
 
     if (-not $exePath) {
@@ -68,27 +68,30 @@ try {
         exit 1
     }
 
-    # Move gitid.exe to install directory
+    # Move executable to installDir
     Move-Item -Path $exePath.FullName -Destination (Join-Path $installDir "gitid.exe") -Force
+
     Write-Host "gitid installed to $installDir\gitid.exe"
 
-    # Permanently add install folder to user PATH if missing
-    $currentUserPath = [Environment]::GetEnvironmentVariable('Path', 'User')
-    $paths = $currentUserPath -split ';' | ForEach-Object { $_.Trim() }
-    if ($paths -notcontains $installDir) {
-        $newUserPath = if ([string]::IsNullOrEmpty($currentUserPath)) {
+    # Permanently add installDir to User PATH if missing
+    $currentUserPath = [Environment]::GetEnvironmentVariable('Path', 'User') -or ''
+    $paths = $currentUserPath -split ';' | ForEach-Object { $_.TrimEnd('\') }
+
+    if (-not ($paths -contains $installDir)) {
+        $newUserPath = if ([string]::IsNullOrWhiteSpace($currentUserPath)) {
             $installDir
         } else {
             "$currentUserPath;$installDir"
         }
+
         [Environment]::SetEnvironmentVariable('Path', $newUserPath, 'User')
         Write-Host "Added $installDir to the user PATH environment variable."
-        Write-Host "Restart your terminal or log off and back on for changes to take effect."
+        Write-Host "You must restart your terminal or log off and log back in to apply the PATH change."
     } else {
         Write-Host "$installDir is already in the user PATH environment variable."
     }
 } finally {
-    # Clean up temporary directory
+    # Clean up temp files
     Remove-Item -Path $tmpDir -Recurse -Force
 }
 
