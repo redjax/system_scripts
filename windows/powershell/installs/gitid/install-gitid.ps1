@@ -23,7 +23,7 @@ $apiUrl = "https://api.github.com/repos/$repo/releases/latest"
 $tmpDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath()) -Name ("gitid_install_" + [guid]::NewGuid().ToString()) -Force
 
 try {
-    Write-Host "Fetching latest release info from GitHub..."
+    Write-Host "Fetching latest release info from GitHub"
     $release = Invoke-RestMethod -Uri $apiUrl
 
     # Pick first asset matching windows and architecture
@@ -39,7 +39,7 @@ try {
     $assetUrl = $asset.browser_download_url
     $fileName = Join-Path $tmpDir $asset.name
 
-    Write-Host "Downloading $($asset.name)..."
+    Write-Host "Downloading $($asset.name)"
     Invoke-WebRequest -Uri $assetUrl -OutFile $fileName
 
     # Define and create install directory
@@ -48,7 +48,7 @@ try {
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
     }
 
-    Write-Host "Extracting downloaded archive..."
+    Write-Host "Extracting downloaded archive"
     if ($fileName -like "*.zip") {
         Expand-Archive -Path $fileName -DestinationPath $tmpDir -Force
     } elseif ($fileName -like "*.tar.gz") {
@@ -58,19 +58,6 @@ try {
         Copy-Item -Path $fileName -Destination (Join-Path $installDir "gitid.exe") -Force
         Write-Host "Installed gitid to $installDir\gitid.exe"
     }
-
-    # Locate extracted gitid.exe
-    $exePath = Get-ChildItem -Path $tmpDir -Recurse -Filter "gitid.exe" | Select-Object -First 1
-
-    if (-not $exePath) {
-        Write-Error "gitid.exe not found after extraction"
-        exit 1
-    }
-
-    # Move executable to installDir
-    Move-Item -Path $exePath.FullName -Destination (Join-Path $installDir "gitid.exe") -Force
-
-    Write-Host "gitid installed to $installDir\gitid.exe"
 
     # Permanently add installDir to User PATH if missing
     $currentUserPath = [Environment]::GetEnvironmentVariable('Path', 'User') -or ''
