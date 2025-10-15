@@ -43,7 +43,7 @@ try {
     Invoke-WebRequest -Uri $assetUrl -OutFile $fileName
 
     # Prepare install directory
-    $installDir = Join-Path $env:LOCALAPPDATA "gitid\gitid-bin"
+    $installDir = Join-Path $env:LOCALAPPDATA "Programs\gitid\bin"
     if (-not (Test-Path $installDir)) {
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
     }
@@ -52,12 +52,10 @@ try {
     Write-Host "Extracting..."
     if ($fileName -like "*.zip") {
         Expand-Archive -Path $fileName -DestinationPath $tmpDir -Force
-    }
-    elseif ($fileName -like "*.tar.gz") {
+    } elseif ($fileName -like "*.tar.gz") {
         # Requires tar on system (Windows 10+)
         tar -xzf $fileName -C $tmpDir
-    }
-    else {
+    } else {
         # Assume it's executable binary directly
         Copy-Item $fileName -Destination $installDir\gitid.exe -Force
         Write-Host "Installed gitid to $installDir\gitid.exe"
@@ -77,8 +75,7 @@ try {
 
     Write-Host "gitid installed to $installDir\gitid.exe"
     Write-Host "Make sure to add '$installDir' to your PATH environment variable if not already present, so you can run 'gitid' from any command line."
-}
-finally {
+} finally {
     # Cleanup temp directory
     Remove-Item -Path $tmpDir -Recurse -Force
 }
