@@ -69,6 +69,7 @@ while true; do
 done
 
 ## Fallback: killall plasmashell && kstart plasmashell
+echo ""
 echo "Trying fallback: killall plasmashell && kstart plasmashell"
 
 killall plasmashell
@@ -82,10 +83,11 @@ sleep 3
 
 ## Prompt user to check if the issue is fixed
 while true; do
-  read -p "Did running 'killall plasmashell && kstart plasmashell' fix the panel issue? (yes/no): " yn
+  read -n 1 -r -p "Did running 'killall plasmashell && kstart plasmashell' fix the panel issue? (yes/no): " yn
 
   case $yn in
   [Yy]*)
+    echo ""
     echo "Exiting script."
     exit 0
     ;;
@@ -94,4 +96,5 @@ while true; do
   esac
 done
 
+echo ""
 echo "Unable to fix the issue. If Plasma shell has not started yet, it may soon, otherwise you should reboot to resolve the issue."
