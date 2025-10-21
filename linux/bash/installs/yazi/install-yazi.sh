@@ -38,10 +38,11 @@ fi
 # Detect if Debian-based (for adding debian.griffo.io repo)
 IS_DEBIAN=0
 if [[ -f /etc/os-release ]]; then
-    . /etc/os-release
-    if [[ "$ID" == "debian" || "$ID_LIKE" == *"debian"* ]]; then
-        IS_DEBIAN=1
-    fi
+   . /etc/os-release
+   ID_LIKE="${ID_LIKE:-}"
+   if [[ "$ID" == "debian" || "$ID_LIKE" == *"debian"* ]]; then
+       IS_DEBIAN=1
+   fi
 fi
 
 if [[ "$IS_DEBIAN" -eq 1 ]]; then
