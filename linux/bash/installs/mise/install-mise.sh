@@ -15,6 +15,11 @@ echo "Installing Mise CLI to ${INSTALL_PATH}"
 for cmd in curl shasum tar; do
   if ! command -v $cmd >/dev/null 2>&1; then
     echo "Error: $cmd is required but not installed." >&2
+
+    if [[ "$cmd" == "shasum" ]]; then
+      echo "Install SHASUM on Fedora: dnf install perl-Digest-SHA"
+    fi
+
     exit 1
   fi
 done
