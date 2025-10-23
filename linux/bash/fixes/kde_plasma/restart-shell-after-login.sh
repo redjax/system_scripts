@@ -97,4 +97,26 @@ while true; do
 done
 
 echo ""
+echo "Attempting to reset the plasma-plasmashell.service systemd unit"
+
+pkill -KILL plasmashell
+systemctl --user reset-failed plasma-plasmashell.service
+systemctl --user start plasma-plasmashell.service
+
+## Prompt user again to check if problem is fixed
+while true; do
+  read -n 1 -r -p "Did resetting the systemd unit fix the issue? (y/n): " yn
+  case $yn in
+  [Yy])
+    echo ""
+    echo "Exiting script."
+    exit 0
+    ;;
+  [Nn])
+    break
+    ;;
+  esac
+done
+
+echo ""
 echo "Unable to fix the issue. If Plasma shell has not started yet, it may soon, otherwise you should reboot to resolve the issue."
