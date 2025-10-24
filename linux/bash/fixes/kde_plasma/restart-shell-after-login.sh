@@ -3,6 +3,31 @@
 ## Sometimes after logging back into KDE, especially after the machine goes to sleep,
 #  the shell is not restarted. This script forces the shell to restart.
 
+echo ""
+echo "Attempting to reset the plasma-plasmashell.service systemd unit"
+
+pkill -KILL plasmashell
+systemctl --user reset-failed plasma-plasmashell.service
+systemctl --user start plasma-plasmashell.service
+
+echo "Sleeping for 3 seconds..."
+sleep 3
+
+## Prompt user again to check if problem is fixed
+while true; do
+  read -n 1 -r -p "Did resetting the systemd unit fix the issue? (y/n): " yn
+  case $yn in
+  [Yy])
+    echo ""
+    echo "Exiting script."
+    exit 0
+    ;;
+  [Nn])
+    break
+    ;;
+  esac
+done
+
 ## Check if kstart command is available
 if ! command -v kstart &>/dev/null; then
   echo "kstart not found. Please ensure KDE and kstart are installed."
@@ -93,28 +118,6 @@ while true; do
     ;;
   [Nn]*) break ;;
   *) echo "Please answer yes or no." ;;
-  esac
-done
-
-echo ""
-echo "Attempting to reset the plasma-plasmashell.service systemd unit"
-
-pkill -KILL plasmashell
-systemctl --user reset-failed plasma-plasmashell.service
-systemctl --user start plasma-plasmashell.service
-
-## Prompt user again to check if problem is fixed
-while true; do
-  read -n 1 -r -p "Did resetting the systemd unit fix the issue? (y/n): " yn
-  case $yn in
-  [Yy])
-    echo ""
-    echo "Exiting script."
-    exit 0
-    ;;
-  [Nn])
-    break
-    ;;
   esac
 done
 
