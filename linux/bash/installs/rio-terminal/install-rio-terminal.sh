@@ -116,7 +116,7 @@ if [[ "$OS" == "Darwin" ]]; then
 elif [[ "$OS" == "Linux" ]]; then
     if [[ "$FILE" =~ \.rpm$ ]]; then
         echo "Installing RPM package (requires sudo)"
-        sudo rpm -i --replacepkgs "$ARCHIVE"
+        sudo rpm -Uvh "$ARCHIVE"
     elif [[ "$FILE" =~ \.deb$ ]]; then
         echo "Installing DEB package (requires sudo)"
         sudo dpkg -i "$ARCHIVE"
