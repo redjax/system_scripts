@@ -366,5 +366,13 @@
         "scoop_id": "azure-developer-cli",
         "choco_id": "azd",
         "aqua_id": ""
+    },
+    {
+        "name": "Espanso text expander",
+        "description": "Private & secure text expander for Linux, Mac, & Windows. https://espanso.org",
+        "winget_id": "Espanso.Espanso",
+        "scoop_id": "main/espanso",
+        "choco_id": "espanso",
+        "aqua_id": ""
     }
 ]
