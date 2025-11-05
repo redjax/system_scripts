@@ -2,6 +2,16 @@
 
 set -uo pipefail
 
+# Parse arguments
+FORCE_FLATPAK=0
+for arg in "$@"; do
+  case "$arg" in
+    --flatpak)
+      FORCE_FLATPAK=1
+      ;;
+  esac
+done
+
 # Detect OS and distro
 get_distro() {
   if [[ -f /etc/os-release ]]; then
@@ -28,16 +38,18 @@ install_via_flatpak() {
   flatpak install -y flathub dev.zed.Zed
 }
 
-# Download and install Zed manually for Linux/macOS
+# Download and install Zed manually
 install_via_download() {
-  local tmpdir=$(mktemp -d)
+  local tmpdir
+  tmpdir=$(mktemp -d)
   echo "Downloading Zed to temporary directory: $tmpdir"
 
   local arch platform_url=""
-  local platform="$(cpu_platform)"
-  local distro="$(get_distro)"
+  local platform
+  platform="$(cpu_platform)"
+  local distro
+  distro="$(get_distro)"
 
-  # Determine architecture for download
   case "$platform" in
     x86_64|amd64)
       arch="x86_64"
@@ -51,17 +63,13 @@ install_via_download() {
       ;;
   esac
 
-  # Determine the download URL - using the official Zed install.sh script for most cases
-  # For macOS (Darwin), use the install script as well
   if [[ "$distro" == "Darwin" ]]; then
     echo "Detected macOS - installing via official install script."
-    curl -f https://zed.dev/install.sh | sh
+    curl -fsSL https://zed.dev/install.sh | sh
     return
   fi
 
-  # For Linux, fallback to manual download for unsupported distros or architectures
-  # If you want to customize the URL based on arch, adjust below
-  local url="https://download.zed.dev/zed-linux-${arch}.tar.gz"
+  local url="https://zed.dev/api/releases/stable/latest/zed-linux-${arch}.tar.gz"
 
   echo "Downloading Zed tarball from $url"
   curl -fL "$url" -o "$tmpdir/zed.tar.gz"
@@ -79,17 +87,33 @@ install_via_download() {
 
 main() {
   echo "Detecting system"
-  local distro=$(get_distro)
-  local platform=$(cpu_platform)
+  local distro
+  distro=$(get_distro)
+  local platform
+  platform=$(cpu_platform)
 
   echo "Detected OS/Distro: $distro"
   echo "Detected CPU platform: $platform"
 
-  if is_flatpak_installed; then
-    install_via_flatpak
-  else
-    install_via_download
+  if [[ "$FORCE_FLATPAK" -eq 1 ]]; then
+    if is_flatpak_installed; then
+      install_via_flatpak
+    else
+      echo "Error: --flatpak given but flatpak is not installed."
+      exit 1
+    fi
+    return
   fi
+
+  if is_flatpak_installed; then
+    read -rp "Flatpak is installed. Use it to install Zed? (y/n): " answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+      install_via_flatpak
+      return
+    fi
+  fi
+
+  install_via_download
 }
 
-main
+main "$@"
