@@ -85,6 +85,23 @@ install_via_download() {
   echo "Zed installed. You may want to add ~/.local/bin to your PATH if it's not already set."
 }
 
+create_desktop_entry() {
+  local desktop_file=~/.local/share/applications/zed.desktop
+  mkdir -p ~/.local/share/applications
+  cat > "$desktop_file" <<EOF
+[Desktop Entry]
+Name=Zed
+Comment=Zed code editor
+Exec=$HOME/.local/bin/zed %F
+Icon=$HOME/.local/zed.app/share/icons/hicolor/256x256/apps/zed.png
+Type=Application
+Categories=Development;IDE;
+StartupNotify=true
+EOF
+
+  echo "Created desktop entry at $desktop_file"
+}
+
 main() {
   echo "Detecting system"
   local distro
@@ -114,6 +131,8 @@ main() {
   fi
 
   install_via_download
+
+  create_desktop_entry
 }
 
 main "$@"
