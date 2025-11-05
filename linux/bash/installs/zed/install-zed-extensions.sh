@@ -77,7 +77,7 @@ for ext in "${extensions[@]}"; do
     fi
 
     echo "Extracting extension: $ext to $EXTENSIONS_DIR"
-    tar -xzf "$TMP_DIR/$ext.tar.gz" -C "$EXTENSIONS_DIR" --strip-components=1
+    tar -xzf "$TMP_DIR/$ext.tar.gz" -C "$EXTENSIONS_DIR/$ext" --strip-components=1
 
     echo "Installed extension: $ext"
 done
