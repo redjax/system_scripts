@@ -76,11 +76,15 @@ install_via_download() {
 
   echo "Extracting Zed"
   mkdir -p ~/.local/zed.app/
-  tar -xf "$tmpdir/zed.tar.gz" -C ~/.local/zed.app/
+  tar -xf "$tmpdir/zed.tar.gz" -C "$tmpdir"
+  mv "$tmpdir/zed.app"/* ~/.local/zed.app/
 
   echo "Creating symlink in ~/.local/bin"
   mkdir -p ~/.local/bin
   ln -sf ~/.local/zed.app/bin/zed ~/.local/bin/zed
+
+  echo "Marking Zed binary as executable"
+  chmod +x ~/.local/zed.app/bin/zed
 
   echo "Zed installed. You may want to add ~/.local/bin to your PATH if it's not already set."
 }
@@ -98,6 +102,8 @@ Type=Application
 Categories=Development;IDE;
 StartupNotify=true
 EOF
+
+  chmod 755 "$desktop_file"
 
   echo "Created desktop entry at $desktop_file"
 }
