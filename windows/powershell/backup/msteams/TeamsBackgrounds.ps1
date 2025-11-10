@@ -2,7 +2,7 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "The path where Teams stores backgrounds.")]
     $TeamsBackgroundsDir = (Join-Path -Path $env:LOCALAPPDATA -ChildPath "Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams\Backgrounds\Uploads"),
     [Parameter(Mandatory = $false, HelpMessage = "The path where images will be backed up.")]
-    $BackupDir = "backup\TeamsBackgrounds",
+    $BackupDir = "$($PSScriptRoot)\backup\TeamsBackgrounds",
     [Parameter(Mandatory = $false, HelpMessage = "The path where images will be restored from.")]
     [ValidateSet("backup", "restore")]
     $Operation = $null
@@ -170,35 +170,41 @@ function Restore-BackgroundImg {
 }
 
 function Start-RestoreTeamsBackgrounds {
-    Param(
-        [Parameter(Mandatory = $false, HelpMessage = "The path where Teams stores backgrounds. Images will be restored here.")]
-        $TeamsBackgroundsPath = $TeamsBackgroundsDir,
-        [Parameter(Mandatory = $false, HelpMessage = "The path where images are backed up.")]
-        $BackupLocation = $BackupDir
-    )
+    Write-Warning "Teams has changed the way it handles background images, and they can no longer be restored programatically."
+    Write-Host ""
+    Write-Host "To restore the backgrounds, you must manually re-upload them in Teams."
+    Write-Host "Your backed up images can be found at: $($BackupDir)"
 
-    if ( -Not ( Test-Path $BackupLocation ) ) {
-        Write-Error "Could not find backup directory at path '$($BackupLocation)'."
-        exit(1)
-    }
+    return
+    # Param(
+    #     [Parameter(Mandatory = $false, HelpMessage = "The path where Teams stores backgrounds. Images will be restored here.")]
+    #     $TeamsBackgroundsPath = $TeamsBackgroundsDir,
+    #     [Parameter(Mandatory = $false, HelpMessage = "The path where images are backed up.")]
+    #     $BackupLocation = $BackupDir
+    # )
 
-    $BackedUpImages = Get-BackedUpImages -BackupLocation $BackupLocation
-    if ( $BackedUpImages.Count -eq 0 ) {
-        Write-Error "No backed up images found at path '$($BackupLocation)'."
-        exit(1)
-    }
+    # if ( -Not ( Test-Path $BackupLocation ) ) {
+    #     Write-Error "Could not find backup directory at path '$($BackupLocation)'."
+    #     exit(1)
+    # }
 
-    Write-Output "Restoring Teams backgrounds"
+    # $BackedUpImages = Get-BackedUpImages -BackupLocation $BackupLocation
+    # if ( $BackedUpImages.Count -eq 0 ) {
+    #     Write-Error "No backed up images found at path '$($BackupLocation)'."
+    #     exit(1)
+    # }
 
-    $BackedUpImages | ForEach-Object {
-        if ( -Not ( Test-Path -Path ( Join-Path -Path $TeamsBackgroundsPath -ChildPath $_.FullName ) ) ) {
-            Write-Debug "Restoring image '$($_.FullName)' to path '$($TeamsBackgroundsPath)'"
-            Restore-BackgroundImg -ImgPath $_.FullName -RestoreLocation $TeamsBackgroundsPath
-        }
-        else {
-            Write-Warning "Image '$($_.FullName)' already exists at path '$($TeamsBackgroundsPath)'."
-        }
-    }
+    # Write-Output "Restoring Teams backgrounds"
+
+    # $BackedUpImages | ForEach-Object {
+    #     if ( -Not ( Test-Path -Path ( Join-Path -Path $TeamsBackgroundsPath -ChildPath $_.FullName ) ) ) {
+    #         Write-Debug "Restoring image '$($_.FullName)' to path '$($TeamsBackgroundsPath)'"
+    #         Restore-BackgroundImg -ImgPath $_.FullName -RestoreLocation $TeamsBackgroundsPath
+    #     }
+    #     else {
+    #         Write-Warning "Image '$($_.FullName)' already exists at path '$($TeamsBackgroundsPath)'."
+    #     }
+    # }
 }
 
 if ( -Not ($Operation -eq "backup" -or $Operation -eq "restore") ) {
