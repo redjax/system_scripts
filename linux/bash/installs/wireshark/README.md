@@ -48,6 +48,7 @@
 | `dumpcap -i eth0 -a filesize:100000 -a files:10 -w capture.pcap`                      | Another example of rotating capture files automatically             |
 | `tshark -r capture.pcap -q -z endpoints`                                              | Show statistics for all hosts in the capture                        |
 | `tshark -r capture.pcap -q -z conv,tcp`                                               | Show TCP conversation statistics                                    |
+| `watch -n 2 'tshark -r /path/to/capture.pcap -q -z conv,ip                            | tail -n 20'`                                                        | Live-read a `dumpcap` file with `tshark` |
 
 ## Examples
 
