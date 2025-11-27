@@ -29,15 +29,20 @@ if [ "$OS" = "Linux" ]; then
     # Fedora/RHEL
     elif command -v dnf >/dev/null; then
         echo "[+] Using dnf (Fedora/RHEL)"
-        sudo dnf install -y wireshark-qt tshark
+        
+        # Install CLI + GUI
+        sudo dnf install -y wireshark-gtk wireshark-cli
 
+        # Ensure wireshark group exists
         if ! getent group wireshark >/dev/null; then
             echo "[+] Creating wireshark group"
             sudo groupadd wireshark
         fi
 
+        # Add current user to group
         sudo usermod -aG wireshark "$USER"
         echo "You may need to log out/in for group changes to take effect."
+
 
     # CentOS/RHEL legacy
     elif command -v yum >/dev/null; then
