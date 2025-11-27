@@ -31,7 +31,7 @@ if [ "$OS" = "Linux" ]; then
         echo "[+] Using dnf (Fedora/RHEL)"
         
         # Install CLI + GUI
-        sudo dnf install -y wireshark-gtk wireshark-cli
+        sudo dnf install -y wireshark wireshark-cli
 
         # Ensure wireshark group exists
         if ! getent group wireshark >/dev/null; then
