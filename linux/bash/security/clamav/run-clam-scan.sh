@@ -17,6 +17,8 @@ function usage() {
     echo "  -i, --infected-only          Only print infected files (--infected --no-summary)"
     echo "  -s, --summary-only           Only print scan summary"
     echo "  -e, --exclude <pattern>      Exclude path or glob (can be repeated)"
+    echo "  -v, --verbose                Enable verbose output"
+    echo "  -l, --log-file <path>        Path to ClamAV log file (default: /var/log/clamav/system-scan.log)"
     echo "  --max-filesize <size>        Max file size to scan (e.g. 50M)"
     echo "  -h, --help                   Show this help menu"
     echo ""
@@ -34,6 +36,8 @@ INFECTED_ONLY=0
 SUMMARY_ONLY=0
 EXCLUDES=()
 MAX_FILESIZE=""
+VERBOSE="false"
+LOG_FILE="/var/log/clamav/system-scan.log"
 
 # Simple arg parser
 while [[ $# -gt 0 ]]; do
@@ -62,9 +66,17 @@ while [[ $# -gt 0 ]]; do
             EXCLUDES+=("$2")
             shift 2
             ;;
+        -l|--log-file)
+            LOG_FILE="${2:-}"
+            shift 2
+            ;;
         --max-filesize)
             MAX_FILESIZE="${2:-}"
             shift 2
+            ;;
+        -v|--verbose)
+            VERBOSE="true"
+            shift
             ;;
         -h|--help)
             usage
@@ -90,7 +102,7 @@ CLAMSCAN_OPTS=()
 
 ## Recursive
 if [[ "$RECURSIVE" -eq 1 ]]; then
-    CLAMSCAN_OPTS+=("-r")
+    CLAMSCAN_OPTS+=("-r" "--stdout")
 fi
 
 ## Infected / summary control
@@ -108,6 +120,16 @@ done
 ## Max filesize
 if [[ -n "$MAX_FILESIZE" ]]; then
     CLAMSCAN_OPTS+=("--max-filesize=$MAX_FILESIZE")
+fi
+
+## Verbose logging
+if [[ "$VERBOSE" == "true" ]]; then
+    CLAMSCAN_OPTS+=("--verbose")
+fi
+
+## Log file
+if [[ -n "$LOG_FILE" ]]; then
+    CLAMSCAN_OPTS+=("--log=$LOG_FILE")
 fi
 
 ## Always exit with nonzero on virus found, but not on minor errors
@@ -132,6 +154,8 @@ elif [[ $EXIT_CODE -eq 1 ]]; then
     echo "ClamAV scan completed: malware FOUND. Check $OUTPUT for details."
 else
     echo "ClamAV scan encountered an error (exit code: $EXIT_CODE)." >&2
+    echo "Try re-running the script with sudo:"
+    echo "  sudo $0 $*"
 fi
 
 exit "$EXIT_CODE"
