@@ -98,11 +98,11 @@ if [[ -z "$TARGET" ]]; then
 fi
 
 ## Build array to hold clam scan options
-CLAMSCAN_OPTS=()
+CLAMSCAN_OPTS=("--stdout")
 
 ## Recursive
 if [[ "$RECURSIVE" -eq 1 ]]; then
-    CLAMSCAN_OPTS+=("-r" "--stdout")
+    CLAMSCAN_OPTS+=("-r")
 fi
 
 ## Infected / summary control
