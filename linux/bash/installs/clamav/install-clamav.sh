@@ -1,200 +1,162 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-
-function detect_pkg_manager() {
-    ## Prefer /etc/os-release
-    if [[ -r /etc/os-release ]]; then
-        . /etc/os-release
-        case "$ID" in
-            debian|ubuntu|linuxmint|pop|raspbian)
-                echo "apt"
-                return 0
-                ;;
-            rhel|centos|rocky|almalinux)
-                ## RHEL family, prefers dnf, fallback to yum
-                if command -v dnf >/dev/null 2>&1; then
-                    echo "dnf-rhel"
-                else
-                    echo "yum-rhel"
-                fi
-                return 0
-                ;;
-            fedora)
-                ## Fedora: dnf, no EPEL needed
-                echo "dnf-fedora"
-                return 0
-                ;;
-            opensuse*|sles)
-                echo "zypper"
-                return 0
-                ;;
-            arch|manjaro|endeavouros)
-                echo "pacman"
-                return 0
-                ;;
-        esac
+detect_os() {
+    if command -v apt-get &>/dev/null; then
+        echo "debian"
+    elif command -v dnf &>/dev/null; then
+        echo "fedora"
+    elif command -v yum &>/dev/null; then
+        echo "rhel"
+    elif command -v pacman &>/dev/null; then
+        echo "arch"
+    else
+        echo "unknown"
     fi
+}
 
-    ## Fallback: detect by binary
-    for m in apt dnf yum zypper pacman; do
-        if command -v "$m" >/dev/null 2>&1; then
-            echo "$m"
-            return 0
-        fi
+install_packages() {
+    case "$OS" in
+        debian)
+            sudo apt-get update -y
+            sudo apt-get install -y clamav clamav-freshclam clamav-daemon clamtk || true
+            ;;
+        fedora)
+            sudo dnf install -y clamav clamav-freshclam clamd clamtk || true
+            ;;
+        rhel)
+            sudo yum install -y epel-release || true
+            sudo yum install -y clamav clamav-update clamd clamtk || true
+            ;;
+        arch)
+            sudo pacman -Sy --noconfirm clamav clamtk || true
+            ;;
+    esac
+}
+
+configure_clamd() {
+    local CONF=""
+    for c in /etc/clamd.conf /etc/clamd.d/scan.conf /etc/clamav/clamd.conf; do
+        [[ -f "$c" ]] && CONF="$c"
     done
 
-    echo "unknown"
+    [[ -z "$CONF" ]] && return
+
+    sudo sed -i 's/^Example/#Example/' "$CONF"
+    sudo sed -i 's/^#LocalSocket/LocalSocket/' "$CONF"
+
+    if ! grep -q "^LocalSocket" "$CONF"; then
+        echo "LocalSocket /run/clamd.socket" | sudo tee -a "$CONF" >/dev/null
+    fi
+}
+
+enable_updates() {
+    case "$OS" in
+        debian)
+            sudo systemctl enable --now clamav-freshclam || true
+            ;;
+        fedora|rhel)
+            sudo tee /etc/cron.daily/freshclam >/dev/null << 'EOF'
+#!/bin/sh
+/usr/bin/freshclam --quiet
+EOF
+            sudo chmod +x /etc/cron.daily/freshclam
+            ;;
+        arch)
+            sudo systemctl enable --now freshclam.service || true
+            ;;
+    esac
+}
+
+fanotify_supported() {
+    if [[ -d /sys/kernel/fs/fanotify ]]; then
+        return 0
+    fi
+
+    local KC="/boot/config-$(uname -r)"
+    if [[ -f "$KC" ]] && grep -q "CONFIG_FANOTIFY=y" "$KC"; then
+        return 0
+    fi
+
+    if grep -qi fanotify /proc/filesystems; then
+        return 0
+    fi
+
     return 1
 }
 
-
-function install_clamav() {
-    local pm
-    pm="$(detect_pkg_manager)" || {
-        printf 'Could not detect a supported package manager.\n' >&2
-        exit 1
-    }
-
-    case "$pm" in
-        apt)
-            sudo apt-get update
-            ## ClamAV CLI + updater
-            sudo apt-get install -y clamav clamav-freshclam
-            ;;
-        dnf-fedora)
-            ## Fedora: ClamAV is in base repos, no EPEL needed
-            sudo dnf install -y clamav clamav-update
-            ;;
-        dnf-rhel)
-            ## RHEL/Rocky/Alma/CentOS: EPEL often required
-            sudo dnf install -y epel-release || true
-            sudo dnf install -y clamav clamav-update
-            ;;
-        yum-rhel)
-            sudo yum install -y epel-release || true
-            sudo yum install -y clamav clamav-update
-            ;;
-        dnf)
-            ## Generic dnf fallback if detect_pkg_manager() hit the binary path
-            sudo dnf install -y clamav clamav-update
-            ;;
-        yum)
-            sudo yum install -y clamav clamav-update
-            ;;
-        zypper)
-            sudo zypper refresh
-            sudo zypper install -y clamav
-            ;;
-        pacman)
-            sudo pacman -Sy --needed --noconfirm clamav
-            ;;
-        *)
-            printf 'Unsupported or unknown package manager: %s\n' "$pm" >&2
-            exit 1
-            ;;
-    esac
-}
-
-
-function install_clamtk() {
-    local pm
-    pm="$(detect_pkg_manager)" || {
-        printf 'Could not detect a supported package manager.\n' >&2
-        return 1
-    }
-
-    case "$pm" in
-        apt)
-            sudo apt-get update
-            sudo apt-get install -y clamtk
-            ;;
-        dnf-fedora|dnf-rhel|dnf)
-            sudo dnf install -y epel-release || true
-            sudo dnf install -y clamtk || {
-                echo "ClamTk package not found via dnf." >&2
-                return 1
-            }
-            ;;
-        yum-rhel|yum)
-            sudo yum install -y epel-release || true
-            sudo yum install -y clamtk || {
-                echo "ClamTk package not found via yum." >&2
-                return 1
-            }
-            ;;
-        zypper)
-            sudo zypper refresh
-            sudo zypper install -y clamtk || {
-                echo "ClamTk package not found via zypper." >&2
-                return 1
-            }
-            ;;
-        pacman)
-            ## ClamTk may be in community/AUR; keep it best-effort
-            sudo pacman -Sy --needed --noconfirm clamtk || {
-                echo "ClamTk package not found via pacman." >&2
-                return 1
-            }
-            ;;
-        *)
-            printf 'ClamTk not available for package manager: %s\n' "$pm" >&2
-            return 1
-            ;;
-    esac
-}
-
-
-function initial_freshclam_update() {
-    local cfg=""
-
-    if [[ -f /etc/freshclam.conf ]]; then
-        cfg=/etc/freshclam.conf
-    elif [[ -f /etc/clamav/freshclam.conf ]]; then
-        cfg=/etc/clamav/freshclam.conf
+enable_realtime() {
+    if ! fanotify_supported; then
+        echo "Real-time scanning not supported by this kernel."
+        return
     fi
 
-    if [[ -n "${cfg}" ]]; then
-        ## Comment out Example line if present
-        sudo sed -i 's/^[[:space:]]*Example/#Example/' "$cfg"
-        ## Remove any invalid LogFile line that might have been copied in
-        sudo sed -i '/^LogFile[[:space:]]/d' "$cfg" || true
-    fi
+    sudo tee /etc/systemd/system/clamonacc.service >/dev/null << 'EOF'
+[Unit]
+Description=ClamAV On-Access Scanner
+After=network.target
 
-    ## Stop any running freshclam service that might lock the DB
-    if command -v systemctl >/dev/null 2>&1; then
-        sudo systemctl stop clamav-freshclam 2>/dev/null || true
-        sudo systemctl stop freshclam 2>/dev/null || true
-    fi
+[Service]
+ExecStart=/usr/bin/clamonacc --log=/var/log/clamav/clamonacc.log --recursive=yes --move=/quarantine
+Restart=on-failure
 
-    sudo freshclam
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now clamonacc.service
+    echo "Real-time scanning enabled."
 }
 
-
-function main() {
-    echo ""
-    echo "[ Install ClamAV and freshclam ]"
-    echo ""
-
-    install_clamav
-    initial_freshclam_update
-
-    ## Ask about ClamTk GUI
-    read -r -p "Install ClamTk GUI? (y/n): " install_clamtk_answer
-    if [[ "$install_clamtk_answer" =~ ^[Yy]$ ]]; then
-        echo "Installing ClamTk"
-
-        if install_clamtk; then
-            echo "ClamTk installed successfully."
-        else
-            echo "ClamTk installation failed or not available."
-        fi
+start_clamd() {
+    if systemctl list-unit-files | grep -q '^clamd@'; then
+        ## enable all clamd@ instances
+        for svc in $(systemctl list-unit-files | grep '^clamd@' | awk '{print $1}'); do
+            sudo systemctl enable --now "$svc"
+        done
+    elif systemctl list-unit-files | grep -q '^clamd'; then
+        sudo systemctl enable --now clamd || true
+    elif systemctl list-unit-files | grep -q '^clamav-daemon'; then
+        sudo systemctl enable --now clamav-daemon || true
     else
-        echo "Skipping ClamTk."
+        echo "No clamd service found to start."
     fi
-
-    echo "ClamAV and freshclam installed and updated."
 }
 
 
-main "$@"
+install_clamtk() {
+    case "$OS" in
+        debian) sudo apt-get install -y clamtk ;;
+        fedora) sudo dnf install -y clamtk ;;
+        rhel)   sudo yum install -y clamtk || true ;;
+        arch)   sudo pacman -Sy --noconfirm clamtk ;;
+    esac
+}
+
+OS=$(detect_os)
+[[ "$OS" == "unknown" ]] && echo "Unsupported distro." && exit 1
+
+echo "Detected OS: $OS"
+echo "Installing ClamAV packages"
+install_packages
+
+configure_clamd
+
+echo "Running initial freshclam update"
+sudo freshclam || true
+
+echo "Enabling automatic updates"
+enable_updates
+
+read -rp "Enable real-time scanning? (y/n): " RT
+[[ "$RT" =~ ^[Yy]$ ]] && enable_realtime
+
+read -rp "Install ClamTk GUI? (y/n): " GUI
+[[ "$GUI" =~ ^[Yy]$ ]] && install_clamtk
+
+start_clamd
+
+echo ""
+echo "ClamAV installation complete."
+echo "Example scan: sudo clamscan -ri / --log=/var/log/clamav/system-scan.log"
