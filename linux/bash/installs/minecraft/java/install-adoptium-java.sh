@@ -25,7 +25,7 @@ if [[ "$OS" =~ (debian|ubuntu|linuxmint) ]]; then
 
     ## Install
     sudo apt update
-    sudo apt install -y "temurin-$TEMURIN_VERSION-jdk"
+    sudo apt install -y "temurin-$TEMURIN_VERSION-jre"
 
 ## RHEL / CentOS / Fedora
 elif [[ "$OS" =~ (rhel|centos|fedora) ]]; then
@@ -40,23 +40,23 @@ gpgkey=https://packages.adoptium.net/artifactory/api/gpg/key/public
 EOF
 
     if command -v dnf >/dev/null; then
-        sudo dnf install -y "temurin-$TEMURIN_VERSION-jdk"
+        sudo dnf install -y "temurin-$TEMURIN_VERSION-jre"
     else
-        sudo yum install -y "temurin-$TEMURIN_VERSION-jdk"
+        sudo yum install -y "temurin-$TEMURIN_VERSION-jre"
     fi
 
 ## openSUSE / SLES
 elif [[ "$OS" =~ (opensuse|sles) ]]; then
     sudo zypper ar -f "https://packages.adoptium.net/artifactory/rpm/opensuse/$(. /etc/os-release; echo $VERSION_ID)/$ARCH" adoptium
     sudo zypper refresh
-    sudo zypper install -y "temurin-$TEMURIN_VERSION-jdk"
+    sudo zypper install -y "temurin-$TEMURIN_VERSION-jre"
 
 ## Alpine Linux
 elif [[ "$OS" == "alpine" ]]; then
     sudo wget -O /etc/apk/keys/adoptium.rsa.pub https://packages.adoptium.net/artifactory/api/security/keypair/public/repositories/apk
     echo 'https://packages.adoptium.net/artifactory/apk/alpine/main' | sudo tee -a /etc/apk/repositories
     sudo apk update
-    sudo apk add "temurin-$TEMURIN_VERSION-jdk"
+    sudo apk add "temurin-$TEMURIN_VERSION-jre"
 
 else
     echo "Unsupported OS: $OS"
