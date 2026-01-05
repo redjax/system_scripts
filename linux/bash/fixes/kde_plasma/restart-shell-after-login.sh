@@ -16,6 +16,8 @@ sleep 3
 ## Prompt user again to check if problem is fixed
 while true; do
   read -n 1 -r -p "Did resetting the systemd unit fix the issue? (y/n): " yn
+  echo ""
+
   case $yn in
   [Yy])
     echo ""
