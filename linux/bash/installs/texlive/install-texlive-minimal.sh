@@ -34,7 +34,7 @@ case "$DISTRO" in
       texlive-bibtex-extra \
       texlive-xetex-def \
       texlive-luatex \
-      latexmk
+      texlive-latexmk
     ;;
   arch)
     echo "Installing minimal resume LaTeX for Arch Linux"
