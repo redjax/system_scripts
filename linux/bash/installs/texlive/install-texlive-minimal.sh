@@ -22,7 +22,8 @@ case "$DISTRO" in
       texlive-fonts-recommended \
       texlive-latex-extra \
       texlive-fonts-extra \
-      texlive-bibtex-extra
+      texlive-bibtex-extra \
+      latexmk
     ;;
   fedora|rhel|ol*|centos)
     echo "Installing minimal resume LaTeX for Fedora/RHEL"
@@ -32,14 +33,16 @@ case "$DISTRO" in
       texlive-latex-extra \
       texlive-bibtex-extra \
       texlive-xetex-def \
-      texlive-luatex
+      texlive-luatex \
+      latexmk
     ;;
   arch)
     echo "Installing minimal resume LaTeX for Arch Linux"
     sudo pacman -Syu --noconfirm \
       texlive-latexextra \
       texlive-fontsextra \
-      texlive-bibtexextra
+      texlive-bibtexextra \
+      texlive-binextra
     ;;
   darwin)
     echo "Installing minimal LaTeX for macOS"
