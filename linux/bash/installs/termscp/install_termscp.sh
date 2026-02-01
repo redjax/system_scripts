@@ -1,143 +1,123 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-if ! command -v curl &>/dev/null; then
-  echo "curl is not installed."
+cleanup() {
+  [[ -n "${TMPDIR:-}" && -d "$TMPDIR" ]] && rm -rf "$TMPDIR"
+}
+trap cleanup EXIT
+
+if ! command -v curl >/dev/null 2>&1; then
+  echo "curl is not installed." >&2
   exit 1
 fi
 
-## Detect OS
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 
-## Detect distro using /etc/os-release
-if [ -f /etc/os-release ]; then
+if [[ -f /etc/os-release ]]; then
   . /etc/os-release
-  DISTRO_ID=$ID
+  DISTRO_ID="${ID:-unknown}"
 else
-  echo "Cannot detect Linux distribution."
+  echo "Cannot detect Linux distribution." >&2
   exit 1
 fi
 
-## Get latest version from GitHub API
-TERMSCP_VERSION=$(curl -s https://api.github.com/repos/veeso/termscp/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
-## Remove leading 'v' if present (e.g., 'v${TERMSCP_VERSION}' -> '${TERMSCP_VERSION}')
-TERMSCP_VERSION="${TERMSCP_VERSION#v}"
+echo "Fetching latest termscp version" >&2
 
+VERSION_JSON=$(curl -s https://api.github.com/repos/veeso/termscp/releases/latest)
+if [[ -z "$VERSION_JSON" ]]; then
+  echo "Failed to fetch GitHub API." >&2
+  exit 1
+fi
 
-function install_sshpass {
-  if ! command -v sshpass &>/dev/null; then
-    read -rp "sshpass is not installed. Install it now? (y/n)" answer
+# Robust version extraction - multiple fallback methods
+if [[ "$VERSION_JSON" =~ \"tag_name\":\ \"v([0-9]+\.[0-9]+\.[0-9]+)\" ]]; then
+  TERMSCP_VERSION="${BASH_REMATCH[1]}"
+elif echo "$VERSION_JSON" | grep -q '"tag_name"'; then
+  TERMSCP_VERSION=$(echo "$VERSION_JSON" | grep -o '"tag_name": *"[^"]*"' | head -1 | cut -d'"' -f4 | sed 's/^v//')
+else
+  echo "Failed to parse version. Raw response:" >&2
+  echo "$VERSION_JSON" | head -c 200 >&2
+  exit 1
+fi
 
-    if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-      ## Choose package manager and install sshpass
-      case "$DISTRO_ID" in
-      ubuntu | debian)
-        sudo apt update && sudo apt install -y sshpass
-        ;;
-      fedora)
-        sudo dnf install -y sshpass
-        ;;
-      centos | rhel)
-        sudo yum install -y sshpass
-        ;;
-      opensuse* | sles)
-        sudo zypper install -y sshpass
-        ;;
-      arch)
-        sudo pacman -Sy --noconfirm sshpass
-        ;;
-      *)
-        echo "Unsupported or unknown distribution: $DISTRO_ID"
-        exit 2
-        ;;
-      esac
+echo "Found latest version: v$TERMSCP_VERSION" >&2
 
-      if ! command -v sshpass &>/dev/null; then
-        echo "sshpass installation failed."
-        exit 1
-      else
-        echo "sshpass installed successfully!"
-      fi
-
-    else
-      echo "Skipping sshpass installation."
-    fi
+install_sshpass() {
+  if ! command -v sshpass >/dev/null 2>&1; then
+    echo "sshpass is not installed." >&2
+    read -r -p "Install it now? (y/n): " answer
+    echo ""
+    
+    [[ "$answer" =~ ^[Yy]$ ]] || { echo "sshpass skipped." >&2; return 0; }
+    
+    echo "Installing sshpass for $DISTRO_ID" >&2
+    case "$DISTRO_ID" in
+      ubuntu|debian) sudo dnf install -y sshpass ;;
+      fedora) sudo dnf install -y sshpass ;;
+      centos|rhel) sudo yum install -y sshpass ;;
+      opensuse*|sles) sudo zypper install -y sshpass ;;
+      arch) sudo pacman -Sy --noconfirm sshpass ;;
+      *) echo "Unsupported distro: $DISTRO_ID" >&2; return 2 ;;
+    esac
+    
+    command -v sshpass >/dev/null 2>&1 && echo "sshpass OK!" >&2 || {
+      echo "sshpass install failed." >&2; return 1
+    }
   fi
+  return 0
 }
 
-if command -v termscp &>/dev/null; then
-  echo "termscp is already installed. Upgrade by running termscp --upgrade"
-  install_sshpass
-  if [[ $? -ne 0 ]]; then
-    echo "Failed to install sshpass"
-    exit 1
-  fi
-
-  exit 0
+if command -v termscp >/dev/null 2>&1; then
+  CURRENT_VERSION=$(termscp --version 2>&1 | cut -d' ' -f2 || echo "unknown")
+  echo "termscp v$CURRENT_VERSION already installed." >&2
+  read -r -p "Upgrade to v$TERMSCP_VERSION? (y/n): " answer
+  echo ""
+  
+  [[ "$answer" =~ ^[Yy]$ ]] || {
+    echo "Upgrade skipped." >&2
+    install_sshpass
+    exit 0
+  }
+  echo "Upgrading" >&2
+else
+  echo "Installing termscp v$TERMSCP_VERSION" >&2
 fi
 
-echo "Installing termscp v${TERMSCP_VERSION}"
-
-## Map to GitHub asset names
+# Architecture mapping
 case "$OS" in
-Linux)
-  case "$ARCH" in
-  x86_64)
-    FILE="termscp-v${TERMSCP_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+  Linux)
+    [[ "$ARCH" = x86_64 ]] && FILE="termscp-v${TERMSCP_VERSION}-x86_64-unknown-linux-gnu.tar.gz" || \
+    { [[ "$ARCH" = aarch64 || "$ARCH" = arm64 ]] && FILE="termscp-v${TERMSCP_VERSION}-aarch64-unknown-linux-gnu.tar.gz" || { echo "Bad arch: $ARCH" >&2; exit 1; }; }
     ;;
-  aarch64 | arm64)
-    FILE="termscp-v${TERMSCP_VERSION}-aarch64-unknown-linux-gnu.tar.gz"
+  Darwin)
+    [[ "$ARCH" = x86_64 ]] && FILE="termscp-v${TERMSCP_VERSION}-x86_64-apple-darwin.tar.gz" || \
+    { [[ "$ARCH" = arm64 ]] && FILE="termscp-v${TERMSCP_VERSION}-arm64-apple-darwin.tar.gz" || { echo "Bad macOS arch: $ARCH" >&2; exit 1; }; }
     ;;
-  *)
-    echo "Unsupported Linux architecture: $ARCH"
-    exit 1
-    ;;
-  esac
-  ;;
-Darwin)
-  case "$ARCH" in
-  x86_64)
-    FILE="termscp-v${TERMSCP_VERSION}-x86_64-apple-darwin.tar.gz"
-    ;;
-  arm64)
-    FILE="termscp-v${TERMSCP_VERSION}-arm64-apple-darwin.tar.gz"
-    ;;
-  *)
-    echo "Unsupported macOS architecture: $ARCH"
-    exit 1
-    ;;
-  esac
-  ;;
-*)
-  echo "Unsupported OS: $OS"
-  exit 1
-  ;;
+  *) echo "Unsupported OS: $OS" >&2; exit 1 ;;
 esac
 
-## Create a temporary directory
 TMPDIR=$(mktemp -d)
-
-## Download the release
 URL="https://github.com/veeso/termscp/releases/download/v${TERMSCP_VERSION}/$FILE"
 ARCHIVE="$TMPDIR/termscp.tar.gz"
 
-## Download the archive to the temp directory
-echo "Downloading $FILE from $URL"
-curl -L -o "$ARCHIVE" "$URL"
+echo "Downloading $FILE" >&2
+curl -L -f -o "$ARCHIVE" "$URL" || { echo "Download failed." >&2; exit 1; }
 
-## Extract the archive into the temp directory
-tar -xzf "$ARCHIVE" -C "$TMPDIR"
+echo "Extracting" >&2
+tar -xzf "$ARCHIVE" -C "$TMPDIR" || { echo "Extract failed." >&2; exit 1; }
 
-if [ "$OS" = "Darwin" ]; then
-  ## macOS: install to /usr/local/bin (may require sudo)
-  install -m 755 "$TMPDIR/termscp" /usr/local/bin/
+[[ -f "$TMPDIR/termscp" ]] || { echo "No binary found." >&2; ls -la "$TMPDIR" >&2; exit 1; }
+
+echo "Installing" >&2
+if [[ "$OS" = Darwin ]]; then
+  install -m 755 "$TMPDIR/termscp" /usr/local/bin/ 2>/dev/null || sudo install -m 755 "$TMPDIR/termscp" /usr/local/bin/
 else
-  ## Linux: install to /usr/local/bin (may require sudo)
   sudo install -m 755 "$TMPDIR/termscp" /usr/local/bin/
 fi
 
-echo "termscp installed successfully!"
+echo "termscp v$TERMSCP_VERSION installed!" >&2
+install_sshpass
 
 exit 0
