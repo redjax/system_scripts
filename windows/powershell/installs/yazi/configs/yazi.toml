@@ -60,6 +60,23 @@ play = [
 rules = [
     # Folder
     { url = "*/", use = ["edit", "open", "reveal"] },
+    # Dotfiles and config files
+    { url = "**/.*{rc,profile,login,logout,aliases,history,functions,env,exports}", use = [
+        "edit",
+        "reveal",
+    ] },
+    { url = "**/.{bash,zsh,ksh,sh,fish}*", use = [
+        "edit",
+        "reveal",
+    ] },
+    { url = "**/.{vim,git,hg,ssh,tmux,config}*", use = [
+        "edit",
+        "reveal",
+    ] },
+    { url = "**/.*{conf,cfg,ini,toml,yaml,yml,json}", use = [
+        "edit",
+        "reveal",
+    ] },
     # Text
     { mime = "text/*", use = ["edit", "reveal"] },
     # Image
