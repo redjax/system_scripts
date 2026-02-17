@@ -28,7 +28,8 @@ ueberzug_offset = [0, 0, 0, 0]
 
 [opener]
 edit = [
-    { run = 'nvim %*', block = true, desc = "nvim", for = "windows" },
+    # { run = 'nvim %*', block = true, desc = "nvim", for = "windows" },
+    { run = "hx %*", block = true, desc = "helix", for = "windows" },
     { run = '${EDITOR:-vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
     { run = 'code %*', orphan = true, desc = "code", for = "windows" },
     { run = 'code -w %*', block = true, desc = "code (block)", for = "windows" },
