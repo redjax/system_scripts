@@ -15,12 +15,12 @@ set -euo pipefail
 #     -p 8
 #
 # Send notification on cron job:
-#   0 2 * * * /home/jack/clean_b2_signal_backups.sh >/dev/null 2>&1 || \
+#   0 2 * * * /path/to/some/script.sh >/dev/null 2>&1 || \
 #     /usr/local/bin/gotify-notify \
-#     -u https://gotify.spooki.one \
+#     -u https://gotify.example.one \
 #     -f /root/.secrets/gotify_token \
-#     -t "Signal Backup Cleanup Failed" \
-#     -m "Cleanup failed on $(hostname) at $(date)" \
+#     -t "Script Failed" \
+#     -m "Script failed on $(hostname) at $(date)" \
 #     -p 8
 ##
 
