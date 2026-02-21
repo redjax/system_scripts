@@ -31,6 +31,7 @@ TOKEN=""
 TITLE=""
 MESSAGE=""
 PRIORITY=5
+SILENT="false"
 
 function _usage() {
   cat <<EOF
@@ -45,6 +46,7 @@ Options:
   -p, --priority   <int>     Priority (0-10, default: 5)
   -T, --token      <string>  Raw Gotify token
   -f, --token-file <string>  Path to file containing Gotify token
+  --silent                   Add -sS flag to silence cURL output
 
 Examples:
   ${0} -u https://gotify.example.com -f /root/token -m "Backup failed"
@@ -79,6 +81,10 @@ while [[ $# -gt 0 ]]; do
   -f | --token-file)
     TOKEN_FILE="$2"
     shift 2
+    ;;
+  --silent)
+    SILENT="true"
+    shift
     ;;
   -h | --help)
     _usage
@@ -130,22 +136,26 @@ if ! [[ "$PRIORITY" =~ ^[0-9]+$ ]] || ((PRIORITY < 0 || PRIORITY > 10)); then
   exit 1
 fi
 
+## Build cURL opts
+CURL_OPTS=(-X POST "$GOTIFY_URL/message?token=$TOKEN" -F "title=$TITLE" -F "message=$MESSAGE" -F "priority=$PRIORITY")
+
+if [[ "$SILENT" == "true" ]]; then
+  CURL_OPTS=(-sS "${CURL_OPTS[@]}")
+fi
+
 ## Set delimiter to an ASCII record separator, which is unlikely to appear in JSON
 DELIM=$'\x1e'
 
 ## Send Notification
 read -r BODY STATUS < <(
-  curl -sS \
+  curl \
     --connect-timeout 5 \
     --max-time 15 \
     --retry 3 \
     --retry-delay 2 \
     --retry-connrefused \
     -w "${DELIM}%{http_code}" \
-    -X POST "$GOTIFY_URL/message?token=$TOKEN" \
-    -F "title=$TITLE" \
-    -F "message=$MESSAGE" \
-    -F "priority=$PRIORITY"
+    "${CURL_OPTS[@]}"
 )
 
 ## Remove delimiter from STATUS
@@ -163,5 +173,7 @@ if ((STATUS < 200 || STATUS >= 300)); then
   echo "Response body: $BODY" >&2
   exit 4
 fi
+
+echo "Message sent successfully to ${GOTIFY_URL}"
 
 exit 0
