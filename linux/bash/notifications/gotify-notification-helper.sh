@@ -130,6 +130,9 @@ if ! [[ "$PRIORITY" =~ ^[0-9]+$ ]] || ((PRIORITY < 0 || PRIORITY > 10)); then
   exit 1
 fi
 
+## Set delimiter to an ASCII record separator, which is unlikely to appear in JSON
+DELIM=$'\x1e'
+
 ## Send Notification
 read -r BODY STATUS < <(
   curl -sS \
@@ -138,24 +141,27 @@ read -r BODY STATUS < <(
     --retry 3 \
     --retry-delay 2 \
     --retry-connrefused \
-    -w "\n%{http_code}" \
+    -w "${DELIM}%{http_code}" \
     -X POST "$GOTIFY_URL/message?token=$TOKEN" \
     -F "title=$TITLE" \
     -F "message=$MESSAGE" \
     -F "priority=$PRIORITY"
 )
 
-## Network failure
-if [[ -z "$STATUS" ]]; then
-  echo "[ERROR] Curl failed (network/TLS issue)" >&2
-  exit 2
+## Remove delimiter from STATUS
+STATUS="${STATUS//$DELIM/}"
+
+## HTTP error
+if ! [[ "$STATUS" =~ ^[0-9]{3}$ ]]; then
+  echo "[ERROR] Gotify returned invalid HTTP status: $STATUS" >&2
+  echo "Response body: $BODY" >&2
+  exit 3
 fi
 
-## Gotify HTTP error
 if ((STATUS < 200 || STATUS >= 300)); then
   echo "[ERROR] Gotify returned HTTP $STATUS" >&2
   echo "Response body: $BODY" >&2
-  exit 3
+  exit 4
 fi
 
 exit 0
