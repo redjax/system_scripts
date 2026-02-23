@@ -21,12 +21,11 @@ cp "${KITTY_APP_DIR}/share/applications/kitty.desktop" "${APPS_DIR}/"
 cp "${KITTY_APP_DIR}/share/applications/kitty-open.desktop" "${APPS_DIR}/"
 
 echo "Fixing Exec and Icon paths in desktop files"
-sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" \
-  "${APPS_DIR}/kitty*.desktop"
-sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" \
-  "${APPS_DIR}/kitty*.desktop"
+sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" "${APPS_DIR}/kitty.desktop" "${APPS_DIR}/kitty-open.desktop"
+sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" "${APPS_DIR}/kitty.desktop" "${APPS_DIR}/kitty-open.desktop"
 
 echo "Making kitty the xdg-terminal (if supported)"
 echo 'kitty.desktop' >"${CONFIG_DIR}/xdg-terminals.list"
 
 echo "All done. You may need to run 'update-desktop-database' or re-log for menus to refresh."
+
