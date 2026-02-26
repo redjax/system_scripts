@@ -37,7 +37,7 @@
     .\Find-ExpiringAppSecrets.ps1 -AppNameFilter "Epi*" -DaysThreshold @(7,14,30)
 
 .EXAMPLE
-    .\Find-ExpiringAppSecrets.ps1 -AppRoleFilter "ApiAppRole" -TeamsWebhookUrl "https://..."
+    .\Find-ExpiringAppSecrets.ps1 -AppRoleFilter "ApiAppRole" -TeamsWebhookUrl "https://"
 
 .EXAMPLE
     .\Find-ExpiringAppSecrets.ps1 -AppNameFilter "MyApp*" -OutputFormat Json -ExportPath "expiring-secrets.json"
@@ -77,15 +77,15 @@ param(
         '-p' = 'prod'
         '-np' = 'rc'
         '-dev' = 'dev'
+        '-ext' = 'ext-test'
     }
 )
 
-# Check if Azure CLI is available
+## Check if Azure CLI is available
 try {
     $azVersion = az version | ConvertFrom-Json
     Write-Verbose "Using Azure CLI version: $($azVersion.'azure-cli')"
-}
-catch {
+} catch {
     Write-Error "Azure CLI is not installed or not in PATH. Install from: https://aka.ms/InstallAzureCliWindows"
     exit 1
 }
@@ -128,9 +128,9 @@ function Get-ExpiringAppSecrets {
         [hashtable]$EnvMapping
     )
 
-    Write-Host "Querying Azure AD App Registrations..." -ForegroundColor Cyan
+    Write-Host "Querying Azure AD App Registrations" -ForegroundColor Cyan
     
-    # Build the query filter
+    ## Build the query filter
     $queryParts = @()
     
     if ($RequirePasswords) {
@@ -147,7 +147,7 @@ function Get-ExpiringAppSecrets {
         "[]"
     }
     
-    # Query for apps
+    ## Query for apps
     Write-Verbose "Query filter: $queryFilter"
     $appsJson = az ad app list --all --query "$queryFilter.{displayName:displayName, appId:appId, id:id, passwordCredentials:passwordCredentials}" --output json 2>&1
     
@@ -159,7 +159,7 @@ function Get-ExpiringAppSecrets {
     $apps = $appsJson | ConvertFrom-Json
     Write-Host "Found $($apps.Count) app(s) with password credentials" -ForegroundColor Green
     
-    # Apply name filter if specified
+    ## Apply name filter if specified
     if ($NameFilter) {
         $apps = $apps | Where-Object { $_.displayName -like $NameFilter }
         Write-Host "After name filter '$NameFilter': $($apps.Count) app(s)" -ForegroundColor Yellow
@@ -181,23 +181,22 @@ function Get-ExpiringAppSecrets {
                 continue
             }
             
-            # Parse the expiration date
+            ## Parse the expiration date
             try {
                 $expirationDate = [DateTime]::Parse($cred.endDateTime)
-            }
-            catch {
+            } catch {
                 Write-Warning "Could not parse expiration date for app '$($app.displayName)': $($cred.endDateTime)"
                 continue
             }
             
             $daysUntilExpiration = [Math]::Round(($expirationDate - $now).TotalDays, 0)
             
-            # Determine urgency level based on thresholds
+            ## Determine urgency level based on thresholds
             $urgencyLevel = $null
             $maxThreshold = ($Thresholds | Measure-Object -Maximum).Maximum
             
             if ($daysUntilExpiration -le $maxThreshold) {
-                # Find the appropriate threshold bucket
+                ## Find the appropriate threshold bucket
                 foreach ($threshold in ($Thresholds | Sort-Object)) {
                     if ($daysUntilExpiration -le $threshold) {
                         $urgencyLevel = $threshold
@@ -211,20 +210,20 @@ function Get-ExpiringAppSecrets {
                 } else { "N/A" }
 
                 $secretInfo = [PSCustomObject]@{
-                    AppDisplayName    = $app.displayName
-                    Environment       = $environment
-                    AppId             = $app.appId
-                    KeyId             = $cred.keyId
-                    DisplayName       = $cred.displayName
-                    StartDate         = $startDate
-                    ExpirationDate    = $expirationDate.ToString("yyyy-MM-dd HH:mm:ss")
-                    DaysUntilExpiry   = $daysUntilExpiration
-                    UrgencyThreshold  = $urgencyLevel
-                    PortalUrl         = "https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($app.appId)"
-                    Status            = if ($daysUntilExpiration -lt 0) { "EXPIRED" } 
-                                       elseif ($daysUntilExpiration -le $Thresholds[0]) { "CRITICAL" }
-                                       elseif ($daysUntilExpiration -le $Thresholds[1]) { "WARNING" }
-                                       else { "INFO" }
+                    AppDisplayName = $app.displayName
+                    Environment = $environment
+                    AppId = $app.appId
+                    KeyId = $cred.keyId
+                    DisplayName = $cred.displayName
+                    StartDate = $startDate
+                    ExpirationDate = $expirationDate.ToString("yyyy-MM-dd HH:mm:ss")
+                    DaysUntilExpiry = $daysUntilExpiration
+                    UrgencyThreshold = $urgencyLevel
+                    PortalUrl = "https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($app.appId)"
+                    Status = if ($daysUntilExpiration -lt 0) { "EXPIRED" } 
+                    elseif ($daysUntilExpiration -le $Thresholds[0]) { "CRITICAL" }
+                    elseif ($daysUntilExpiration -le $Thresholds[1]) { "WARNING" }
+                    else { "INFO" }
                 }
                 
                 $expiringSecrets += $secretInfo
@@ -250,7 +249,7 @@ function Send-TeamsNotification {
         [int[]]$Thresholds
     )
 
-    # Group secrets by urgency
+    ## Group secrets by urgency
     $groupedSecrets = $Secrets | Group-Object -Property UrgencyThreshold | Sort-Object Name
     
     $messageText = "**Azure AD App Registration Secrets Expiration Report**`n`n"
@@ -264,10 +263,11 @@ function Send-TeamsNotification {
             $envLabel = if ($secret.Environment -ne "unknown") { " [$($secret.Environment)]" } else { "" }
             $messageText += "- [$($secret.AppDisplayName)$envLabel]($($secret.PortalUrl)) - $($secret.DaysUntilExpiry) days remaining`n"
         }
+
         $messageText += "`n"
     }
     
-    # Teams message card format
+    ## Teams message card format
     $body = @{
         text = $messageText
     } | ConvertTo-Json
@@ -275,18 +275,18 @@ function Send-TeamsNotification {
     try {
         $response = Invoke-RestMethod -Uri $WebhookUrl -Method Post -Body $body -ContentType "application/json"
         Write-Verbose "Teams notification sent successfully"
+
         return $true
-    }
-    catch {
-        Write-Error "Failed to send Teams notification: $_"
+    } catch {
+        Write-Error "Failed to send Teams notification: $($_.Exception.Message)"
+
         return $false
     }
 }
 
-# Main script execution
 Write-Host "Starting Azure AD App Registration secret expiration check" -ForegroundColor Cyan
 
-# Check Azure CLI authentication
+## Check Azure CLI authentication
 try {
     $accountJson = az account show 2>&1
     if ($LASTEXITCODE -ne 0) {
@@ -297,27 +297,28 @@ try {
     $account = $accountJson | ConvertFrom-Json
     Write-Verbose "Connected to Azure as: $($account.user.name)"
     Write-Verbose "Tenant: $($account.tenantId)"
-}
-catch {
+} catch {
     Write-Error "Failed to get Azure account context: $_"
     exit 1
 }
 
-# Sort thresholds for proper categorization
+## Sort thresholds for proper categorization
 $DaysThreshold = $DaysThreshold | Sort-Object
 
-# Display search criteria
+## Display search criteria
 Write-Host "`nSearch criteria:" -ForegroundColor Cyan
 if ($AppNameFilter) {
     Write-Host "  - App name filter: $AppNameFilter" -ForegroundColor Yellow
 }
+
 if ($AppRoleFilter) {
     Write-Host "  - App role filter: $AppRoleFilter" -ForegroundColor Yellow
 }
+
 Write-Host "  - Expiration thresholds: $($DaysThreshold -join ', ') days" -ForegroundColor Yellow
 Write-Host ""
 
-# Get expiring secrets
+## Get expiring secrets
 $allExpiringSecrets = Get-ExpiringAppSecrets `
     -NameFilter $AppNameFilter `
     -RoleFilter $AppRoleFilter `
@@ -325,33 +326,35 @@ $allExpiringSecrets = Get-ExpiringAppSecrets `
     -Thresholds $DaysThreshold `
     -EnvMapping $EnvironmentSuffixMapping
 
-# Display results
+## Display results
 Write-Host "`n=== Summary ===" -ForegroundColor Cyan
 Write-Host "Total secrets expiring within $($DaysThreshold[-1]) days: $($allExpiringSecrets.Count)"
 
 if ($allExpiringSecrets.Count -gt 0) {
-    # Group by urgency for summary
+    ## Group by urgency for summary
     $criticalCount = @($allExpiringSecrets | Where-Object { $_.Status -eq "CRITICAL" -or $_.Status -eq "EXPIRED" }).Count
     $warningCount = @($allExpiringSecrets | Where-Object { $_.Status -eq "WARNING" }).Count
     $infoCount = @($allExpiringSecrets | Where-Object { $_.Status -eq "INFO" }).Count
     
     Write-Host "  - Critical/Expired (≤$($DaysThreshold[0]) days): $criticalCount" -ForegroundColor Red
+
     if ($DaysThreshold.Count -gt 1) {
         Write-Host "  - Warning (≤$($DaysThreshold[1]) days): $warningCount" -ForegroundColor Yellow
     }
+
     if ($DaysThreshold.Count -gt 2) {
         Write-Host "  - Info (≤$($DaysThreshold[2]) days): $infoCount" -ForegroundColor White
     }
     
     Write-Host "`n=== Expiring Secrets ===" -ForegroundColor Cyan
     
-    # Sort by days until expiry (most urgent first)
+    ## Sort by days until expiry (most urgent first)
     $sortedSecrets = $allExpiringSecrets | Sort-Object DaysUntilExpiry
     
-    # Output based on format
+    ## Output based on format
     switch ($OutputFormat) {
         'Table' {
-            # Use Out-String with a wide width to prevent truncation, then output
+            ## Use Out-String with a wide width to prevent truncation, then output
             $sortedSecrets | Format-Table -Property @{
                 Label = 'Application'
                 Expression = { $_.AppDisplayName }
@@ -370,18 +373,21 @@ if ($allExpiringSecrets.Count -gt 0) {
                 Expression = { $_.Status }
             } -AutoSize | Out-String -Width 4096 | Out-Host
         }
+
         'Json' {
             $sortedSecrets | ConvertTo-Json -Depth 10
         }
+
         'Csv' {
             $sortedSecrets | ConvertTo-Csv -NoTypeInformation
         }
     }
     
-    # Export if path specified
+    ## Export if path specified
     if ($ExportPath) {
         try {
             $exportDir = Split-Path -Path $ExportPath -Parent
+
             if ($exportDir -and -not (Test-Path $exportDir)) {
                 New-Item -ItemType Directory -Path $exportDir -Force | Out-Null
             }
@@ -397,30 +403,32 @@ if ($allExpiringSecrets.Count -gt 0) {
                     $sortedSecrets | Out-File -FilePath $ExportPath -Encoding UTF8
                 }
             }
+            
             Write-Host "`nResults exported to: $ExportPath" -ForegroundColor Green
-        }
-        catch {
+        } catch {
             Write-Error "Failed to export results: $_"
         }
     }
     
-    # Send Teams notification if webhook provided
+    ## Send Teams notification if webhook provided
     if ($TeamsWebhookUrl) {
         Write-Host "`nSending Teams notification" -ForegroundColor Cyan
+
         $notificationSent = Send-TeamsNotification -WebhookUrl $TeamsWebhookUrl -Secrets $sortedSecrets -Thresholds $DaysThreshold
+
         if ($notificationSent) {
             Write-Host "Teams notification sent successfully" -ForegroundColor Green
         }
     }
     
-    # Exit with error code if critical secrets found
+    ## Exit with error code if critical secrets found
     if ($criticalCount -gt 0) {
         Write-Host "`nWARNING: Found $criticalCount critical/expired secret(s)!" -ForegroundColor Red
         exit 1
     }
-}
-else {
+} else {
     Write-Host "No secrets found expiring within $($DaysThreshold[-1]) days." -ForegroundColor Green
 }
 
 Write-Host "`nScript completed successfully." -ForegroundColor Green
+
