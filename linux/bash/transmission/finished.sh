@@ -28,11 +28,13 @@ function usage() {
   cat << EOF
 Usage: ${0##*/} [OPTIONS]
 
-  -h, --help               Print this help menu
-  -H, --host <ip-or-fqdn>  Transmission server address
-  -p, --port <port>        Transmission port
-  --rm-finished            Removes all torrents in 'finished' state"
-  --debug                  Enable debug logging
+  -h, --help                   Print this help menu
+  -H, --host     <ip-or-fqdn>  Transmission server address
+  -p, --port     <port>        Transmission port
+  -u, --username <string>      Transmission RPC username
+  -P, --password <string>      Transmission RPC password
+  --rm-finished                Removes all torrents in 'finished' state"
+  --debug                      Enable debug logging
 EOF
 }
 
@@ -62,6 +64,25 @@ function parse_arguments() {
         fi
 
         TRANSMISSION_PORT="$2"
+        shift 2
+        ;;
+      -u|--username)
+        if [[ -z "$2" ]]; then
+          echo "[ERROR] --username requires argument" >&2
+          usage
+          exit 1
+        fi
+
+        TRANSMISSION_USERNAME="$2"
+        shift 2
+        ;;
+      -P|--password)
+        if [[ -z "$2" ]]; then
+          echo "[ERROR] --password requires argument" >&2
+          exit 1
+        fi
+
+        TRANSMISSION_PASSWORD="$2"
         shift 2
         ;;
       --rm|--rm-finished)
