@@ -122,6 +122,24 @@ function list_finished_torrents() {
     "$url" | jq -r '.arguments.torrents[] | select(.percentDone == 1 and (.status==0 or .status==6)) | "\(.id): \(.name)"'
 }
 
+function count_torrents() {
+  local session="$1" url="$2" auth="$3"
+  local count=$(curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["id"]}}' \
+    "$url" | jq '.arguments.torrents | length')
+  
+  echo "$count"
+}
+
+function count_finished_torrents() {
+  local session="$1" url="$2" auth="$3"
+  local count=$(curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["percentDone","status"]}}' \
+    "$url" | jq '[.arguments.torrents[] | select(.percentDone == 1 and (.status==0 or .status==6))] | length')
+  
+  echo "$count"
+}
+
 ## Pre-flight
 check_dependencies
 parse_arguments "$@"
@@ -140,7 +158,12 @@ debug_vars() {
 
 debug_vars
 
+echo ""
 echo "Connected to ${TRANSMISSION_USERNAME}:<hidden>@${TRANSMISSION_HOST}:${TRANSMISSION_PORT}"
-echo "Session ready. Ready for torrent operations."
+echo "Session ready"
+
+TOTAL_TORRENTS=$(count_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
+echo "Found [$TOTAL_TORRENTS] torrent(s) on ${TRANSMISSION_HOST}"
+echo ""
 
 list_finished_torrents $SESSION_ID $RPC_URL $TRANSMISSION_AUTH_STR
