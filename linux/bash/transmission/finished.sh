@@ -170,6 +170,26 @@ function count_finished_torrents() {
   echo "$count"
 }
 
+function remove_finished_torrents() {
+  local session="$1" url="$2" auth="$3" delete_data="$4"
+  local delete_flag=""
+  
+  ## Delete local data (true/false)
+  [[ "$delete_data" == "true" ]] && delete_flag="--delete-local-data"
+  
+  ## Get finished torrents, extract IDs, remove each
+  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["id","percentDone","status"]}}' \
+    "$url" | jq -r '.arguments.torrents[]
+                   | select(.percentDone == 1 and (.status==0 or .status==6))
+                   | .id' | while read -r torrent_id; do
+      echo "Removing torrent ID: $torrent_id $delete_flag"
+      curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+        -d "{\"method\":\"torrent-remove\",\"arguments\":{\"ids\":[$torrent_id],\"delete-local-data\":$([[ "$delete_data" == "true" ]] && echo "true" || echo "false")}}" \
+        "$url" >/dev/null
+  done
+}
+
 ## Pre-flight
 check_dependencies
 parse_arguments "$@"
@@ -193,14 +213,23 @@ echo "Connected to ${TRANSMISSION_USERNAME}:<hidden>@${TRANSMISSION_HOST}:${TRAN
 echo "Session ready"
 
 TOTAL_TORRENTS=$(count_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
-echo "Found [$TOTAL_TORRENTS] torrent(s) on ${TRANSMISSION_HOST}"
-echo ""
+if [[ $TOTAL_TORRENTS -gt 0 ]]; then
+  echo "Found [$TOTAL_TORRENTS] torrent(s) on ${TRANSMISSION_HOST}"
+  echo ""
+fi
 
-echo "Listing torrents:"
 list_finished_torrents $SESSION_ID $RPC_URL $TRANSMISSION_AUTH_STR
 
 if [[ "$RM_FINISHED" == "true" ]]; then
-  echo ""
   FINISHED_TORRENTS=$(count_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
-  echo "Removing finished torrents"
+
+  if [[ $FINISHED_TORRENTS -eq 0 ]]; then
+    echo "No torrents to remove"
+  else
+    echo "Removing finished torrents"
+
+    if ! remove_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "false" 2>&1; then
+      echo "[ERROR] Failed removing finished torrents"
+    fi
+  fi
 fi
