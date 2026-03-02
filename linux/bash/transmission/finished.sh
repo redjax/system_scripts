@@ -6,6 +6,10 @@ TRANSMISSION_HOST="${TRANSMISSION_HOST:-localhost}"
 TRANSMISSION_PORT="${TRANSMISSION_PORT:-9091}"
 TRANSMISSION_USERNAME="${TRANSMISSION_USERNAME:-}"
 TRANSMISSION_PASSWORD="${TRANSMISSION_PASSWORD:-}"
+
+TOTAL_TORRENTS=""
+FINISHED_TORRENTS=""
+RM_FINISHED="false"
 DEBUG="false"
 
 ## Core Functions
@@ -27,6 +31,7 @@ Usage: ${0##*/} [OPTIONS]
   -h, --help               Print this help menu
   -H, --host <ip-or-fqdn>  Transmission server address
   -p, --port <port>        Transmission port
+  --rm-finished            Removes all torrents in 'finished' state"
   --debug                  Enable debug logging
 EOF
 }
@@ -58,6 +63,10 @@ function parse_arguments() {
 
         TRANSMISSION_PORT="$2"
         shift 2
+        ;;
+      --rm|--rm-finished)
+        RM_FINISHED="true"
+        shift
         ;;
       --debug)
         DEBUG="true"
@@ -166,4 +175,11 @@ TOTAL_TORRENTS=$(count_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR
 echo "Found [$TOTAL_TORRENTS] torrent(s) on ${TRANSMISSION_HOST}"
 echo ""
 
+echo "Listing torrents:"
 list_finished_torrents $SESSION_ID $RPC_URL $TRANSMISSION_AUTH_STR
+
+if [[ "$RM_FINISHED" == "true" ]]; then
+  echo ""
+  FINISHED_TORRENTS=$(count_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
+  echo "Removing finished torrents"
+fi
