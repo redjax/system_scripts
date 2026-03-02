@@ -117,6 +117,6 @@ if [[ "$RM_FINISHED" == "true" ]]; then
   FINISHED_TORRENTS=$(count_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
   [[ $FINISHED_TORRENTS -eq 0 ]] && { echo "No torrents to remove"; exit 0; }
   
-  echo "Removing $FINISHED_TORRENTS finished torrents..."
+  echo "Removing $FINISHED_TORRENTS finished torrents"
   remove_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "false"
 fi
