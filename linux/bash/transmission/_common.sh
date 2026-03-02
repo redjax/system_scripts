@@ -39,7 +39,7 @@ function get_session_id() {
     exit 1
   }
   
-  debug "Session ID: ${session:0:8}..."
+  debug "Session ID: ${session:0:8}"
   echo "$session"
 }
 
