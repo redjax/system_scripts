@@ -115,6 +115,13 @@ function get_session_id() {
   echo "$session"
 }
 
+function list_finished_torrents() {
+  local session="$1" url="$2" auth="$3"
+  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["id","name","percentDone","status"]}}' \
+    "$url" | jq -r '.arguments.torrents[] | select(.percentDone == 1 and (.status==0 or .status==6)) | "\(.id): \(.name)"'
+}
+
 ## Pre-flight
 check_dependencies
 parse_arguments "$@"
@@ -135,3 +142,5 @@ debug_vars
 
 echo "Connected to ${TRANSMISSION_USERNAME}:<hidden>@${TRANSMISSION_HOST}:${TRANSMISSION_PORT}"
 echo "Session ready. Ready for torrent operations."
+
+list_finished_torrents $SESSION_ID $RPC_URL $TRANSMISSION_AUTH_STR
