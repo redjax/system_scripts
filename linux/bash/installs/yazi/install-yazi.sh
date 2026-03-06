@@ -12,6 +12,8 @@ fi
 
 OS="$(uname -s)"
 ARCH="$(uname -m)"
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
 
 case "$OS" in
 Linux)
@@ -70,9 +72,6 @@ else
         echo "Could not find release asset for $ARCH-$PLATFORM"
         exit 1
     fi
-
-    TMPDIR=$(mktemp -d)
-    trap 'rm -rf "$TMPDIR"' EXIT
 
     echo "Downloading $ASSET_URL to $TMPDIR/$ASSET"
     curl -L -o "$TMPDIR/$ASSET" "$ASSET_URL"
