@@ -166,5 +166,13 @@
         "scoop_id": "azure-developer-cli",
         "choco_id": "azd",
         "aqua_id": ""
+    },
+    {
+        "name": "Fresh Terminal IDE",
+        "description": "Terminal-based, 'zero config' IDE (like Helix).",
+        "winget_id": "fresh-dev.fresh",
+        "scoop_id": "fresh",
+        "choco_id": "",
+        "aqua_id": ""
     }
 ]
