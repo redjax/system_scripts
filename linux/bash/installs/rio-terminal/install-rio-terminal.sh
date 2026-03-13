@@ -126,23 +126,35 @@ elif [[ "$OS" == "Linux" ]]; then
     fi
 fi
 
-echo "Rio installed successfully!"
+## Check if terminfo is already installed
+if infocmp rio &>/dev/null; then
+    echo "Rio terminfo already installed"
+else
+    echo "Installing Rio terminfo"
+    curl -o rio.terminfo https://raw.githubusercontent.com/raphamorim/rio/main/misc/rio.terminfo
+    sudo tic -xe xterm-rio,rio rio.terminfo
+    rm rio.terminfo
+fi
 
-echo ""
-read -p "Install Rio themes from the https://github.com/raphamorim/rio-terminal-themes repo? (y/n) " -n 1 -r
+echo "Rio installed successfully"
 echo ""
 
-case $REPLY in
-[Yy]*)
-    install_rio_themes
-    if [[ $? -ne 0 ]]; then
-        echo "[ERROR] Failed to install rio themes."
-        exit 1
-    fi
-    exit 0
-    ;;
-*)
-    echo "Skipping themes download."
-    exit 0
-    ;;
-esac
+while true; do
+    read -p "Install Rio themes from the https://github.com/raphamorim/rio-terminal-themes repo? (y/n) " -n 1 -r
+    echo ""
+
+    case $REPLY in
+    [Yy]*)
+        install_rio_themes
+        if [[ $? -ne 0 ]]; then
+            echo "[ERROR] Failed to install rio themes."
+            exit 1
+        fi
+
+        ;;
+    *)
+        echo "Skipping themes download."
+        break
+        ;;
+    esac
+done
