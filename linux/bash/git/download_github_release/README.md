@@ -46,3 +46,27 @@ Give script a custom pattern to match non-standard release file names:
 ./gh-install.sh owner/repo --asset-pattern 'filename-.*-x86_64-unknown-linux-gnu.tar.gz'
 ```
 
+## Examples
+
+### Install atuinsh/atuin
+
+[Atuin releases](https://github.com/atuinsh/atuin/releases)
+
+> [!NOTE]
+> This script tries to download the `atuin-server` bin by default. You must use the `--asset-pattern` flag to tell the script how to download the `atuin*.tar.gz" archive
+
+```shell
+## amd64
+./gh-install.sh atuinsh/atuin --asset-pattern 'atuin-x86_64-unknown-linux-gnu.tar.gz$'
+
+## amd64 musl
+gh-install --user atuinsh --repo atuin --asset-pattern 'atuin-x86_64-unknown-linux-musl\.tar\.gz$'
+
+## aarch64
+gh-install --user atuinsh --repo atuin --asset-pattern 'atuin-aarch64-unknown-linux-gnu\.tar\.gz$'
+
+## macOS aarch64
+gh-install --user atuinsh --repo atuin --asset-pattern 'atuin-aarch64-apple-darwin\.tar\.gz$'
+
+```
+
