@@ -48,6 +48,33 @@ Give script a custom pattern to match non-standard release file names:
 
 ## Examples
 
+### Install GitTools/GitVersion
+
+[GitVersion releases](https://github.com/GitTools/GitVersion/releases)
+
+> [!NOTE]
+> This script tries to download the musl version of GitVersion by default. You must use the `--asset-pattern` flag to tell the script how to download the `gitversion*.tar.gz` archive
+
+```shell
+## Linux x86_64
+./gh-install.sh --user GitTools --repo GitVersion --asset-pattern 'gitversion-linux-x64-.*\.tar\.gz$'
+
+## Linux x86_64 (musl, Alpine-style libc)
+./gh-install.sh --user GitTools --repo GitVersion --asset-pattern 'gitversion-linux-musl-x64-.*\.tar\.gz$'
+
+## Linux aarch64
+./gh-install.sh --user GitTools --repo GitVersion --asset-pattern 'gitversion-linux-arm64-.*\.tar\.gz$'
+
+## Linux aarch64 (musl)
+./gh-install.sh --user GitTools --repo GitVersion --asset-pattern 'gitversion-linux-musl-arm64-.*\.tar\.gz$'
+
+## macOS x86_64
+./gh-install.sh --user GitTools --repo GitVersion --asset-pattern 'gitversion-osx-x64-.*\.tar\.gz$'
+
+## macOS aarch64
+./gh-install.sh --user GitTools --repo GitVersion --asset-pattern 'gitversion-osx-arm64-.*\.tar\.gz$'
+```
+
 ### Install atuinsh/atuin
 
 [Atuin releases](https://github.com/atuinsh/atuin/releases)
