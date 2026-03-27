@@ -20,7 +20,7 @@ DRY_RUN=0
 OWNER=""
 REPO=""
 ASSET_PATTERN=""
-INSTALL_DIR="/usr/local/bin"
+INSTALL_DIR="$HOME/.local/bin"
 
 ## Print or run a command
 function run() {
@@ -91,6 +91,7 @@ function detect_platform() {
   esac
 }
 
+## Parse args
 POSITIONAL=()
 while (($#)); do
   case "$1" in
@@ -110,7 +111,7 @@ while (($#)); do
       ASSET_PATTERN="${2:-}"
       shift 2
       ;;
-    --install-dir)
+    --install-dir|--install-path|--dest)
       INSTALL_DIR="${2:-}"
       shift 2
       ;;
