@@ -86,3 +86,29 @@ function check_dependencies() {
     fi
   done
 }
+
+function count_stalled_torrents() {
+  local session="$1" url="$2" auth="$3"
+  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["id","isStalled"]}}' \
+    "$url" | jq '[.arguments.torrents[] | select(.isStalled == true)] | length'
+}
+
+function list_stalled_torrents() {
+  local session="$1" url="$2" auth="$3"
+  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["id","name","isStalled","status"]}}' \
+    "$url" | jq -r '.arguments.torrents[] | select(.isStalled == true) | "\(.id): \(.name)"'
+}
+
+function remove_stalled_torrents() {
+  local session="$1" url="$2" auth="$3" delete_data="$4"
+  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+    -d '{"method":"torrent-get","arguments":{"fields":["id","isStalled"]}}' \
+    "$url" | jq -r '.arguments.torrents[] | select(.isStalled == true) | .id' | while read -r torrent_id; do
+    echo "Removing stalled torrent ID: $torrent_id"
+    curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
+      -d "{\"method\":\"torrent-remove\",\"arguments\":{\"ids\":[$torrent_id],\"delete-local-data\":$([[ "$delete_data" == "true" ]] && echo true || echo false)}}" \
+      "$url" >/dev/null
+  done
+}
