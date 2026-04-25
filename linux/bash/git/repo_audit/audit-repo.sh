@@ -6,6 +6,7 @@ if ! command -v git >/dev/null 2>&1; then
   exit 1
 fi
 
+## Default args
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CWD="$(pwd)"
 TARGET_REPO="${THIS_DIR}"
@@ -13,11 +14,13 @@ OUTPUT_FILE=""
 RUN_ALL=true
 SELECTED_SECTIONS=()
 
+## Function to run on exit
 function cleanup() {
   cd "${CWD}"
 }
 trap cleanup EXIT
 
+## Print help menu
 function usage() {
   cat <<EOF
 
@@ -50,11 +53,13 @@ Examples:
 EOF
 }
 
+## Add a section to the list based on args
 function add_section() {
   RUN_ALL=false
   SELECTED_SECTIONS+=("$1")
 }
 
+## Parse CLI args
 function parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -94,6 +99,7 @@ function parse_args() {
   done
 }
 
+## Ensure target repo is a git repo
 function ensure_repo() {
   if ! git -C "$TARGET_REPO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "[ERROR] Not a git repository: $TARGET_REPO" >&2
@@ -101,6 +107,7 @@ function ensure_repo() {
   fi
 }
 
+## Get an overview/summary of the repository
 function repo_summary() {
   echo "[ Repo summary ]"
   echo
@@ -108,6 +115,7 @@ function repo_summary() {
   echo
 }
 
+## Count the number of commits
 function commit_count() {
   echo "[ Commit count ]"
   echo
@@ -115,6 +123,7 @@ function commit_count() {
   echo
 }
 
+## List contributors
 function contributors() {
   echo "[ Contributors ]"
   echo
@@ -122,6 +131,9 @@ function contributors() {
   echo
 }
 
+## List author churn, which is a measure of
+#  how many lines have been added and removed
+#  per author
 function author_churn() {
   echo "[ Author churn ]"
   echo
@@ -140,6 +152,7 @@ function author_churn() {
   echo
 }
 
+## List the top 30 most churned paths
 function top_churn_paths() {
   echo "[ Top churn paths ]"
   echo
@@ -150,6 +163,7 @@ function top_churn_paths() {
   echo
 }
 
+## List the largest blobs
 function largest_blobs() {
   echo "[ Largest blobs ]"
   echo
@@ -160,6 +174,7 @@ function largest_blobs() {
   echo
 }
 
+## List the biggest commits by number of changes
 function biggest_commits_by_changes() {
   echo "[ Biggest commits by line churn ]"
   echo
@@ -183,6 +198,7 @@ function biggest_commits_by_changes() {
   echo
 }
 
+## Run a section
 function run_section() {
   case "$1" in
     repo_summary) repo_summary ;;
@@ -194,6 +210,8 @@ function run_section() {
     biggest_commits_by_changes) biggest_commits_by_changes ;;
   esac
 }
+
+## --------------------------------------------------------------------------
 
 function main() {
   parse_args "$@"
@@ -228,4 +246,7 @@ function main() {
   fi
 }
 
-main "$@"
+if ! main "$@" >&2; then
+  echo "[ERROR] Failed analyzing git repository" >&2
+  exit 1
+fi
