@@ -112,3 +112,22 @@ function remove_stalled_torrents() {
       "$url" >/dev/null
   done
 }
+
+function rpc_torrent_action() {
+  local session="$1" url="$2" auth="$3" method="$4" ids_json="${5:-}"
+
+  if [[ -n "$ids_json" ]]; then
+    jq -n --arg method "$method" --argjson ids "$ids_json" \
+      '{method:$method, arguments:{ids:$ids}}' \
+    | curl -sS -u "$auth" -H "X-Transmission-Session-Id: $session" \
+        -H "Content-Type: application/json" \
+        -d @- \
+        "$url"
+  else
+    jq -n --arg method "$method" '{method:$method}' \
+    | curl -sS -u "$auth" -H "X-Transmission-Session-Id: $session" \
+        -H "Content-Type: application/json" \
+        -d @- \
+        "$url"
+  fi
+}
