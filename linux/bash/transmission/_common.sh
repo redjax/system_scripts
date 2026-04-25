@@ -176,3 +176,36 @@ function rpc_list_all_torrent_ids() {
     -d '{"method":"torrent-get","arguments":{"fields":["id"]}}' \
     "$url" | jq '[.arguments.torrents[].id]'
 }
+
+function rpc_torrent_verify() {
+  local session="$1" url="$2" auth="$3" ids_json="$4"
+
+  jq -n --argjson ids "$ids_json" \
+    '{method:"torrent-verify", arguments:{ids:$ids}}' |
+    curl -sS -u "$auth" -H "X-Transmission-Session-Id: $session" \
+      -H "Content-Type: application/json" \
+      -d @- \
+      "$url"
+}
+
+function rpc_torrent_reannounce() {
+  local session="$1" url="$2" auth="$3" ids_json="$4"
+
+  jq -n --argjson ids "$ids_json" \
+    '{method:"torrent-reannounce", arguments:{ids:$ids}}' |
+    curl -sS -u "$auth" -H "X-Transmission-Session-Id: $session" \
+      -H "Content-Type: application/json" \
+      -d @- \
+      "$url"
+}
+
+function rpc_torrent_move() {
+  local session="$1" url="$2" auth="$3" ids_json="$4" location="$5"
+
+  jq -n --argjson ids "$ids_json" --arg location "$location" \
+    '{method:"torrent-set-location", arguments:{ids:$ids, location:$location, move:true}}' |
+    curl -sS -u "$auth" -H "X-Transmission-Session-Id: $session" \
+      -H "Content-Type: application/json" \
+      -d @- \
+      "$url"
+}
