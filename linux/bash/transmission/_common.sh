@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if ! command -v curl &>/dev/null; then
+  echo "[ERROR] curl is not installed." >&2
+  exit 1
+fi
+
+if ! command -v jq &>/dev/null; then
+  echo "[ERROR] jq is not installed." >&2
+  exit 1
+fi
+
 ## Global config (defaults + env overrides)
 : "${TRANSMISSION_HOST:=localhost}"
 : "${TRANSMISSION_PORT:=9091}"
