@@ -29,18 +29,22 @@ Options:
   -o, --output <file>     Save report to file
   --all                   Run all sections (default)
 
-  Section selectors (use one or more):
-    --repo-summary
-    --commit-count
-    --top-contributors
-    --top-churn-paths
-    --largest-blobs
-    --biggest-commits
+Section selectors (use one or more):
+  --repo-summary
+  --commit-count
+  --contributors
+  --author-churn
+  --top-churn-paths
+  --largest-blobs
+  --biggest-commits
+
+Aliases:
+  --top-contributors      Alias for --contributors
 
 Examples:
   $0
   $0 --target ~/src/myrepo --output report.txt
-  $0 --top-contributors --largest-blobs
+  $0 --contributors --largest-blobs
   $0 --all --output repo-survey.txt
 
 EOF
@@ -75,7 +79,9 @@ function parse_args() {
         ;;
       --repo-summary)      add_section "repo_summary"; shift ;;
       --commit-count)      add_section "commit_count"; shift ;;
-      --top-contributors)  add_section "top_contributors"; shift ;;
+      --contributors)      add_section "contributors"; shift ;;
+      --top-contributors)  add_section "contributors"; shift ;;
+      --author-churn)      add_section "author_churn"; shift ;;
       --top-churn-paths)   add_section "top_churn_paths"; shift ;;
       --largest-blobs)     add_section "largest_blobs"; shift ;;
       --biggest-commits)   add_section "biggest_commits_by_changes"; shift ;;
@@ -86,6 +92,13 @@ function parse_args() {
         ;;
     esac
   done
+}
+
+function ensure_repo() {
+  if ! git -C "$TARGET_REPO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "[ERROR] Not a git repository: $TARGET_REPO" >&2
+    exit 1
+  fi
 }
 
 function repo_summary() {
@@ -102,10 +115,28 @@ function commit_count() {
   echo
 }
 
-function top_contributors() {
-  echo "[ Top contributors ]"
+function contributors() {
+  echo "[ Contributors ]"
   echo
-  git shortlog -sn --all
+  git shortlog -sne --all
+  echo
+}
+
+function author_churn() {
+  echo "[ Author churn ]"
+  echo
+  git log --all --numstat --format='%aN <%aE>' \
+    | awk '
+        /^.+ <.+>$/ { author=$0; next }
+        NF==3 {
+          if ($1 ~ /^[0-9]+$/) add[author]+=$1
+          if ($2 ~ /^[0-9]+$/) del[author]+=$2
+        }
+        END {
+          for (a in add) print add[a]+del[a], add[a], del[a], a
+        }
+      ' \
+    | sort -n | tail -30
   echo
 }
 
@@ -134,9 +165,19 @@ function biggest_commits_by_changes() {
   echo
   git log --all --numstat --format='%H %s' \
     | awk '
-        /^[0-9a-f]{7,40} / { if (c != "") print total, c; c=$0; total=0; next }
-        NF==3 { if ($1 ~ /^[0-9]+$/) total+=$1; if ($2 ~ /^[0-9]+$/) total+=$2 }
-        END { if (c != "") print total, c }
+        /^[0-9a-f]{7,40} / {
+          if (commit != "") print total, commit
+          commit=$0
+          total=0
+          next
+        }
+        NF==3 {
+          if ($1 ~ /^[0-9]+$/) total+=$1
+          if ($2 ~ /^[0-9]+$/) total+=$2
+        }
+        END {
+          if (commit != "") print total, commit
+        }
       ' \
     | sort -n | tail -30
   echo
@@ -146,7 +187,8 @@ function run_section() {
   case "$1" in
     repo_summary) repo_summary ;;
     commit_count) commit_count ;;
-    top_contributors) top_contributors ;;
+    contributors) contributors ;;
+    author_churn) author_churn ;;
     top_churn_paths) top_churn_paths ;;
     largest_blobs) largest_blobs ;;
     biggest_commits_by_changes) biggest_commits_by_changes ;;
@@ -155,13 +197,15 @@ function run_section() {
 
 function main() {
   parse_args "$@"
+  ensure_repo
   cd "$TARGET_REPO"
 
   if [[ "$RUN_ALL" == true ]]; then
     SECTIONS=(
       repo_summary
       commit_count
-      top_contributors
+      contributors
+      author_churn
       top_churn_paths
       largest_blobs
       biggest_commits_by_changes
