@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(dirname "$0")/_common.sh"
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${THIS_DIR}/_common.sh"
 
 RM_FINISHED="false"
 
-usage() {
+function usage() {
   cat << 'EOF'
 Usage: finished.sh [OPTIONS]
 
@@ -19,7 +20,7 @@ Usage: finished.sh [OPTIONS]
 EOF
 }
 
-parse_arguments() {
+function parse_arguments() {
   while [[ $# -gt 0 ]]; do
     case $1 in
       -H|--host)
@@ -83,7 +84,7 @@ parse_arguments() {
   done
 }
 
-validate_config() {
+function validate_config() {
   local required=(TRANSMISSION_HOST TRANSMISSION_PORT TRANSMISSION_USERNAME TRANSMISSION_PASSWORD)
   for var in "${required[@]}"; do
     if [[ -z "${!var}" ]]; then
