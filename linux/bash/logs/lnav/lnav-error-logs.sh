@@ -50,5 +50,12 @@ if ((${#logs[@]} == 0)); then
   exit 1
 fi
 
+echo "Starting lnav. Press ':' once lnav starts and paste this to filter logs to errors only:"
+echo "  set-min-log-level error"
+echo ""
+
+read -r -n 1 -p "Press a key to start lnav..."
+echo
+
 sudo lnav "${logs[@]}"
 
