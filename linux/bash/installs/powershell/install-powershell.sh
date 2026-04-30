@@ -7,6 +7,7 @@ set -euo pipefail
 ############################################
 
 REPO_API_URL="https://api.github.com/repos/PowerShell/PowerShell/releases/latest"
+TMP_DIR=""
 
 function log() {
 	echo "[INFO] $*"
@@ -24,6 +25,12 @@ function error() {
 function require_cmd() {
 	if ! command -v "$1" >/dev/null 2>&1; then
 		error "Required command not found: $1"
+	fi
+}
+
+function cleanup_tmp_dir() {
+	if [[ -n "${TMP_DIR:-}" && -d "${TMP_DIR}" ]]; then
+		rm -rf "${TMP_DIR}"
 	fi
 }
 
@@ -269,7 +276,7 @@ function main() {
 	log "Detecting OS and architecture"
 
 	local distro_family arch release_json latest_tag latest_version installed_version
-	local all_urls download_url tmp_dir archive_path prefer_rh=false musl=false
+	local all_urls download_url archive_path prefer_rh=false musl=false
 	local os_id=""
 
 	arch="$(normalize_arch)"
@@ -332,12 +339,12 @@ function main() {
 		error "Could not find a compatible PowerShell release asset for this system."
 	fi
 
-	tmp_dir="$(mktemp -d -t pwsh-install-XXXXXX)"
-	trap 'rm -rf "$tmp_dir"' EXIT
+	TMP_DIR="$(mktemp -d -t pwsh-install-XXXXXX)"
+	trap cleanup_tmp_dir EXIT
 
-	archive_path="${tmp_dir}/$(basename "$download_url")"
+	archive_path="${TMP_DIR}/$(basename "$download_url")"
 
-	log "Using temporary directory: $tmp_dir"
+	log "Using temporary directory: $TMP_DIR"
 	log "Downloading asset: $(basename "$download_url")"
 	curl -fL "$download_url" -o "$archive_path"
 
@@ -352,7 +359,7 @@ function main() {
 			;;
 		*.tar.gz)
 			log "Installing tarball build"
-			install_tarball "$archive_path" "$latest_version" "${tmp_dir}/extract"
+			install_tarball "$archive_path" "$latest_version" "${TMP_DIR}/extract"
 			;;
 		*)
 			error "Unsupported asset type selected: $download_url"
