@@ -15,6 +15,7 @@ I use [git-bug](https://github.com/git-bug/git-bug) to keep the issues for this 
 
 - Create a [bridge](https://github.com/git-bug/git-bug/blob/trunk/doc/usage/third-party.md)
   - `git-bug` will detect your current remote origin and automatically configure a bridge
+    - If you get errors trying to use the automatic setup, create a bridge manually
   - For interacting with issues in other repositories, you can create a bridge with `git bug bridge new` to start the wizard
 - Use one of the [`git-bug` interfaces](https://github.com/git-bug/git-bug/blob/trunk/doc/usage/interfaces.md)
   - Use `git bug termui` to start [`git-bug` TUI app](https://github.com/git-bug/git-bug/blob/trunk/doc/usage/interfaces.md#tui)
