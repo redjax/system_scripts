@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+THIS_DIR_GITSETUP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if ! command -v git >/dev/null 2>&1; then
   echo "[ERROR] git is not installed. Install git before running this script." >&2
   exit 1
 fi
 
-GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%C(reset)%C(auto)%d%C(reset) %s"
+DEFAULT_GITIGNORE_FILE="${THIS_DIR_GITSETUP}/.gitignore_global"
 
+GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%C(reset)%C(auto)%d%C(reset) %s"
 GIT_USERNAME=""
 GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
@@ -18,6 +21,7 @@ GIT_REUSE_CONFLICT_RESOLUTION="false"
 GIT_ENABLE_SIGNING="false"
 GIT_SIGN_SSH_KEY=""
 GIT_PREFERRED_EDITOR="${EDITOR:-nvim}"
+GIT_GLOBAL_GITIGNORE=""
 
 function usage() {
   cat <<EOF
@@ -35,6 +39,7 @@ Options:
   -s, --enable-signing     Enable SSH signing. When enabled, you must provide a private key (default: false)
   -k, --sign-ssh-key       The private key to use for SSH signing
   -E, --editor             The preferred editor to use (default: Value of \$EDITOR or 'nvim')
+  -i, --default-gitignore  Path where .gitignore_global will be created. Subdirectories will use this .gitignore, on top of their own rules (default: none, usually \$HOME/.gitignore_global)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -205,6 +210,19 @@ function set_editor() {
   git config --global core.editor "${editor}"
 }
 
+function set_global_gitignore() {
+  local gitignore_path="$1"
+
+  if [[ ! -f "${gitignore_path}" ]]; then
+    if [[ -f "${DEFAULT_GITIGNORE_FILE}" ]]; then
+      echo "Creating global gitignore at path: ${gitignore_path}"
+      cp "${DEFAULT_GITIGNORE_FILE}" "${gitignore_path}"
+    else
+      echo "[WARNING] Could not find default global gitignore at path: ${DEFAULT_GITIGNORE_FILE}"
+      return
+    fi
+  fi
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -295,6 +313,11 @@ echo
 
 set_editor "${GIT_EDITOR}"
 echo
+
+if [[ -n "${GIT_GLOBAL_GITIGNORE}" ]]; then
+  set_global_gitignore "${GIT_GLOBAL_GITIGNORE}"
+  echo
+fi
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
   set_git_user "${GIT_USERNAME}" "${GIT_EMAIL}"

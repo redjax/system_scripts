@@ -1,0 +1,66 @@
+############################################################
+# Global gitignore                                         #
+#                                                          #
+# Patterns in this file apply to all repositories          #
+# in the current directory tree (this path & all subdirs). #
+#                                                          #
+# See https://git-scm.com/docs/gitignore                   #
+############################################################
+
+## Junk files
+*.swp
+*.swo
+
+## OS-specific junk files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+## Temporary files
+.netrwhist
+*.tmp
+*.tmp.*
+*.bak
+*.bak.*
+*.old
+*.old.*
+*.orig
+*.orig.*
+
+## Log files
+*.log
+*.log.*
+
+## Cache files
+*.cache
+*.cache.*
+
+## Temporary directories
+tmp/
+temp/
+temp.*
+tmp.*
+
+## Database files
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+*.db-wal
+*.db-shm
+*.db-wal-journal
+
+## Secrets
+.env
+.env.*
+*.local
+*.local.*
+*.secret
+*.secret.*
+
+## Node.js
+node_modules
+
+## Python
+__pycache__
+*.py[cod]
