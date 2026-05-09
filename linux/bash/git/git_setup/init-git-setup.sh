@@ -349,7 +349,7 @@ function do_git_setup() {
 }
 
 ## Entrypoint
-if [[ "${BASH_SOURCE[0]:-}" == "${0}" || "${0}" == "bash" ]]; then
+if [[ "${BASH_SOURCE[0]:-}" == "${0}" ]] || [[ "${0}" == "bash" ]] || [[ "${BASH_SOURCE[0]:-}" == "" ]]; then
   parse_args "$@"
   do_git_setup
 fi
