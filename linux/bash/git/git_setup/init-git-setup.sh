@@ -49,17 +49,18 @@ Example:
   $(basename "$0") -a # Create remote branches on push
   $(basename "$0") -r # Reuse conflict resolution
 
-  Suggested command:
-    $(basename "$0") \
-      --git-user "Your Name" \
-      --git-email "your@email.com" \
-      --default-branch "main" \
-      --pull-rebase \
-      --prune-on-fetch \
-      --auto-setup-remote \
-      --reuse-conflict \
-      --default-gitignore "\$HOME/.gitignore_global" \
-      --editor "${EDITOR:-vim}"
+Suggested command:
+
+$(basename "$0") \\
+  --git-user "Your Name" \\
+  --git-email "your@email.com" \\
+  --default-branch "main" \\
+  --pull-rebase \\
+  --prune-on-fetch \\
+  --auto-setup-remote \\
+  --reuse-conflict \\
+  --default-gitignore "\$HOME/.gitignore_global" \\
+  --editor "${EDITOR:-vim}"
 EOF
 }
 
