@@ -15,7 +15,6 @@ GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
 GIT_AUTO_SETUP_REMOTE="false"
 GIT_REUSE_CONFLICT_RESOLUTION="false"
-GIT_ENABLE_COLOR="false"
 
 function usage() {
   cat <<EOF
@@ -30,7 +29,6 @@ Options:
   -f, --prune-on-fetch     Enable prune on fetch (default: false, usually true)
   -a, --auto-setup-remote  Create remote branches on push (default: false)
   -r, --reuse-conflict     Reuse conflict resolution (default: false, usually true)
-  -c, --color              Enable color (default: false, usually true)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -103,11 +101,9 @@ function reuse_conflict_resolution_enabled() {
 }
 
 function enable_color() {
-  local enabled="false"
-
-  echo "Color enabled: ${enabled}"
-
-  git config --global color.ui true
+  echo "Set git color output to auto"
+  
+  git config --global color.ui auto
 }
 
 function set_pager() {
@@ -181,7 +177,7 @@ echo
 reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
 echo
 
-enable_color "${GIT_ENABLE_COLOR}"
+enable_color
 echo
 
 set_pager "${GIT_PAGER}"
