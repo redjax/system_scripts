@@ -60,6 +60,8 @@ As I write/find scripts I want to use across machines (work or personal), I add 
 
 ## Directories
 
+- [`docs/`](./docs/)
+  - Project & repository documentation
 - [`repo_scripts/`](./repo_scripts)
   - Scripts meant to be run from the repository root, i.e. `./repo_scripts/script_name.sh/ps1/...`
 - [`windows/`](./windows/)
@@ -67,3 +69,4 @@ As I write/find scripts I want to use across machines (work or personal), I add 
   - Includes application installs/uninstalls, automation scripts, maintenance scripts, and more
 - [`linux/`](./linux/)
   - Scripts (mostly [Bash](./linux/bash/)) for Linux
+
