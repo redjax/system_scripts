@@ -11,6 +11,7 @@ GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%
 GIT_USERNAME=""
 GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
+ENABLE_PULL_REBASE="false"
 
 function usage() {
   cat <<EOF
@@ -18,9 +19,10 @@ USAGE: $(basename "$0") [OPTIONS]
 
 Options:
   -h, --help             Print this help menu
-  -u, --git-user         The username to set for git config user.name
-  -e, --git-email        The email address to set for git config user.email
-  -b, --default-branch   The default branch to set for git config init.defaultBranch
+  -u, --git-user         The username to set for git config user.name (default: none/empty)
+  -e, --git-email        The email address to set for git config user.email (default: none/empty)
+  -b, --default-branch   The default branch to set for git config init.defaultBranch (default: main)
+  -p, --pull-rebase      Enable rebase on pull (default: false)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -60,6 +62,14 @@ function set_default_branch() {
   git config --global init.defaultBranch "${branch}"
 }
 
+function pull_rebase_enabled() {
+  local enabled="false"
+
+  echo "Pull rebase enabled: ${enabled}"
+
+  git config --global pull.rebase false
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -78,6 +88,10 @@ while [[ $# -gt 0 ]]; do
       GIT_DEFAULT_BRANCH="$2"
       shift 2
       ;;
+    -p|--pull-rebase)
+      ENABLE_PULL_REBASE="true"
+      shift
+      ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
       usage
@@ -94,6 +108,9 @@ set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
 echo
 
 set_default_branch "${GIT_DEFAULT_BRANCH}"
+echo
+
+pull_rebase_enabled "${ENABLE_PULL_REBASE}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
