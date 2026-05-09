@@ -145,7 +145,7 @@ function prune_on_fetch_enabled() {
 }
 
 function auto_setup_remote_() {
-  local enabled="false"
+  local enabled="$1"
 
   echo "Create remote branch on push enabled: ${enabled}"
 
