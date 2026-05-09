@@ -129,11 +129,11 @@ function set_default_branch() {
 }
 
 function pull_rebase_enabled() {
-  local enabled="false"
+  local enabled="$1"
 
   echo "Pull rebase enabled: ${enabled}"
 
-  git config --global pull.rebase false
+  git config --global pull.rebase "${enabled}"
 }
 
 function prune_on_fetch_enabled() {
