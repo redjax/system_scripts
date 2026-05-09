@@ -41,13 +41,45 @@ function set_git_aliases() {
   echo "Setting git aliases"
   
   echo
-  echo "Alias: lg"
+  echo "Setting alias: lg (git log)"
   git config --global alias.lg "log --graph --oneline --decorate"
 
   echo
-  echo "Alias: lga"
+  echo "Setting alias: lga (git log advanced)"
   git config --global alias.lga \
     "log --graph --pretty=format:'${advanced_format}' --abbrev-commit"
+
+  echo
+  echo "Setting alias: st (git status)"
+  git config --global alias.st status
+
+  echo
+  echo "Setting alias: co (git checkout)"
+  git config --global alias.co checkout
+
+  echo
+  echo "Setting alias: sw (git switch)"
+  git config --global alias.sw switch
+
+  echo
+  echo "Setting alias: br (git branch)"
+  git config --global alias.br branch
+
+  echo
+  echo "Setting alias: ci (git commit)"
+  git config --global alias.ci commit
+
+  echo
+  echo "Setting alias: last (git last commit)"
+  git config --global alias.last "log -1 HEAD"
+
+  echo
+  echo "Setting alias: unstage (git restore --staged)"
+  git config --global alias.unstage "restore --staged"
+
+  echo
+  echo "Setting alias: graph (git graph)"
+  git config --global alias.graph "log --graph --decorate --oneline --all"
 }
 
 function set_git_user() {
