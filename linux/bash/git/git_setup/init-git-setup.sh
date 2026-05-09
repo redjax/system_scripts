@@ -137,7 +137,7 @@ function pull_rebase_enabled() {
 }
 
 function prune_on_fetch_enabled() {
-  local enabled="false"
+  local enabled="$1"
 
   echo "Prune on fetch enabled: ${enabled}"
 
