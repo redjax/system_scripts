@@ -59,3 +59,4 @@ fi
 
 echo "Rio terminal installed."
 exit 0
+
