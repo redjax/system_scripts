@@ -11,7 +11,8 @@ GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%
 GIT_USERNAME=""
 GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
-ENABLE_PULL_REBASE="false"
+GIT_ENABLE_PULL_REBASE="false"
+
 
 function usage() {
   cat <<EOF
@@ -89,7 +90,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     -p|--pull-rebase)
-      ENABLE_PULL_REBASE="true"
+      GIT_ENABLE_PULL_REBASE="true"
       shift
       ;;
     *)
@@ -110,7 +111,7 @@ echo
 set_default_branch "${GIT_DEFAULT_BRANCH}"
 echo
 
-pull_rebase_enabled "${ENABLE_PULL_REBASE}"
+pull_rebase_enabled "${GIT_ENABLE_PULL_REBASE}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
