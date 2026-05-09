@@ -171,6 +171,12 @@ function enable_signing() {
   git config --global commit.gpgsign true
 }
 
+function set_line_endings() {
+  echo "Setting git line endings to autocrlf"
+
+  git config --global core.autocrlf input
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -242,6 +248,9 @@ set_pager "${GIT_PAGER}"
 echo
 
 enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
+echo
+
+set_line_endings
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
