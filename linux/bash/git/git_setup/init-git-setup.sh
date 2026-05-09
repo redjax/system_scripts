@@ -59,15 +59,15 @@ Examples:
 Suggested command:
 
 $(basename "$0") \
-  --git-user "Your Name" \
-  --git-email "your@email.com" \
-  --default-branch "main" \
-  --pull-rebase \
-  --prune-on-fetch \
-  --auto-setup-remote \
-  --reuse-conflict \
-  --default-gitignore "\$HOME/.gitignore_global" \
-  --editor "${EDITOR:-vim}"
+--git-user "Your Name" \
+--git-email "your@email.com" \
+--default-branch "main" \
+--pull-rebase \
+--prune-on-fetch \
+--auto-setup-remote \
+--reuse-conflict \
+--default-gitignore "\$HOME/.gitignore_global" \
+--editor "${EDITOR:-vim}"
 EOF
 }
 
