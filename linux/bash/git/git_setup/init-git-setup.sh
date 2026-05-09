@@ -17,9 +17,10 @@ function usage() {
 USAGE: $(basename "$0") [OPTIONS]
 
 Options:
-  -h, --help         Print this help menu
-  -u, --git-user     The username to set for git config user.name
-  -e, --git-email    The email address to set for git config user.email
+  -h, --help             Print this help menu
+  -u, --git-user         The username to set for git config user.name
+  -e, --git-email        The email address to set for git config user.email
+  -b, --default-branch   The default branch to set for git config init.defaultBranch
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
