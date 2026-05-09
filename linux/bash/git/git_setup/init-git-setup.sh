@@ -39,22 +39,24 @@ EOF
 }
 
 while [[ $# -gt 0 ]]; do
-  -u|--git-user)
-    GIT_USERNAME="$2"
-    shift 2
-    ;;
-  -e|--git-email)
-    GIT_EMAIL="$2"
-    shift 2
-    ;;
-  -h|--help)
-    usage
-    exit 0
-    ;;
-  *)
-    echo "[ERROR] Invalid arg: $1" >&2
-    usage
-    exit 1
-    ;;
+  case $1 in
+    -u|--git-user)
+      GIT_USERNAME="$2"
+      shift 2
+      ;;
+    -e|--git-email)
+      GIT_EMAIL="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "[ERROR] Invalid arg: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
 done
 
