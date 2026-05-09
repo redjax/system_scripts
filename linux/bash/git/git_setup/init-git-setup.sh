@@ -13,18 +13,20 @@ GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
 GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
+GIT_AUTO_SETUP_REMOTE="false"
 
 function usage() {
   cat <<EOF
 USAGE: $(basename "$0") [OPTIONS]
 
 Options:
-  -h, --help             Print this help menu
-  -u, --git-user         The username to set for git config user.name (default: none/empty)
-  -e, --git-email        The email address to set for git config user.email (default: none/empty)
-  -b, --default-branch   The default branch to set for git config init.defaultBranch (default: main)
-  -p, --pull-rebase      Enable rebase on pull (default: false)
-  -f, --prune-on-fetch   Enable prune on fetch (default: false, usually true)
+  -h, --help               Print this help menu
+  -u, --git-user           The username to set for git config user.name (default: none/empty)
+  -e, --git-email          The email address to set for git config user.email (default: none/empty)
+  -b, --default-branch     The default branch to set for git config init.defaultBranch (default: main)
+  -p, --pull-rebase        Enable rebase on pull (default: false)
+  -f, --prune-on-fetch     Enable prune on fetch (default: false, usually true)
+  -a, --auto-setup-remote  Create remote branches on push (default: false)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -80,6 +82,14 @@ function prune_on_fetch_enabled() {
   git config --global fetch.prune true
 }
 
+function auto_setup_remote_() {
+  local enabled="false"
+
+  echo "Create remote branch on push enabled: ${enabled}"
+
+  git config --global push.autoSetupRemote true
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -106,6 +116,10 @@ while [[ $# -gt 0 ]]; do
       GIT_PRUNE_ON_FETCH="true"
       shift
       ;;
+    -a|--auto-setup-remote)
+      GIT_AUTO_SETUP_REMOTE="true"
+      shift
+      ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
       usage
@@ -128,6 +142,9 @@ pull_rebase_enabled "${GIT_ENABLE_PULL_REBASE}"
 echo
 
 prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
+echo
+
+auto_setup_remote_ "${GIT_AUTO_SETUP_REMOTE}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
