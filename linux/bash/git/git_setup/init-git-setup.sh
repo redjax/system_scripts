@@ -14,6 +14,7 @@ GIT_DEFAULT_BRANCH="main"
 GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
 GIT_AUTO_SETUP_REMOTE="false"
+GIT_REUSE_CONFLICT_RESOLUTION="false"
 
 function usage() {
   cat <<EOF
@@ -27,6 +28,7 @@ Options:
   -p, --pull-rebase        Enable rebase on pull (default: false)
   -f, --prune-on-fetch     Enable prune on fetch (default: false, usually true)
   -a, --auto-setup-remote  Create remote branches on push (default: false)
+  -r, --reuse-conflict     Reuse conflict resolution (default: false, usually true)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -90,6 +92,14 @@ function auto_setup_remote_() {
   git config --global push.autoSetupRemote true
 }
 
+function reuse_conflict_resolution_enabled() {
+  local enabled="false"
+
+  echo "Reuse conflict resolution enabled: ${enabled}"
+
+  git config --global rerere.enabled true
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -120,6 +130,10 @@ while [[ $# -gt 0 ]]; do
       GIT_AUTO_SETUP_REMOTE="true"
       shift
       ;;
+    -r|--reuse-conflict)
+      GIT_REUSE_CONFLICT_RESOLUTION="true"
+      shift
+      ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
       usage
@@ -145,6 +159,9 @@ prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
 echo
 
 auto_setup_remote_ "${GIT_AUTO_SETUP_REMOTE}"
+echo
+
+reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
