@@ -29,6 +29,7 @@ GIT_GLOBAL_GITIGNORE=""
 
 GIT_PAGER="less -FRX"
 
+
 function usage() {
   cat <<EOF
 USAGE: $(basename "$0") [OPTIONS]
@@ -48,27 +49,10 @@ Options:
   -i, --default-gitignore  Path where .gitignore_global will be created. Subdirectories will use this .gitignore, on top of their own rules (default: none, usually \$HOME/.gitignore_global)
 
 Example:
-  $(basename "$0") -u "John Doe" -e "john@example.com" # Set git config user.name and user.email
-  $(basename "$0") -b "main" # Set init.defaultBranch
-  $(basename "$0") -p # Enable rebase on pull
-  $(basename "$0") -f # Enable prune on fetch
-  $(basename "$0") -a # Create remote branches on push
-  $(basename "$0") -r # Reuse conflict resolution
-
-Suggested command:
-
-$(basename "$0") \\
-  --git-user "Your Name" \\
-  --git-email "your@email.com" \\
-  --default-branch "main" \\
-  --pull-rebase \\
-  --prune-on-fetch \\
-  --auto-setup-remote \\
-  --reuse-conflict \\
-  --default-gitignore "\$HOME/.gitignore_global" \\
-  --editor "${EDITOR:-vim}"
+  $(basename "$0") -u "John Doe" -e "john@example.com"
 EOF
 }
+
 
 function set_git_aliases() {
   local advanced_format="$1"
@@ -90,6 +74,7 @@ function set_git_aliases() {
   git config --global alias.graph "log --graph --decorate --oneline --all"
 }
 
+
 function set_git_user() {
   local username="$1"
   local email_addr="$2"
@@ -100,6 +85,7 @@ function set_git_user() {
   git config --global user.email "${email_addr}"
 }
 
+
 function set_default_branch() {
   local branch="$1"
 
@@ -107,6 +93,7 @@ function set_default_branch() {
 
   git config --global init.defaultBranch "${branch}"
 }
+
 
 function pull_rebase_enabled() {
   local enabled="$1"
@@ -116,6 +103,7 @@ function pull_rebase_enabled() {
   git config --global pull.rebase "${enabled}"
 }
 
+
 function prune_on_fetch_enabled() {
   local enabled="$1"
 
@@ -123,6 +111,7 @@ function prune_on_fetch_enabled() {
 
   git config --global fetch.prune "${enabled}"
 }
+
 
 function auto_setup_remote_enabled() {
   local enabled="$1"
@@ -132,6 +121,7 @@ function auto_setup_remote_enabled() {
   git config --global push.autoSetupRemote "${enabled}"
 }
 
+
 function reuse_conflict_resolution_enabled() {
   local enabled="$1"
 
@@ -140,11 +130,13 @@ function reuse_conflict_resolution_enabled() {
   git config --global rerere.enabled "${enabled}"
 }
 
+
 function enable_color() {
   echo "Set git color output to auto"
 
   git config --global color.ui auto
 }
+
 
 function set_pager() {
   local pager="${1:-less -FRX}"
@@ -153,6 +145,7 @@ function set_pager() {
 
   git config --global core.pager "${pager}"
 }
+
 
 function enable_signing() {
   local signing_enabled="$1"
@@ -176,11 +169,13 @@ function enable_signing() {
   git config --global commit.gpgsign true
 }
 
+
 function set_line_endings() {
   echo "Setting git line endings to: input"
 
   git config --global core.autocrlf input
 }
+
 
 function set_editor() {
   local editor="$1"
@@ -208,6 +203,7 @@ function set_editor() {
   git config --global core.editor "${editor}"
 }
 
+
 function set_global_gitignore() {
   local gitignore_path="$1"
 
@@ -224,6 +220,7 @@ function set_global_gitignore() {
   git config --global core.excludesfile "${gitignore_path}"
 }
 
+
 function set_conflict_style() {
   local style="${1:-zdiff3}"
 
@@ -231,6 +228,7 @@ function set_conflict_style() {
 
   git config --global merge.conflictstyle "${style}"
 }
+
 
 function set_autocorrect() {
   local mode="${1:-prompt}"
@@ -240,117 +238,129 @@ function set_autocorrect() {
   git config --global help.autocorrect "${mode}"
 }
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -u|--git-user)
-      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-      GIT_USERNAME="$2"
-      shift 2
-      ;;
-    -e|--git-email)
-      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-      GIT_EMAIL="$2"
-      shift 2
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    -b|--default-branch)
-      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-      GIT_DEFAULT_BRANCH="$2"
-      shift 2
-      ;;
-    -p|--pull-rebase)
-      GIT_ENABLE_PULL_REBASE="true"
-      shift
-      ;;
-    -f|--prune-on-fetch)
-      GIT_PRUNE_ON_FETCH="true"
-      shift
-      ;;
-    -a|--auto-setup-remote)
-      GIT_AUTO_SETUP_REMOTE="true"
-      shift
-      ;;
-    -r|--reuse-conflict)
-      GIT_REUSE_CONFLICT_RESOLUTION="true"
-      shift
-      ;;
-    -s|--enable-signing)
-      GIT_ENABLE_SIGNING="true"
-      shift
-      ;;
-    -k|--sign-ssh-key)
-      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-      GIT_SIGN_SSH_KEY="$2"
-      shift 2
-      ;;
-    -E|--editor)
-      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-      GIT_PREFERRED_EDITOR="$2"
-      shift 2
-      ;;
-    -i|--default-gitignore)
-      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-      GIT_GLOBAL_GITIGNORE="$2"
-      shift 2
-      ;;
-    *)
-      echo "[ERROR] Invalid arg: $1"
-      exit 1
-      ;;
-  esac
-done
 
-set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
-echo
+function parse_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -u|--git-user)
+        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
+        GIT_USERNAME="$2"
+        shift 2
+        ;;
+      -e|--git-email)
+        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
+        GIT_EMAIL="$2"
+        shift 2
+        ;;
+      -b|--default-branch)
+        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
+        GIT_DEFAULT_BRANCH="$2"
+        shift 2
+        ;;
+      -p|--pull-rebase)
+        GIT_ENABLE_PULL_REBASE="true"
+        shift
+        ;;
+      -f|--prune-on-fetch)
+        GIT_PRUNE_ON_FETCH="true"
+        shift
+        ;;
+      -a|--auto-setup-remote)
+        GIT_AUTO_SETUP_REMOTE="true"
+        shift
+        ;;
+      -r|--reuse-conflict)
+        GIT_REUSE_CONFLICT_RESOLUTION="true"
+        shift
+        ;;
+      -s|--enable-signing)
+        GIT_ENABLE_SIGNING="true"
+        shift
+        ;;
+      -k|--sign-ssh-key)
+        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
+        GIT_SIGN_SSH_KEY="$2"
+        shift 2
+        ;;
+      -E|--editor)
+        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
+        GIT_PREFERRED_EDITOR="$2"
+        shift 2
+        ;;
+      -i|--default-gitignore)
+        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
+        GIT_GLOBAL_GITIGNORE="$2"
+        shift 2
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      *)
+        echo "[ERROR] Invalid arg: $1"
+        exit 1
+        ;;
+    esac
+  done
+}
 
-set_default_branch "${GIT_DEFAULT_BRANCH}"
-echo
 
-pull_rebase_enabled "${GIT_ENABLE_PULL_REBASE}"
-echo
-
-prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
-echo
-
-auto_setup_remote_enabled "${GIT_AUTO_SETUP_REMOTE}"
-echo
-
-reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
-echo
-
-enable_color
-echo
-
-set_pager "${GIT_PAGER}"
-echo
-
-enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
-echo
-
-set_line_endings
-echo
-
-set_editor "${GIT_PREFERRED_EDITOR}"
-echo
-
-set_conflict_style
-echo
-
-set_autocorrect
-echo
-
-if [[ -n "${GIT_GLOBAL_GITIGNORE}" ]]; then
-  set_global_gitignore "${GIT_GLOBAL_GITIGNORE}"
+function do_git_setup() {
+  set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
   echo
-fi
 
-if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
-  set_git_user "${GIT_USERNAME}" "${GIT_EMAIL}"
-else
-  echo "[INFO] Git username/email not provided. Skipping git user config."
-fi
+  set_default_branch "${GIT_DEFAULT_BRANCH}"
+  echo
 
-echo "Setup complete."
+  pull_rebase_enabled "${GIT_ENABLE_PULL_REBASE}"
+  echo
+
+  prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
+  echo
+
+  auto_setup_remote_enabled "${GIT_AUTO_SETUP_REMOTE}"
+  echo
+
+  reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
+  echo
+
+  enable_color
+  echo
+
+  set_pager "${GIT_PAGER}"
+  echo
+
+  enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
+  echo
+
+  set_line_endings
+  echo
+
+  set_editor "${GIT_PREFERRED_EDITOR}"
+  echo
+
+  set_conflict_style
+  echo
+
+  set_autocorrect
+  echo
+
+  if [[ -n "${GIT_GLOBAL_GITIGNORE}" ]]; then
+    set_global_gitignore "${GIT_GLOBAL_GITIGNORE}"
+    echo
+  fi
+
+  if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
+    set_git_user "${GIT_USERNAME}" "${GIT_EMAIL}"
+  else
+    echo "[INFO] Git username/email not provided. Skipping git user config."
+  fi
+
+  echo "Setup complete."
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  parse_args "$@"
+  do_git_setup
+fi
