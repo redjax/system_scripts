@@ -110,6 +110,13 @@ function enable_color() {
   git config --global color.ui true
 }
 
+function set_pager() {
+  local pager="${1:-less -FRX}"
+  echo "Setting git pager to: ${pager}"
+
+  git config --global core.pager "${pager}"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -175,6 +182,9 @@ reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
 echo
 
 enable_color "${GIT_ENABLE_COLOR}"
+echo
+
+set_pager "${GIT_PAGER}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
