@@ -15,6 +15,7 @@ GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
 GIT_AUTO_SETUP_REMOTE="false"
 GIT_REUSE_CONFLICT_RESOLUTION="false"
+GIT_ENABLE_COLOR="false"
 
 function usage() {
   cat <<EOF
@@ -29,6 +30,7 @@ Options:
   -f, --prune-on-fetch     Enable prune on fetch (default: false, usually true)
   -a, --auto-setup-remote  Create remote branches on push (default: false)
   -r, --reuse-conflict     Reuse conflict resolution (default: false, usually true)
+  -c, --color              Enable color (default: false, usually true)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -100,6 +102,14 @@ function reuse_conflict_resolution_enabled() {
   git config --global rerere.enabled true
 }
 
+function enable_color() {
+  local enabled="false"
+
+  echo "Color enabled: ${enabled}"
+
+  git config --global color.ui true
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -162,6 +172,9 @@ auto_setup_remote_ "${GIT_AUTO_SETUP_REMOTE}"
 echo
 
 reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
+echo
+
+enable_color "${GIT_ENABLE_COLOR}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
