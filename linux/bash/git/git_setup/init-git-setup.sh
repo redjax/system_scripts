@@ -153,7 +153,7 @@ function auto_setup_remote_() {
 }
 
 function reuse_conflict_resolution_enabled() {
-  local enabled="false"
+  local enabled="$1"
 
   echo "Reuse conflict resolution enabled: ${enabled}"
 
