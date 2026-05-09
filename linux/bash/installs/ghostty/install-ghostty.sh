@@ -1,5 +1,27 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
+
+for cmd in git cmake; do
+  if ! command -v "$cmd" >&/dev/null; then
+    echo "[ERROR] $cmd is not installed" >&2
+    exit 1
+  fi
+done
+
+FORCE=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -f | --force)
+    FORCE=1
+    shift
+    ;;
+  *)
+    echo "Unknown option: $1"
+    exit 1
+    ;;
+  esac
+done
 
 echo "Detecting Linux distribution"
 
@@ -130,6 +152,48 @@ function install_ghostty_opensuse() {
   }
 }
 
+function install_ghostty_themes() {
+  echo "Installing Ghostty themes (iTerm2 Color Schemes)..."
+
+  THEME_DIR="$HOME/.config/ghostty/themes"
+  mkdir -p "$THEME_DIR"
+
+  TMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "$TMP_DIR"' RETURN
+
+  git clone --depth 1 \
+    https://github.com/mbadolato/iTerm2-Color-Schemes.git \
+    "$TMP_DIR/schemes"
+
+  if [ ! -d "$TMP_DIR/schemes/ghostty" ]; then
+    echo "[ERROR] Ghostty theme export folder not found in repository."
+    exit 1
+  fi
+
+  cp -f "$TMP_DIR/schemes/ghostty/"* "$THEME_DIR/"
+
+  echo "Themes installed to: $THEME_DIR"
+}
+
+function prompt_install_themes() {
+  if [ "$FORCE" -eq 1 ]; then
+    install_ghostty_themes
+    return
+  fi
+
+  echo
+  read -rp "Install Ghostty themes (iTerm2 color schemes)? [Y/n] " choice
+
+  case "$choice" in
+  n | N)
+    echo "Skipping theme installation."
+    ;;
+  *)
+    install_ghostty_themes
+    ;;
+  esac
+}
+
 case "$DISTRO" in
 ubuntu | debian)
   install_ghostty_debian
@@ -151,6 +215,12 @@ opensuse* | suse)
   build_from_source
   ;;
 esac
+
+if [[ "$FORCE" == 0 ]]; then
+  install_ghostty_themes
+else
+  prompt_install_themes
+fi
 
 echo "Done."
 
