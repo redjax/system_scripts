@@ -310,6 +310,10 @@ while [[ $# -gt 0 ]]; do
       GIT_PREFERRED_EDITOR="$2"
       shift 2
       ;;
+    -i|--default-gitignore)
+      GIT_GLOBAL_GITIGNORE="$2"
+      shift 2
+      ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
       usage
