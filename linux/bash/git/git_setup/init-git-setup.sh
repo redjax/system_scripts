@@ -22,6 +22,7 @@ GIT_ENABLE_SIGNING="false"
 GIT_SIGN_SSH_KEY=""
 GIT_PREFERRED_EDITOR="${EDITOR:-nvim}"
 GIT_GLOBAL_GITIGNORE=""
+GIT_PAGER="less -FRX"
 
 function usage() {
   cat <<EOF
@@ -134,7 +135,7 @@ function pull_rebase_enabled() {
 
   echo "Pull rebase enabled: ${enabled}"
 
-  git config --global pull.rebase "${enabled}"
+  git config --global pull.rebase ${enabled}
 }
 
 function prune_on_fetch_enabled() {
@@ -142,15 +143,15 @@ function prune_on_fetch_enabled() {
 
   echo "Prune on fetch enabled: ${enabled}"
 
-  git config --global fetch.prune true
+  git config --global fetch.prune ${enabled}
 }
 
-function auto_setup_remote_() {
+function auto_setup_remote_enabled() {
   local enabled="$1"
 
   echo "Create remote branch on push enabled: ${enabled}"
 
-  git config --global push.autoSetupRemote true
+  git config --global push.autoSetupRemote ${enabled}
 }
 
 function reuse_conflict_resolution_enabled() {
@@ -158,7 +159,7 @@ function reuse_conflict_resolution_enabled() {
 
   echo "Reuse conflict resolution enabled: ${enabled}"
 
-  git config --global rerere.enabled true
+  git config --global rerere.enabled ${enabled}
 }
 
 function enable_color() {
@@ -243,6 +244,8 @@ function set_global_gitignore() {
       return
     fi
   fi
+
+  git config --global core.excludesfile "${gitignore_path}"
 }
 
 function set_conflict_style() {
@@ -331,7 +334,7 @@ echo
 prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
 echo
 
-auto_setup_remote_ "${GIT_AUTO_SETUP_REMOTE}"
+auto_setup_remote_enabled "${GIT_AUTO_SETUP_REMOTE}"
 echo
 
 reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
