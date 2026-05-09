@@ -287,7 +287,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     -E|--editor)
-      GIT_PAGER="$2"
+      GIT_PREFERRED_EDITOR="$2"
       shift 2
       ;;
     *)
@@ -332,7 +332,7 @@ echo
 set_line_endings
 echo
 
-set_editor "${GIT_EDITOR}"
+set_editor "${GIT_PREFERRED_EDITOR}"
 echo
 
 if [[ -n "${GIT_GLOBAL_GITIGNORE}" ]]; then
