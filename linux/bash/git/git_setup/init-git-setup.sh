@@ -48,8 +48,26 @@ Options:
   -E, --editor             The preferred editor to use (default: Value of \$EDITOR or 'nvim')
   -i, --default-gitignore  Path where .gitignore_global will be created. Subdirectories will use this .gitignore, on top of their own rules (default: none, usually \$HOME/.gitignore_global)
 
-Example:
-  $(basename "$0") -u "John Doe" -e "john@example.com"
+Examples:
+  $(basename "$0") -u "John Doe" -e "john@example.com" # Set git config user.name and user.email
+  $(basename "$0") -b "main" # Set init.defaultBranch
+  $(basename "$0") -p # Enable rebase on pull
+  $(basename "$0") -f # Enable prune on fetch
+  $(basename "$0") -a # Create remote branches on push
+  $(basename "$0") -r # Reuse conflict resolution
+
+Suggested command:
+
+$(basename "$0") \
+  --git-user "Your Name" \
+  --git-email "your@email.com" \
+  --default-branch "main" \
+  --pull-rebase \
+  --prune-on-fetch \
+  --auto-setup-remote \
+  --reuse-conflict \
+  --default-gitignore "\$HOME/.gitignore_global" \
+  --editor "${EDITOR:-vim}"
 EOF
 }
 
