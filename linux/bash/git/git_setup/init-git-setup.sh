@@ -17,6 +17,7 @@ GIT_AUTO_SETUP_REMOTE="false"
 GIT_REUSE_CONFLICT_RESOLUTION="false"
 GIT_ENABLE_SIGNING="false"
 GIT_SIGN_SSH_KEY=""
+GIT_PREFERRED_EDITOR="${EDITOR:-nvim}"
 
 function usage() {
   cat <<EOF
@@ -33,6 +34,7 @@ Options:
   -r, --reuse-conflict     Reuse conflict resolution (default: false, usually true)
   -s, --enable-signing     Enable SSH signing. When enabled, you must provide a private key (default: false)
   -k, --sign-ssh-key       The private key to use for SSH signing
+  -E, --editor             The preferred editor to use (default: Value of \$EDITOR or 'nvim')
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -177,6 +179,32 @@ function set_line_endings() {
   git config --global core.autocrlf input
 }
 
+function set_editor() {
+  local editor="${1}"
+
+  if ! command -v "${editor}" &>/dev/null; then
+    echo "[WARNING] Editor not found: ${editor}"
+
+    if command -v nvim &>/dev/null; then
+      echo "[WARNING] Defaulting to nvim"
+      editor="nvim"
+    elif command -v vim &>/dev/null; then
+      echo "[WARNING] Defaulting to vim"
+      editor="vim"
+    elif command -v nano &>/dev/null; then
+      echo "[WARNING] Defaulting to nano"
+      editor="nano"
+    else
+      echo "[ERROR] Could not set default editor"
+      return 1
+    fi
+  fi
+
+  echo "Setting git editor to: ${editor}"
+
+  git config --global core.editor "${editor}"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -210,6 +238,18 @@ while [[ $# -gt 0 ]]; do
     -r|--reuse-conflict)
       GIT_REUSE_CONFLICT_RESOLUTION="true"
       shift
+      ;;
+    -s|--enable-signing)
+      GIT_ENABLE_SIGNING="true"
+      shift
+      ;;
+    -k|--sign-ssh-key)
+      GIT_SIGN_SSH_KEY="$2"
+      shift 2
+      ;;
+    -E|--editor)
+      GIT_PAGER="$2"
+      shift 2
       ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
@@ -251,6 +291,9 @@ enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
 echo
 
 set_line_endings
+echo
+
+set_editor "${GIT_EDITOR}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
