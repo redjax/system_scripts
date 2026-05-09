@@ -34,7 +34,7 @@ Options:
   -b, --default-branch     The default branch to set for git config init.defaultBranch (default: main)
   -p, --pull-rebase        Enable rebase on pull (default: false)
   -f, --prune-on-fetch     Enable prune on fetch (default: false, usually true)
-  -a, --auto-setup-remote  Create remote branches on push (default: false)
+  -a, --auto-setup-remote  Create remote branches on push (default: false, usually true)
   -r, --reuse-conflict     Reuse conflict resolution (default: false, usually true)
   -s, --enable-signing     Enable SSH signing. When enabled, you must provide a private key (default: false)
   -k, --sign-ssh-key       The private key to use for SSH signing
@@ -42,7 +42,24 @@ Options:
   -i, --default-gitignore  Path where .gitignore_global will be created. Subdirectories will use this .gitignore, on top of their own rules (default: none, usually \$HOME/.gitignore_global)
 
 Example:
-  $(basename "$0") -u "John Doe" -e "john@example.com"
+  $(basename "$0") -u "John Doe" -e "john@example.com" # Set git config user.name and user.email
+  $(basename "$0") -b "main" # Set init.defaultBranch
+  $(basename "$0") -p # Enable rebase on pull
+  $(basename "$0") -f # Enable prune on fetch
+  $(basename "$0") -a # Create remote branches on push
+  $(basename "$0") -r # Reuse conflict resolution
+
+  Suggested command:
+    $(basename "$0") \
+      --git-user "Your Name" \
+      --git-email "your@email.com" \
+      --default-branch "main" \
+      --pull-rebase \
+      --prune-on-fetch \
+      --auto-setup-remote \
+      --reuse-conflict \
+      --default-gitignore "\$HOME/.gitignore_global" \
+      --editor "${EDITOR:-vim}"
 EOF
 }
 
@@ -185,9 +202,12 @@ function set_line_endings() {
 }
 
 function set_editor() {
-  local editor="${1}"
+  local editor="$1"
+  local editor_bin
 
-  if ! command -v "${editor}" &>/dev/null; then
+  editor_bin="$(awk '{print $1}' <<< "$editor")"
+
+  if ! command -v "${editor_bin}" &>/dev/null; then
     echo "[WARNING] Editor not found: ${editor}"
 
     if command -v nvim &>/dev/null; then
@@ -200,7 +220,7 @@ function set_editor() {
       echo "[WARNING] Defaulting to nano"
       editor="nano"
     else
-      echo "[ERROR] Could not set default editor"
+      echo "[ERROR] Could not determine a usable editor"
       return 1
     fi
   fi
@@ -222,6 +242,7 @@ function set_global_gitignore() {
       return
     fi
   fi
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
