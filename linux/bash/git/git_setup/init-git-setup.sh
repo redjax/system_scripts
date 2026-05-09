@@ -10,6 +10,7 @@ GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%
 
 GIT_USERNAME=""
 GIT_EMAIL=""
+GIT_DEFAULT_BRANCH="main"
 
 function usage() {
   cat <<EOF
@@ -50,23 +51,32 @@ function set_git_user() {
   git config --global user.email "${email_addr}"
 }
 
+function set_default_branch() {
+  local branch="$1"
+
+  echo "Setting default branch to: ${branch}"
+
+  git config --global init.defaultBranch "${branch}"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
       GIT_USERNAME="$2"
       shift 2
       ;;
-
     -e|--git-email)
       GIT_EMAIL="$2"
       shift 2
       ;;
-
     -h|--help)
       usage
       exit 0
       ;;
-
+    -b|--default-branch)
+      GIT_DEFAULT_BRANCH="$2"
+      shift 2
+      ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
       usage
@@ -75,7 +85,14 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ -z "${GIT_DEFAULT_BRANCH}" ]]; then
+  GIT_DEFAULT_BRANCH="main"
+fi
+
 set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
+echo
+
+set_default_branch "${GIT_DEFAULT_BRANCH}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
