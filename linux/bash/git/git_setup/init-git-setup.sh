@@ -1,35 +1,47 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+###################################################
+# Git Setup                                       #
+#                                                 #
+# Run this script on a new machine to set up git. #
+#                                                 #
+# Usage:                                          #
+#   ./init-git-setup.sh [OPTIONS]                 #
+#                                                 #
+# See help with `./init-git-setup.sh --help`      #
+###################################################
+
 THIS_DIR_GITSETUP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+
+## Ensure git is installed
 if ! command -v git >/dev/null 2>&1; then
   echo "[ERROR] git is not installed. Install git before running this script." >&2
   exit 1
 fi
 
-DEFAULT_GITIGNORE_FILE="${THIS_DIR_GITSETUP}/.gitignore_global"
-
+## Default vars
+DEFAULT_GITIGNORE_FILE=""
 GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%C(reset)%C(auto)%d%C(reset) %s"
-
 GIT_USERNAME=""
 GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
-
 GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
 GIT_AUTO_SETUP_REMOTE="false"
 GIT_REUSE_CONFLICT_RESOLUTION="false"
-
 GIT_ENABLE_SIGNING="false"
 GIT_SIGN_SSH_KEY=""
-
 GIT_PREFERRED_EDITOR="${EDITOR:-nvim}"
 GIT_GLOBAL_GITIGNORE=""
-
 GIT_PAGER="less -FRX"
 
+#############
+# Functions #
+#############
 
+## Print help menu
 function usage() {
   cat <<EOF
 USAGE: $(basename "$0") [OPTIONS]
@@ -71,7 +83,7 @@ $(basename "$0") \
 EOF
 }
 
-
+## Set git command aliases
 function set_git_aliases() {
   local advanced_format="$1"
 
@@ -92,7 +104,7 @@ function set_git_aliases() {
   git config --global alias.graph "log --graph --decorate --oneline --all"
 }
 
-
+## Set git user and email
 function set_git_user() {
   local username="$1"
   local email_addr="$2"
@@ -103,7 +115,7 @@ function set_git_user() {
   git config --global user.email "${email_addr}"
 }
 
-
+## Set default branch on git repo init
 function set_default_branch() {
   local branch="$1"
 
@@ -112,7 +124,7 @@ function set_default_branch() {
   git config --global init.defaultBranch "${branch}"
 }
 
-
+## Enable rebase on pull
 function pull_rebase_enabled() {
   local enabled="$1"
 
@@ -121,7 +133,7 @@ function pull_rebase_enabled() {
   git config --global pull.rebase "${enabled}"
 }
 
-
+## Enable prune on fetch
 function prune_on_fetch_enabled() {
   local enabled="$1"
 
@@ -130,7 +142,7 @@ function prune_on_fetch_enabled() {
   git config --global fetch.prune "${enabled}"
 }
 
-
+## Create remote branch on push if it doesn't exist
 function auto_setup_remote_enabled() {
   local enabled="$1"
 
@@ -139,7 +151,7 @@ function auto_setup_remote_enabled() {
   git config --global push.autoSetupRemote "${enabled}"
 }
 
-
+## Reuse conflict resolution commits in future merges/rebases
 function reuse_conflict_resolution_enabled() {
   local enabled="$1"
 
@@ -148,14 +160,14 @@ function reuse_conflict_resolution_enabled() {
   git config --global rerere.enabled "${enabled}"
 }
 
-
+## Enable git color output
 function enable_color() {
   echo "Set git color output to auto"
 
   git config --global color.ui auto
 }
 
-
+## Set git pager
 function set_pager() {
   local pager="${1:-less -FRX}"
 
@@ -164,7 +176,7 @@ function set_pager() {
   git config --global core.pager "${pager}"
 }
 
-
+## Configure SSH signing of commits
 function enable_signing() {
   local signing_enabled="$1"
   local private_key="$2"
@@ -187,20 +199,21 @@ function enable_signing() {
   git config --global commit.gpgsign true
 }
 
-
+## Set git line endings
 function set_line_endings() {
   echo "Setting git line endings to: input"
 
   git config --global core.autocrlf input
 }
 
-
+## Set git editor
 function set_editor() {
   local editor="$1"
   local editor_bin
 
   editor_bin="$(awk '{print $1}' <<< "$editor")"
 
+  ## Test if editor exists, fallback through common editors
   if ! command -v "${editor_bin}" &>/dev/null; then
     echo "[WARNING] Editor not found: ${editor}"
 
@@ -221,7 +234,7 @@ function set_editor() {
   git config --global core.editor "${editor}"
 }
 
-
+## Set global gitignore file
 function set_global_gitignore() {
   local gitignore_path="$1"
 
@@ -238,7 +251,7 @@ function set_global_gitignore() {
   git config --global core.excludesfile "${gitignore_path}"
 }
 
-
+## Set merge conflict style
 function set_conflict_style() {
   local style="${1:-zdiff3}"
 
@@ -247,7 +260,7 @@ function set_conflict_style() {
   git config --global merge.conflictstyle "${style}"
 }
 
-
+## Enable misspelled git command autocorrection
 function set_autocorrect() {
   local mode="${1:-prompt}"
 
@@ -256,7 +269,7 @@ function set_autocorrect() {
   git config --global help.autocorrect "${mode}"
 }
 
-
+## Parse CLI args
 function parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -322,7 +335,7 @@ function parse_args() {
   done
 }
 
-
+## Main orchestration function
 function do_git_setup() {
   set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
   echo
@@ -377,7 +390,7 @@ function do_git_setup() {
   echo "Setup complete."
 }
 
-
+## Entrypoint
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   parse_args "$@"
   do_git_setup
