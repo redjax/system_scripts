@@ -174,8 +174,8 @@ function set_pager() {
 }
 
 function enable_signing() {
-  local signing_enabled="false"
-  local private_key="$1"
+  local signing_enabled="$1"
+  local private_key="$2"
 
   echo "SSH signing enabled: ${signing_enabled}"
 
