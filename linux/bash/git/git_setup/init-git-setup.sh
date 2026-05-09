@@ -15,6 +15,8 @@ GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
 GIT_AUTO_SETUP_REMOTE="false"
 GIT_REUSE_CONFLICT_RESOLUTION="false"
+GIT_ENABLE_SIGNING="false"
+GIT_SIGN_SSH_KEY=""
 
 function usage() {
   cat <<EOF
@@ -29,6 +31,8 @@ Options:
   -f, --prune-on-fetch     Enable prune on fetch (default: false, usually true)
   -a, --auto-setup-remote  Create remote branches on push (default: false)
   -r, --reuse-conflict     Reuse conflict resolution (default: false, usually true)
+  -s, --enable-signing     Enable SSH signing. When enabled, you must provide a private key (default: false)
+  -k, --sign-ssh-key       The private key to use for SSH signing
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -145,6 +149,28 @@ function set_pager() {
   git config --global core.pager "${pager}"
 }
 
+function enable_signing() {
+  local signing_enabled="false"
+  local private_key="$1"
+
+  echo "SSH signing enabled: ${signing_enabled}"
+
+  if [[ "${signing_enabled}" != "true" ]]; then
+    return
+  fi
+
+  if [[ -z "${private_key}" ]]; then
+    echo "Private key not provided for SSH signing"
+    return
+  fi
+
+  echo "Enabling SSH signing with private key: ${private_key}"
+
+  git config --global gpg.format ssh
+  git config --global user.signingkey "${private_key}"
+  git config --global commit.gpgsign true
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -213,6 +239,9 @@ enable_color
 echo
 
 set_pager "${GIT_PAGER}"
+echo
+
+enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
