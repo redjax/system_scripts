@@ -12,8 +12,6 @@ set -euo pipefail
 # See help with ./init-git-setup.sh --help        #
 ###################################################
 
-THIS_DIR_GITSETUP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 ## Ensure git is installed
 if ! command -v git >/dev/null 2>&1; then
   echo "[ERROR] git is not installed. Install git before running this script." >&2
