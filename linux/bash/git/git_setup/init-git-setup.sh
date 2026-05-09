@@ -11,17 +11,22 @@ fi
 DEFAULT_GITIGNORE_FILE="${THIS_DIR_GITSETUP}/.gitignore_global"
 
 GITLOG_ADVANCED_FORMAT="%C(yellow)%h%C(reset) %C(green)%ar%C(reset) %C(blue)%an%C(reset)%C(auto)%d%C(reset) %s"
+
 GIT_USERNAME=""
 GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
+
 GIT_ENABLE_PULL_REBASE="false"
 GIT_PRUNE_ON_FETCH="false"
 GIT_AUTO_SETUP_REMOTE="false"
 GIT_REUSE_CONFLICT_RESOLUTION="false"
+
 GIT_ENABLE_SIGNING="false"
 GIT_SIGN_SSH_KEY=""
+
 GIT_PREFERRED_EDITOR="${EDITOR:-nvim}"
 GIT_GLOBAL_GITIGNORE=""
+
 GIT_PAGER="less -FRX"
 
 function usage() {
@@ -69,46 +74,19 @@ function set_git_aliases() {
   local advanced_format="$1"
 
   echo "Setting git aliases"
-  
-  echo
-  echo "Setting alias: lg (git log)"
+
   git config --global alias.lg "log --graph --oneline --decorate"
 
-  echo
-  echo "Setting alias: lga (git log advanced)"
   git config --global alias.lga \
     "log --graph --pretty=format:'${advanced_format}' --abbrev-commit"
 
-  echo
-  echo "Setting alias: st (git status)"
   git config --global alias.st status
-
-  echo
-  echo "Setting alias: co (git checkout)"
   git config --global alias.co checkout
-
-  echo
-  echo "Setting alias: sw (git switch)"
   git config --global alias.sw switch
-
-  echo
-  echo "Setting alias: br (git branch)"
   git config --global alias.br branch
-
-  echo
-  echo "Setting alias: ci (git commit)"
   git config --global alias.ci commit
-
-  echo
-  echo "Setting alias: last (git last commit)"
   git config --global alias.last "log -1 HEAD"
-
-  echo
-  echo "Setting alias: unstage (git restore --staged)"
   git config --global alias.unstage "restore --staged"
-
-  echo
-  echo "Setting alias: graph (git graph)"
   git config --global alias.graph "log --graph --decorate --oneline --all"
 }
 
@@ -135,7 +113,7 @@ function pull_rebase_enabled() {
 
   echo "Pull rebase enabled: ${enabled}"
 
-  git config --global pull.rebase ${enabled}
+  git config --global pull.rebase "${enabled}"
 }
 
 function prune_on_fetch_enabled() {
@@ -143,7 +121,7 @@ function prune_on_fetch_enabled() {
 
   echo "Prune on fetch enabled: ${enabled}"
 
-  git config --global fetch.prune ${enabled}
+  git config --global fetch.prune "${enabled}"
 }
 
 function auto_setup_remote_enabled() {
@@ -151,7 +129,7 @@ function auto_setup_remote_enabled() {
 
   echo "Create remote branch on push enabled: ${enabled}"
 
-  git config --global push.autoSetupRemote ${enabled}
+  git config --global push.autoSetupRemote "${enabled}"
 }
 
 function reuse_conflict_resolution_enabled() {
@@ -159,17 +137,18 @@ function reuse_conflict_resolution_enabled() {
 
   echo "Reuse conflict resolution enabled: ${enabled}"
 
-  git config --global rerere.enabled ${enabled}
+  git config --global rerere.enabled "${enabled}"
 }
 
 function enable_color() {
   echo "Set git color output to auto"
-  
+
   git config --global color.ui auto
 }
 
 function set_pager() {
   local pager="${1:-less -FRX}"
+
   echo "Setting git pager to: ${pager}"
 
   git config --global core.pager "${pager}"
@@ -186,11 +165,11 @@ function enable_signing() {
   fi
 
   if [[ -z "${private_key}" ]]; then
-    echo "Private key not provided for SSH signing"
-    return
+    echo "[ERROR] Private key not provided for SSH signing"
+    return 1
   fi
 
-  echo "Enabling SSH signing with private key: ${private_key}"
+  echo "Enabling SSH signing with key: ${private_key}"
 
   git config --global gpg.format ssh
   git config --global user.signingkey "${private_key}"
@@ -198,7 +177,7 @@ function enable_signing() {
 }
 
 function set_line_endings() {
-  echo "Setting git line endings to autocrlf"
+  echo "Setting git line endings to: input"
 
   git config --global core.autocrlf input
 }
@@ -213,13 +192,10 @@ function set_editor() {
     echo "[WARNING] Editor not found: ${editor}"
 
     if command -v nvim &>/dev/null; then
-      echo "[WARNING] Defaulting to nvim"
       editor="nvim"
     elif command -v vim &>/dev/null; then
-      echo "[WARNING] Defaulting to vim"
       editor="vim"
     elif command -v nano &>/dev/null; then
-      echo "[WARNING] Defaulting to nano"
       editor="nano"
     else
       echo "[ERROR] Could not determine a usable editor"
@@ -267,10 +243,12 @@ function set_autocorrect() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
+      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
       GIT_USERNAME="$2"
       shift 2
       ;;
     -e|--git-email)
+      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
       GIT_EMAIL="$2"
       shift 2
       ;;
@@ -279,6 +257,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     -b|--default-branch)
+      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
       GIT_DEFAULT_BRANCH="$2"
       shift 2
       ;;
@@ -303,28 +282,26 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -k|--sign-ssh-key)
+      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
       GIT_SIGN_SSH_KEY="$2"
       shift 2
       ;;
     -E|--editor)
+      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
       GIT_PREFERRED_EDITOR="$2"
       shift 2
       ;;
     -i|--default-gitignore)
+      [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
       GIT_GLOBAL_GITIGNORE="$2"
       shift 2
       ;;
     *)
-      echo "[ERROR] Invalid arg: $1" >&2
-      usage
+      echo "[ERROR] Invalid arg: $1"
       exit 1
       ;;
   esac
 done
-
-if [[ -z "${GIT_DEFAULT_BRANCH}" ]]; then
-  GIT_DEFAULT_BRANCH="main"
-fi
 
 set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
 echo
