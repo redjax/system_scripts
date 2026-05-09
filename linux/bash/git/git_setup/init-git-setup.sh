@@ -9,11 +9,10 @@ set -euo pipefail
 # Usage:                                          #
 #   ./init-git-setup.sh [OPTIONS]                 #
 #                                                 #
-# See help with `./init-git-setup.sh --help`      #
+# See help with ./init-git-setup.sh --help        #
 ###################################################
 
 THIS_DIR_GITSETUP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 
 ## Ensure git is installed
 if ! command -v git >/dev/null 2>&1; then
@@ -34,8 +33,79 @@ GIT_REUSE_CONFLICT_RESOLUTION="false"
 GIT_ENABLE_SIGNING="false"
 GIT_SIGN_SSH_KEY=""
 GIT_PREFERRED_EDITOR="${EDITOR:-nvim}"
-GIT_GLOBAL_GITIGNORE=""
+GENERATE_GLOBAL_GITIGNORE=""
 GIT_PAGER="less -FRX"
+
+## Default gitignore contents
+DEFAULT_GITIGNORE_CONTENT=$(cat <<'EOF'
+############################################################
+# Global gitignore                                         #
+#                                                          #
+# Patterns in this file apply to all repositories          #
+# in the current directory tree (this path & all subdirs). #
+#                                                          #
+# See https://git-scm.com/docs/gitignore                   #
+############################################################
+
+## Junk files
+*.swp
+*.swo
+
+## OS-specific junk files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+## Temporary files
+.netrwhist
+*.tmp
+*.tmp.*
+*.bak
+*.bak.*
+*.old
+*.old.*
+*.orig
+*.orig.*
+
+## Log files
+*.log
+*.log.*
+
+## Cache files
+*.cache
+*.cache.*
+
+## Temporary directories
+tmp/
+temp/
+temp.*
+tmp.*
+
+## Database files
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+*.db-wal
+*.db-shm
+*.db-wal-journal
+
+## Secrets
+.env
+.env.*
+*.local
+*.local.*
+*.secret
+*.secret.*
+
+## Node.js
+node_modules
+
+## Python
+__pycache__
+*.py[cod]
+EOF
+)
 
 #############
 # Functions #
@@ -61,12 +131,12 @@ Options:
   -i, --default-gitignore  Path where .gitignore_global will be created. Subdirectories will use this .gitignore, on top of their own rules (default: none, usually \$HOME/.gitignore_global)
 
 Examples:
-  $(basename "$0") -u "John Doe" -e "john@example.com" # Set git config user.name and user.email
-  $(basename "$0") -b "main" # Set init.defaultBranch
-  $(basename "$0") -p # Enable rebase on pull
-  $(basename "$0") -f # Enable prune on fetch
-  $(basename "$0") -a # Create remote branches on push
-  $(basename "$0") -r # Reuse conflict resolution
+  $(basename "$0") -u "John Doe" -e "john@example.com"
+  $(basename "$0") -b "main"
+  $(basename "$0") -p
+  $(basename "$0") -f
+  $(basename "$0") -a
+  $(basename "$0") -r
 
 Suggested command:
 
@@ -106,58 +176,33 @@ function set_git_aliases() {
 
 ## Set git user and email
 function set_git_user() {
-  local username="$1"
-  local email_addr="$2"
-
-  echo "Setting git user to: ${username} <${email_addr}>"
-
-  git config --global user.name "${username}"
-  git config --global user.email "${email_addr}"
+  git config --global user.name "$1"
+  git config --global user.email "$2"
 }
 
 ## Set default branch on git repo init
 function set_default_branch() {
-  local branch="$1"
-
-  echo "Setting default branch to: ${branch}"
-
-  git config --global init.defaultBranch "${branch}"
+  git config --global init.defaultBranch "$1"
 }
 
 ## Enable rebase on pull
 function pull_rebase_enabled() {
-  local enabled="$1"
-
-  echo "Pull rebase enabled: ${enabled}"
-
-  git config --global pull.rebase "${enabled}"
+  git config --global pull.rebase "$1"
 }
 
 ## Enable prune on fetch
 function prune_on_fetch_enabled() {
-  local enabled="$1"
-
-  echo "Prune on fetch enabled: ${enabled}"
-
-  git config --global fetch.prune "${enabled}"
+  git config --global fetch.prune "$1"
 }
 
 ## Create remote branch on push if it doesn't exist
 function auto_setup_remote_enabled() {
-  local enabled="$1"
-
-  echo "Create remote branch on push enabled: ${enabled}"
-
-  git config --global push.autoSetupRemote "${enabled}"
+  git config --global push.autoSetupRemote "$1"
 }
 
 ## Reuse conflict resolution commits in future merges/rebases
 function reuse_conflict_resolution_enabled() {
-  local enabled="$1"
-
-  echo "Reuse conflict resolution enabled: ${enabled}"
-
-  git config --global rerere.enabled "${enabled}"
+  git config --global rerere.enabled "$1"
 }
 
 ## Enable git color output
@@ -169,104 +214,54 @@ function enable_color() {
 
 ## Set git pager
 function set_pager() {
-  local pager="${1:-less -FRX}"
-
-  echo "Setting git pager to: ${pager}"
-
-  git config --global core.pager "${pager}"
+  git config --global core.pager "${1:-less -FRX}"
 }
 
 ## Configure SSH signing of commits
 function enable_signing() {
-  local signing_enabled="$1"
-  local private_key="$2"
-
-  echo "SSH signing enabled: ${signing_enabled}"
-
-  if [[ "${signing_enabled}" != "true" ]]; then
-    return
-  fi
-
-  if [[ -z "${private_key}" ]]; then
-    echo "[ERROR] Private key not provided for SSH signing"
-    return 1
-  fi
-
-  echo "Enabling SSH signing with key: ${private_key}"
+  [[ "$1" != "true" ]] && return
+  [[ -z "$2" ]] && return 1
 
   git config --global gpg.format ssh
-  git config --global user.signingkey "${private_key}"
+  git config --global user.signingkey "$2"
   git config --global commit.gpgsign true
 }
 
 ## Set git line endings
 function set_line_endings() {
-  echo "Setting git line endings to: input"
+  echo "Setting git line endings to: autocrlf"
 
   git config --global core.autocrlf input
 }
 
 ## Set git editor
 function set_editor() {
-  local editor="$1"
-  local editor_bin
-
-  editor_bin="$(awk '{print $1}' <<< "$editor")"
-
-  ## Test if editor exists, fallback through common editors
-  if ! command -v "${editor_bin}" &>/dev/null; then
-    echo "[WARNING] Editor not found: ${editor}"
-
-    if command -v nvim &>/dev/null; then
-      editor="nvim"
-    elif command -v vim &>/dev/null; then
-      editor="vim"
-    elif command -v nano &>/dev/null; then
-      editor="nano"
-    else
-      echo "[ERROR] Could not determine a usable editor"
-      return 1
-    fi
-  fi
-
-  echo "Setting git editor to: ${editor}"
-
-  git config --global core.editor "${editor}"
+  git config --global core.editor "$1"
 }
 
 ## Set global gitignore file
 function set_global_gitignore() {
   local gitignore_path="$1"
 
-  if [[ ! -f "${gitignore_path}" ]]; then
-    if [[ -f "${DEFAULT_GITIGNORE_FILE}" ]]; then
-      echo "Creating global gitignore at path: ${gitignore_path}"
-      cp "${DEFAULT_GITIGNORE_FILE}" "${gitignore_path}"
-    else
-      echo "[WARNING] Could not find default global gitignore at path: ${DEFAULT_GITIGNORE_FILE}"
-      return
-    fi
-  fi
+  [[ -z "$gitignore_path" ]] && return
+
+  echo "Creating global gitignore at: ${gitignore_path}"
+
+  mkdir -p "$(dirname "${gitignore_path}")"
+
+  printf "%s\n" "${DEFAULT_GITIGNORE_CONTENT}" > "${gitignore_path}"
 
   git config --global core.excludesfile "${gitignore_path}"
 }
 
 ## Set merge conflict style
 function set_conflict_style() {
-  local style="${1:-zdiff3}"
-
-  echo "Setting merge conflict style to: ${style}"
-
-  git config --global merge.conflictstyle "${style}"
+  git config --global merge.conflictstyle "${1:-zdiff3}"
 }
 
 ## Enable misspelled git command autocorrection
 function set_autocorrect() {
-  local mode="${1:-prompt}"
-
-  echo "Setting git help.autocorrect to: ${mode}"
-
-  git config --global help.autocorrect "${mode}"
+  git config --global help.autocorrect "${1:-prompt}"
 }
 
 ## Parse CLI args
@@ -274,17 +269,14 @@ function parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -u|--git-user)
-        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
         GIT_USERNAME="$2"
         shift 2
         ;;
       -e|--git-email)
-        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
         GIT_EMAIL="$2"
         shift 2
         ;;
       -b|--default-branch)
-        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
         GIT_DEFAULT_BRANCH="$2"
         shift 2
         ;;
@@ -309,18 +301,14 @@ function parse_args() {
         shift
         ;;
       -k|--sign-ssh-key)
-        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
         GIT_SIGN_SSH_KEY="$2"
-        shift 2
-        ;;
+        shift 2 ;;
       -E|--editor)
-        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
         GIT_PREFERRED_EDITOR="$2"
         shift 2
         ;;
       -i|--default-gitignore)
-        [[ $# -lt 2 ]] && { echo "[ERROR] Missing value for $1"; exit 1; }
-        GIT_GLOBAL_GITIGNORE="$2"
+        GENERATE_GLOBAL_GITIGNORE="$2"
         shift 2
         ;;
       -h|--help)
@@ -338,53 +326,25 @@ function parse_args() {
 ## Main orchestration function
 function do_git_setup() {
   set_git_aliases "${GITLOG_ADVANCED_FORMAT}"
-  echo
-
   set_default_branch "${GIT_DEFAULT_BRANCH}"
-  echo
-
   pull_rebase_enabled "${GIT_ENABLE_PULL_REBASE}"
-  echo
-
   prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
-  echo
-
   auto_setup_remote_enabled "${GIT_AUTO_SETUP_REMOTE}"
-  echo
-
   reuse_conflict_resolution_enabled "${GIT_REUSE_CONFLICT_RESOLUTION}"
-  echo
-
   enable_color
-  echo
-
   set_pager "${GIT_PAGER}"
-  echo
-
   enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
-  echo
-
   set_line_endings
-  echo
-
   set_editor "${GIT_PREFERRED_EDITOR}"
-  echo
-
   set_conflict_style
-  echo
-
   set_autocorrect
-  echo
 
-  if [[ -n "${GIT_GLOBAL_GITIGNORE}" ]]; then
-    set_global_gitignore "${GIT_GLOBAL_GITIGNORE}"
-    echo
+  if [[ -n "${GENERATE_GLOBAL_GITIGNORE}" ]]; then
+    set_global_gitignore "${GENERATE_GLOBAL_GITIGNORE}"
   fi
 
   if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
     set_git_user "${GIT_USERNAME}" "${GIT_EMAIL}"
-  else
-    echo "[INFO] Git username/email not provided. Skipping git user config."
   fi
 
   echo "Setup complete."
