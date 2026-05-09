@@ -244,6 +244,22 @@ function set_global_gitignore() {
   fi
 }
 
+function set_conflict_style() {
+  local style="${1:-zdiff3}"
+
+  echo "Setting merge conflict style to: ${style}"
+
+  git config --global merge.conflictstyle "${style}"
+}
+
+function set_autocorrect() {
+  local mode="${1:-prompt}"
+
+  echo "Setting git help.autocorrect to: ${mode}"
+
+  git config --global help.autocorrect "${mode}"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -333,6 +349,12 @@ set_line_endings
 echo
 
 set_editor "${GIT_PREFERRED_EDITOR}"
+echo
+
+set_conflict_style
+echo
+
+set_autocorrect
 echo
 
 if [[ -n "${GIT_GLOBAL_GITIGNORE}" ]]; then
