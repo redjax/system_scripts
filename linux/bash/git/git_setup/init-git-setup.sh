@@ -12,7 +12,7 @@ GIT_USERNAME=""
 GIT_EMAIL=""
 GIT_DEFAULT_BRANCH="main"
 GIT_ENABLE_PULL_REBASE="false"
-
+GIT_PRUNE_ON_FETCH="false"
 
 function usage() {
   cat <<EOF
@@ -24,6 +24,7 @@ Options:
   -e, --git-email        The email address to set for git config user.email (default: none/empty)
   -b, --default-branch   The default branch to set for git config init.defaultBranch (default: main)
   -p, --pull-rebase      Enable rebase on pull (default: false)
+  -f, --prune-on-fetch   Enable prune on fetch (default: false, usually true)
 
 Example:
   $(basename "$0") -u "John Doe" -e "john@example.com"
@@ -71,6 +72,14 @@ function pull_rebase_enabled() {
   git config --global pull.rebase false
 }
 
+function prune_on_fetch_enabled() {
+  local enabled="false"
+
+  echo "Prune on fetch enabled: ${enabled}"
+
+  git config --global fetch.prune true
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -u|--git-user)
@@ -93,6 +102,10 @@ while [[ $# -gt 0 ]]; do
       GIT_ENABLE_PULL_REBASE="true"
       shift
       ;;
+    -f|--prune-on-fetch)
+      GIT_PRUNE_ON_FETCH="true"
+      shift
+      ;;
     *)
       echo "[ERROR] Invalid arg: $1" >&2
       usage
@@ -112,6 +125,9 @@ set_default_branch "${GIT_DEFAULT_BRANCH}"
 echo
 
 pull_rebase_enabled "${GIT_ENABLE_PULL_REBASE}"
+echo
+
+prune_on_fetch_enabled "${GIT_PRUNE_ON_FETCH}"
 echo
 
 if [[ -n "${GIT_USERNAME}" && -n "${GIT_EMAIL}" ]]; then
