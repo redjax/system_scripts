@@ -81,6 +81,8 @@ shellcheck_cmd=(shellcheck)
 shellcheck_cmd+=("--severity=$LINT_SEV")
 ## Add .shellcheckrc file
 shellcheck_cmd+=("--rcfile=${_LINT_BASH_REPO_ROOT}/.shellcheckrc")
+## Add ability to follow `source some_script.sh`
+shellcheck_cmd+=("--external-sources")
 
 find "$LINT_PATH" \
   -type f \
