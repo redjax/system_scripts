@@ -8,6 +8,7 @@ CWD="$(pwd)"
 
 FORMAT_PATH="${_FORMAT_BASH_REPO_ROOT}"
 DRY_RUN="false"
+LIST_FILES="false"
 
 if ! command -v shfmt &>/dev/null; then
   echo "[ERROR] shfmt is not installed."
@@ -27,6 +28,7 @@ Options:
   -h, --help            Show this help message
   -p, --path <path>     Path to script or directory to format
   -n, --dry-run         Show diff instead of writing changes
+  -l, --list-files      List files that will be formatted
 EOF
 }
 
@@ -45,6 +47,10 @@ while [[ $# -gt 0 ]]; do
       DRY_RUN="true"
       shift
       ;;
+    -l | --list-files)
+      LIST_FILES="true"
+      shift
+      ;;
     *)
       echo "Invalid option: $1" >&2
       usage
@@ -54,6 +60,15 @@ while [[ $# -gt 0 ]]; do
 done
 
 cd "$_FORMAT_BASH_REPO_ROOT"
+
+## List files that would be formatted
+if [[ "$LIST_FILES" == "true" ]]; then
+  echo "Would format the following files:"
+  echo
+  shfmt -l "$FORMAT_PATH"
+
+  exit 0
+fi
 
 echo "Formatting bash scripts in:"
 echo "  ${FORMAT_PATH}"
