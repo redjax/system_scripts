@@ -18,6 +18,12 @@ Create a file at `/etc/udev/rules.d/99-keychron.rules` with the following:
 KERNEL=="hidraw*", ATTRS{idVendor}=="3434", MODE="0666"
 ```
 
+You can also copy the [included keychron rules file](./99-keychron.rules):
+
+```shell
+sudo cp ./99-keychron.rules /etc/udev/rules.d/99-keychron.rules
+```
+
 Reload udev rules:
 
 ```shell
