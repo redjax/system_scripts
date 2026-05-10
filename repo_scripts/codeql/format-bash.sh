@@ -96,5 +96,4 @@ fi
 find "$FORMAT_PATH" \
   -type f \
   -name "*.sh" \
-  -print0 |
-  xargs -0 -r "${SHFMT_CMD[@]}"
+  -exec "${SHFMT_CMD[@]}" {} +
