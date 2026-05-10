@@ -10,6 +10,23 @@ HID Device Connected [K]
 
 If it has a red x in a circle, the connection actually failed, despite what the message says.
 
+## Fix 1 - udev rule
+
+Create a file at `/etc/udev/rules.d/99-keychron.rules` with the following:
+
+```plaintext
+KERNEL=="hidraw*", ATTRS{idVendor}=="3434", MODE="0666"
+```
+
+Reload udev rules:
+
+```shell
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
+## Fix 2 - Manual chmod
+
 Navigate to [chrome:device-log](chrome:devie-log) in your browser. Use CTRL+F to search for a message like:
 
 ```plaintext
