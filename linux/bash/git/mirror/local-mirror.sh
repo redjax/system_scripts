@@ -102,5 +102,14 @@ if [[ ! -d "$DEST" ]]; then
   git clone --mirror "$AUTH_URL" "$DEST"
 else
   echo "[+] Updating mirror: $DEST"
+
+  ## Ensure remote URL stays correct
+  CURRENT_URL="$(git -C "$DEST" remote get-url origin)"
+
+  if [[ "$CURRENT_URL" != "$AUTH_URL" ]]; then
+    echo "[+] Updating remote URL"
+    git -C "$DEST" remote set-url origin "$AUTH_URL"
+  fi
+
   git -C "$DEST" remote update --prune
 fi
