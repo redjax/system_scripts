@@ -1,106 +1,94 @@
 #!/usr/bin/env bash
 
-set -uo pipefail
+set -euo pipefail
 
-if command -v k0s &>/dev/null; then
-  echo "k0s is already installed."
-  
+########################################
+# k0s single-node installer
+########################################
+
+KUBECONFIG_SOURCE="/var/lib/k0s/pki/admin.conf"
+KUBECONFIG_DEST="${HOME}/.kube/config"
+
+function require_command() {
+  command -v "$1" >/dev/null 2>&1 || {
+    echo "[ERROR] Required command not found: $1"
+    exit 1
+  }
+}
+
+function prompt_yes_no() {
+  local prompt="$1"
+
   while true; do
-    read -n 1 -r -p "Proceed anyway? (y/n)" yn
+    read -rp "${prompt} (y/n): " yn
 
-    case $yn in
-    [Yy]*)
-      echo ""
-      break
-      ;;
-    [Nn]*)
-      echo "Exiting"
-      exit 0
+    case "$yn" in
+    [Yy]*) return 0 ;;
+    [Nn]*) return 1 ;;
+    *)
+      echo "Please answer y or n."
       ;;
     esac
   done
+}
+
+require_command curl
+require_command sudo
+
+if command -v k0s >/dev/null 2>&1; then
+  echo "[INFO] k0s is already installed."
+
+  if ! prompt_yes_no "Proceed anyway?"; then
+    echo "[INFO] Exiting."
+    exit 0
+  fi
 fi
 
-if ! command -v curl >/dev/null 2>&1; then
-  echo "[ERROR] curl is not installed"
-  exit 1
-fi
+echo "[INFO] Downloading and installing k0s"
 
-echo "Downloading k0s installer & executing with Bash"
 curl -sSLf https://get.k0s.sh | sudo sh
-if [[ $? -ne 0 ]]; then
-  echo "[ERROR] Failed to install k0s."
-  exit 1
-else
-  echo "k0s installed successfully."
+
+echo "[INFO] k0s installed successfully."
+
+if prompt_yes_no "Install single-node controller?"; then
+  echo "[INFO] Installing k0s controller"
+
+  sudo k0s install controller --single
+
+  echo "[INFO] Controller installed."
 fi
 
-while true; do
-  read -n 1 -r -p "Start a controller node? (y/n)" yn
+if prompt_yes_no "Start k0s now?"; then
+  echo "[INFO] Starting k0s"
 
-  case $yn in
-  [Yy]*)
-    echo ""
-    echo "Installing k0s controller"
+  sudo k0s start
 
-    sudo k0s install controller --single
-    if [[ $? -ne 0 ]]; then
-      echo "[ERROR] Failed to install k0s controller."
-      exit 1
-    fi
+  echo "[INFO] Waiting for Kubernetes API"
 
-    break
+  sleep 10
 
-    ;;
-  [Nn]*)
-    echo ""
-    break
-    ;;
-  esac
-done
+  echo "[INFO] Configuring kubectl access"
 
-while true; do
-  read -n 1 -r -p "Start a worker node? (y/n)" yn
+  mkdir -p "${HOME}/.kube"
 
-  case $yn in
-  [Yy]*)
-    echo ""
-    echo "Installing k0s worker"
+  sudo cp "${KUBECONFIG_SOURCE}" "${KUBECONFIG_DEST}"
 
-    sudo k0s install worker --single
-    if [[ $? -ne 0 ]]; then
-      echo "[ERROR] Failed to install k0s worker."
-      exit 1
-    fi
+  sudo chown "$(id -u):$(id -g)" "${KUBECONFIG_DEST}"
 
-    break
+  chmod 600 "${KUBECONFIG_DEST}"
 
-    ;;
-  [Nn]*)
-    echo ""
-    break
-    ;;
-  esac
-done
+  echo "[INFO] kubeconfig installed:"
+  echo "       ${KUBECONFIG_DEST}"
 
-while true; do
-  read -n 1 -r -p "Start k0s? (y/n)" yn
+  echo ""
+  echo "[INFO] Cluster status:"
+  k0s kubectl get nodes || true
 
-  case $yn in
-  [Yy]*)
-    echo ""
-    echo "Starting k0s"
+  echo ""
+  echo "[INFO] System pods:"
+  k0s kubectl get pods -A || true
+fi
 
-    sudo k0s start
-    if [[ $? -ne 0 ]]; then
-      echo "[ERROR] Failed to start k0s."
-      exit 1
-    fi
+echo ""
+echo "[INFO] k0s setup complete."
 
-    ;;
-  [Nn]*)
-    echo ""
-    break
-    ;;
-  esac
-done
