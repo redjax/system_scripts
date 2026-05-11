@@ -15,7 +15,14 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 REPOS_FILE="${MIRROR_REPOS_FILE:-./repos.txt}"
 MAX_JOBS=${MIRROR_MAX_JOBS:-5}
+
+REPOS_DIR="${MIRROR_REPOS_DIR:-$DIR/repos}"
+STATE_DIR="${MIRROR_STATE_DIR:-$DIR/state}"
+LOG_DIR="${MIRROR_LOG_DIR:-$DIR/logs}"
+
 STATUS_MODE=0
+RETRY_FAILED=0
+DRY_RUN=0
 
 function usage() {
   cat << EOF
@@ -23,17 +30,24 @@ Usage:
   $0 [OPTIONS]
 
 Options:
-  -f, --repos-file   Path to repos file (required)
-  -j, --max-jobs     Max parallel jobs (default: 5)
-  --status           Show mirrored repos status
-  -h, --help         Show help
+  -f, --repos-file     Path to repos file (required)
+  -j, --max-jobs       Max parallel jobs (default: 5)
+  --repos-dir          Directory to store repos (default: ./repos)
+  --state-dir          State directory (default: ./state)
+  --log-dir            Log directory (default: ./logs)
+  --retry-failed       Only retry failed repos
+  --dry-run            Show what would be executed
+  --status             Show mirrored repos status
+  -h, --help           Show help
 EOF
 }
 
-function show_status() {
-  local STATE_DIR="./state"
-  local LOG_DIR="./logs"
+function repo_disk_usage() {
+  local dest="$1"
+  [[ -d "$dest" ]] && du -sh "$dest" 2>/dev/null | cut -f1 || echo "0"
+}
 
+function show_status() {
   echo "[ Git Mirror Status ]"
   echo ""
 
@@ -51,19 +65,18 @@ function show_status() {
     echo "   URL:   $url"
     echo "   DEST:  $dest"
     echo "   AUTH:  $auth"
+    echo "   SIZE:  $(repo_disk_usage "$dest")"
 
     if [[ -f "$success_file" ]]; then
       echo "   STATE: + SUCCESS"
-      echo "   LAST SUCCESS: $(date -d @"$(cat "$success_file")" 2>/dev/null || cat "$success_file")"
     elif [[ -f "$failed_file" ]]; then
       echo "   STATE: x FAILED"
-      echo "   LAST FAIL: $(date -d @"$(cat "$failed_file")" 2>/dev/null || cat "$failed_file")"
     else
       echo "   STATE: - NEVER RUN"
     fi
 
     if [[ -f "$log_file" ]]; then
-      echo "   LOG:   yes ($(du -h "$log_file" | cut -f1))"
+      echo "   LOG:   yes"
     else
       echo "   LOG:   no"
     fi
@@ -72,51 +85,61 @@ function show_status() {
   done < "$REPOS_FILE"
 }
 
+function build_input() {
+  if [[ "$RETRY_FAILED" -eq 1 ]]; then
+    while read -r url dest auth; do
+      [[ -z "$url" || "$url" == \#* ]] && continue
+      name="$(basename "$dest")"
+      [[ -f "$STATE_DIR/failed/$name.state" ]] && echo "$url|$dest|$auth"
+    done < "$REPOS_FILE"
+  else
+    while read -r url dest auth; do
+      [[ -z "$url" || "$url" == \#* ]] && continue
+      echo "$url|$dest|$auth"
+    done < "$REPOS_FILE"
+  fi
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -f|--repos-file)
-      REPOS_FILE="$2"
-      shift 2
-      ;;
+      REPOS_FILE="$2"; shift 2 ;;
     -j|--max-jobs)
-      MAX_JOBS="$2"
-      shift 2
-      ;;
-    -s|--status)
-      STATUS_MODE=1
-      shift
-      ;;
+      MAX_JOBS="$2"; shift 2 ;;
+    --repos-dir)
+      REPOS_DIR="$2"; shift 2 ;;
+    --state-dir)
+      STATE_DIR="$2"; shift 2 ;;
+    --log-dir)
+      LOG_DIR="$2"; shift 2 ;;
+    --retry-failed)
+      RETRY_FAILED=1; shift ;;
+    --dry-run)
+      DRY_RUN=1; shift ;;
+    --status)
+      STATUS_MODE=1; shift ;;
     -h|--help)
-      usage
-      exit 0
-      ;;
+      usage; exit 0 ;;
     *)
       echo "[ERROR] Unknown argument: $1" >&2
       usage
-      exit 1
-      ;;
+      exit 1 ;;
   esac
 done
 
-if [[ -z "$REPOS_FILE" ]]; then
-  echo "[ERROR] --repos-file is required" >&2
-  usage
-  exit 1
+if [[ "$STATUS_MODE" -eq 1 ]]; then
+  show_status
+  exit 0
 fi
 
-if [[ ! -f "$REPOS_FILE" ]]; then
-  echo "[ERROR] file not found: $REPOS_FILE" >&2
-  exit 1
-fi
+mkdir -p "$REPOS_DIR" "$STATE_DIR"/{success,failed,retries} "$LOG_DIR"
 
 declare -a PIDS=()
 
 function wait_for_slot() {
   while [[ "${#PIDS[@]}" -ge "$MAX_JOBS" ]]; do
     for i in "${!PIDS[@]}"; do
-      if ! kill -0 "${PIDS[$i]}" 2>/dev/null; then
-        unset "PIDS[$i]"
-      fi
+      kill -0 "${PIDS[$i]}" 2>/dev/null || unset "PIDS[$i]"
     done
     PIDS=("${PIDS[@]}")
     sleep 0.2
@@ -128,17 +151,29 @@ function run_worker() {
   local dest="$2"
   local auth="$3"
 
-  "$DIR/worker.sh" "$url" "$dest" "$auth" &
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo "[DRY-RUN] $url -> $dest ($auth)"
+    return 0
+  fi
+
+  "$DIR/worker.sh" \
+    "$url" \
+    "$dest" \
+    "$auth" \
+    "$STATE_DIR" \
+    "$LOG_DIR" &
   PIDS+=("$!")
 }
 
-while read -r url dest auth; do
-  [[ -z "$url" || "$url" == \#* ]] && continue
+INPUT="$(build_input)"
+
+while IFS="|" read -r url dest auth; do
+  [[ -z "$url" ]] && continue
 
   run_worker "$url" "$dest" "$auth"
   wait_for_slot
 
-done < "$REPOS_FILE"
+done <<< "$INPUT"
 
 wait
 echo "[+] all mirrors complete"

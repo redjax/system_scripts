@@ -12,15 +12,14 @@ set -euo pipefail
 URL="$1"
 DEST="$2"
 AUTH_MODE="${3:-none}"
+STATE_DIR="${4:-./state}"
+LOG_DIR="${5:-./logs}"
 
 NAME="$(basename "$DEST")"
-LOG_DIR="./logs"
-STATE_DIR="./state"
 
 mkdir -p "$LOG_DIR" "$STATE_DIR"/{success,failed,retries}
 
 LOG_FILE="$LOG_DIR/$NAME.log"
-STATE_FILE="$STATE_DIR/$NAME.state"
 
 function log() {
   echo "[$(date '+%F %T')] $*" | tee -a "$LOG_FILE"
@@ -35,7 +34,6 @@ function mark_failed() {
   echo "$(date '+%s')" > "$STATE_DIR/failed/$NAME.state"
 }
 
-## Skip successful runs unless forced
 if [[ -f "$STATE_DIR/success/$NAME.state" ]]; then
   log "[SKIP] already up to date"
   exit 0
@@ -49,6 +47,7 @@ MAX_ATTEMPTS=3
 until [[ $ATTEMPT -ge $MAX_ATTEMPTS ]]; do
   if ./local-mirror.sh --url "$URL" --dest "$DEST"; then
     log "[OK] mirror complete"
+    log "[SIZE] $(du -sh "$DEST" 2>/dev/null | cut -f1)"
     mark_success
     exit 0
   fi
@@ -56,7 +55,6 @@ until [[ $ATTEMPT -ge $MAX_ATTEMPTS ]]; do
   ATTEMPT=$((ATTEMPT+1))
   log "[RETRY] attempt $ATTEMPT/$MAX_ATTEMPTS"
 
-  ## Exponential backoff
   sleep $((2 ** ATTEMPT))
 done
 
