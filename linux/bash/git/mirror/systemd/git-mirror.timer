@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Git Mirror Backup Daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
