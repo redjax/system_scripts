@@ -1,0 +1,4 @@
+git@github.com:username/repo1 ./repos/repo1 ssh
+https://github.com/username/repo2 ./repos/repo2 github
+https://gitlab.com/username/repo3 ./repos/repo3 gitlab
+git@codeberg.org:redjax/repo4 ./repos/repo4 none
