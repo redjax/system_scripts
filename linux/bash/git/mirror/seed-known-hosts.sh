@@ -9,12 +9,14 @@ set -euo pipefail
 
 hosts=(github.com gitlab.com codeberg.org)
 
-echo "Seeding ~/.ssh/known_hosts with ${hosts[*]}"
-
 mkdir -p ~/.ssh
 touch ~/.ssh/known_hosts
 
-if ! ssh-keyscan "${hosts[@]}" >> ~/.ssh/known_hosts 2>/dev/null; then
-  echo "[ERROR] Failed seeding known hosts file." >&2
-  exit 1
-fi
+for host in "${hosts[@]}"; do
+  if ! ssh-keygen -F "$host" >/dev/null; then
+    echo "Adding $host to known_hosts"
+    ssh-keyscan "$host" >> ~/.ssh/known_hosts 2>/dev/null
+  else
+    echo "$host already exists in known_hosts"
+  fi
+done
