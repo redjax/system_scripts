@@ -13,16 +13,20 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-REPOS_FILE="${MIRROR_REPOS_FILE:-./repos.txt}"
-MAX_JOBS=${MIRROR_MAX_JOBS:-5}
+REPOS_FILE="${REPOS_FILE:-./repos.txt}"
+MAX_JOBS="${MAX_JOBS:-5}"
 
-REPOS_DIR="${MIRROR_REPOS_DIR:-$DIR/repos}"
-STATE_DIR="${MIRROR_STATE_DIR:-$DIR/state}"
-LOG_DIR="${MIRROR_LOG_DIR:-$DIR/logs}"
+REPOS_DIR="${REPOS_DIR:-$DIR/repos}"
+STATE_DIR="${STATE_DIR:-$DIR/state}"
+LOG_DIR="${LOG_DIR:-$DIR/logs}"
 
 STATUS_MODE=0
 RETRY_FAILED=0
 DRY_RUN=0
+
+GITHUB_TOKEN="${GIT_GITHUB_TOKEN:-}"
+GITLAB_TOKEN="${GIT_GITLAB_TOKEN:-}"
+CODEBERG_TOKEN="${GIT_CODEBERG_TOKEN:-}"
 
 function usage() {
   cat << EOF
@@ -32,9 +36,9 @@ Usage:
 Options:
   -f, --repos-file     Path to repos file (required)
   -j, --max-jobs       Max parallel jobs (default: 5)
-  --repos-dir          Directory to store repos (default: ./repos)
-  --state-dir          State directory (default: ./state)
-  --log-dir            Log directory (default: ./logs)
+  --repos-dir          Directory to store repos
+  --state-dir          State directory
+  --log-dir            Log directory
   --retry-failed       Only retry failed repos
   --dry-run            Show what would be executed
   --status             Show mirrored repos status
@@ -42,9 +46,26 @@ Options:
 EOF
 }
 
+function detect_provider() {
+  case "$1" in
+    *github.com*) echo "github" ;;
+    *gitlab.com*) echo "gitlab" ;;
+    *codeberg.org*) echo "codeberg" ;;
+    *) echo "none" ;;
+  esac
+}
+
+function resolve_token() {
+  case "$1" in
+    github) echo "$GITHUB_TOKEN" ;;
+    gitlab) echo "$GITLAB_TOKEN" ;;
+    codeberg) echo "$CODEBERG_TOKEN" ;;
+    *) echo "" ;;
+  esac
+}
+
 function repo_disk_usage() {
-  local dest="$1"
-  [[ -d "$dest" ]] && du -sh "$dest" 2>/dev/null | cut -f1 || echo "0"
+  [[ -d "$1" ]] && du -sh "$1" 2>/dev/null | cut -f1 || echo "-"
 }
 
 function show_status() {
@@ -54,17 +75,14 @@ function show_status() {
   while read -r url dest auth; do
     [[ -z "$url" || "$url" == \#* ]] && continue
 
-    local name
     name="$(basename "$dest")"
 
-    local success_file="$STATE_DIR/success/$name.state"
-    local failed_file="$STATE_DIR/failed/$name.state"
-    local log_file="$LOG_DIR/$name.log"
+    success_file="$STATE_DIR/success/$name.state"
+    failed_file="$STATE_DIR/failed/$name.state"
 
     echo "📦 $name"
     echo "   URL:   $url"
     echo "   DEST:  $dest"
-    echo "   AUTH:  $auth"
     echo "   SIZE:  $(repo_disk_usage "$dest")"
 
     if [[ -f "$success_file" ]]; then
@@ -73,12 +91,6 @@ function show_status() {
       echo "   STATE: x FAILED"
     else
       echo "   STATE: - NEVER RUN"
-    fi
-
-    if [[ -f "$log_file" ]]; then
-      echo "   LOG:   yes"
-    else
-      echo "   LOG:   no"
     fi
 
     echo ""
@@ -102,42 +114,33 @@ function build_input() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -f|--repos-file)
-      REPOS_FILE="$2"; shift 2 ;;
-    -j|--max-jobs)
-      MAX_JOBS="$2"; shift 2 ;;
-    --repos-dir)
-      REPOS_DIR="$2"; shift 2 ;;
-    --state-dir)
-      STATE_DIR="$2"; shift 2 ;;
-    --log-dir)
-      LOG_DIR="$2"; shift 2 ;;
-    --retry-failed)
-      RETRY_FAILED=1; shift ;;
-    --dry-run)
-      DRY_RUN=1; shift ;;
-    --status)
-      STATUS_MODE=1; shift ;;
-    -h|--help)
-      usage; exit 0 ;;
-    *)
-      echo "[ERROR] Unknown argument: $1" >&2
-      usage
-      exit 1 ;;
+    -f|--repos-file) REPOS_FILE="$2"; shift 2 ;;
+    -j|--max-jobs) MAX_JOBS="$2"; shift 2 ;;
+    --repos-dir) REPOS_DIR="$2"; shift 2 ;;
+    --state-dir) STATE_DIR="$2"; shift 2 ;;
+    --log-dir) LOG_DIR="$2"; shift 2 ;;
+    --retry-failed) RETRY_FAILED=1; shift ;;
+    --dry-run) DRY_RUN=1; shift ;;
+    --status) STATUS_MODE=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "[ERROR] Unknown argument: $1" >&2; exit 1 ;;
   esac
 done
 
+# IMPORTANT FIX: status must exit before worker logic
 if [[ "$STATUS_MODE" -eq 1 ]]; then
   show_status
   exit 0
 fi
+
+[[ -z "$REPOS_FILE" ]] && { echo "[ERROR] repos file required"; exit 1; }
 
 mkdir -p "$REPOS_DIR" "$STATE_DIR"/{success,failed,retries} "$LOG_DIR"
 
 declare -a PIDS=()
 
 function wait_for_slot() {
-  while [[ "${#PIDS[@]}" -ge "$MAX_JOBS" ]]; do
+  while (( ${#PIDS[@]} >= MAX_JOBS )); do
     for i in "${!PIDS[@]}"; do
       kill -0 "${PIDS[$i]}" 2>/dev/null || unset "PIDS[$i]"
     done
@@ -150,9 +153,10 @@ function run_worker() {
   local url="$1"
   local dest="$2"
   local auth="$3"
+  local token="$4"
 
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    echo "[DRY-RUN] $url -> $dest ($auth)"
+    echo "[DRY] $url -> $dest ($auth)"
     return 0
   fi
 
@@ -160,8 +164,10 @@ function run_worker() {
     "$url" \
     "$dest" \
     "$auth" \
+    "$token" \
     "$STATE_DIR" \
     "$LOG_DIR" &
+
   PIDS+=("$!")
 }
 
@@ -170,7 +176,10 @@ INPUT="$(build_input)"
 while IFS="|" read -r url dest auth; do
   [[ -z "$url" ]] && continue
 
-  run_worker "$url" "$dest" "$auth"
+  provider="$(detect_provider "$url")"
+  token="$(resolve_token "$provider")"
+
+  run_worker "$url" "$dest" "$auth" "$token"
   wait_for_slot
 
 done <<< "$INPUT"

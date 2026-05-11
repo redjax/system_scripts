@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-##########################################
-# This script is run multiple times in   #
-# parallel to mirror repositories,       #
-# orchestrated by parallel-mirror.sh     #
-#                                        #
-# It is not intended to be run directly. #
-##########################################
-
 URL="$1"
 DEST="$2"
 AUTH_MODE="${3:-none}"
-STATE_DIR="${4:-./state}"
-LOG_DIR="${5:-./logs}"
+TOKEN="${4:-}"
+STATE_DIR="${5:-./state}"
+LOG_DIR="${6:-./logs}"
 
 NAME="$(basename "$DEST")"
 
-mkdir -p "$LOG_DIR" "$STATE_DIR"/{success,failed,retries}
+mkdir -p "$STATE_DIR"/{success,failed,retries} "$LOG_DIR"
 
 LOG_FILE="$LOG_DIR/$NAME.log"
 
@@ -26,39 +19,58 @@ function log() {
 }
 
 function mark_success() {
-  echo "$(date '+%s')" > "$STATE_DIR/success/$NAME.state"
+  echo "$(date +%s)" > "$STATE_DIR/success/$NAME.state"
   rm -f "$STATE_DIR/failed/$NAME.state"
 }
 
 function mark_failed() {
-  echo "$(date '+%s')" > "$STATE_DIR/failed/$NAME.state"
+  echo "$(date +%s)" > "$STATE_DIR/failed/$NAME.state"
 }
 
-if [[ -f "$STATE_DIR/success/$NAME.state" ]]; then
-  log "[SKIP] already up to date"
-  exit 0
-fi
+log "[START] $URL ($AUTH_MODE)"
 
-log "[START] $URL"
+# IMPORTANT: build auth URL safely per mode
+AUTH_URL="$URL"
+
+case "$AUTH_MODE" in
+  github)
+    [[ -n "$TOKEN" ]] && AUTH_URL="https://x-access-token:${TOKEN}@github.com/${URL#*github.com/}"
+    ;;
+  gitlab)
+    [[ -n "$TOKEN" ]] && AUTH_URL="https://oauth2:${TOKEN}@gitlab.com/${URL#*gitlab.com/}"
+    ;;
+  codeberg)
+    [[ -n "$TOKEN" ]] && AUTH_URL="https://${TOKEN}@codeberg.org/${URL#*codeberg.org/}"
+    ;;
+  ssh|none)
+    AUTH_URL="$URL"
+    ;;
+esac
 
 ATTEMPT=0
-MAX_ATTEMPTS=3
+MAX=3
 
-until [[ $ATTEMPT -ge $MAX_ATTEMPTS ]]; do
-  if ./local-mirror.sh --url "$URL" --dest "$DEST"; then
-    log "[OK] mirror complete"
-    log "[SIZE] $(du -sh "$DEST" 2>/dev/null | cut -f1)"
-    mark_success
-    exit 0
+while (( ATTEMPT < MAX )); do
+
+  if [[ ! -d "$DEST" ]]; then
+    log "[CLONE] $AUTH_URL"
+    git clone --mirror "$AUTH_URL" "$DEST" && break
+  else
+    log "[FETCH] $URL"
+    git -C "$DEST" fetch --all --prune && break
   fi
 
   ATTEMPT=$((ATTEMPT+1))
-  log "[RETRY] attempt $ATTEMPT/$MAX_ATTEMPTS"
-
+  log "[RETRY] $ATTEMPT/$MAX"
   sleep $((2 ** ATTEMPT))
+
 done
 
-log "[FAIL] exhausted retries"
-mark_failed
+if (( ATTEMPT >= MAX )); then
+  log "[FAIL] $URL"
+  mark_failed
+  exit 1
+fi
 
-exit 1
+log "[OK] $URL"
+mark_success
