@@ -55,7 +55,6 @@ while [[ $# -gt 0 ]]; do
     *)
       echo "[ERROR] Invalid argument: $1" >&2
       usage
-
       exit 1
       ;;
   esac
@@ -64,46 +63,37 @@ done
 if [[ -z "$URL" ]] || [[ -z "$DEST" ]]; then
   echo "[ERROR] Missing --url or --dest arguments" >&2
   usage
-
   exit 1
 fi
 
-## Fallback to environment variable if --token not provided
+## Attempt to load token from environment if not defined
 if [[ -z "$TOKEN" ]]; then
   TOKEN="${GIT_TOKEN:-}"
 fi
 
 mkdir -p "$(dirname "$DEST")"
 
+## SSH override
 if [[ -n "$SSH_KEY" ]]; then
   export GIT_SSH_COMMAND="ssh -i $SSH_KEY -o IdentitiesOnly=yes"
 fi
 
 AUTH_URL="$URL"
 
-## HTTPS authentication (token-based)
+## HTTPS auth injection
 if [[ "$URL" == https://* ]]; then
   if [[ -n "$TOKEN" ]]; then
     AUTH_URL="${URL/https:\/\//https:\/\/x-access-token:${TOKEN}@}"
   fi
 fi
 
-## SSH validation
-if [[ "$URL" == git@* || "$URL" == ssh://* ]]; then
-  :
-  ## SSH works natively via:
-  #  - ssh-agent
-  #  - ~/.ssh/config
-  #  - optional GIT_SSH_COMMAND override
-fi
-
+## Clone or update mirror
 if [[ ! -d "$DEST" ]]; then
   echo "[+] Cloning mirror: $URL"
   git clone --mirror "$AUTH_URL" "$DEST"
 else
   echo "[+] Updating mirror: $DEST"
 
-  ## Ensure remote URL stays correct
   CURRENT_URL="$(git -C "$DEST" remote get-url origin)"
 
   if [[ "$CURRENT_URL" != "$AUTH_URL" ]]; then
@@ -111,5 +101,10 @@ else
     git -C "$DEST" remote set-url origin "$AUTH_URL"
   fi
 
-  git -C "$DEST" remote update --prune
+  ## Enforce mirror mode so fetch/push operations fully sync all refs and prune deleted branches
+  git -C "$DEST" config remote.origin.mirror true
+
+  ## Full sync
+  git -C "$DEST" fetch --all --prune
+  git -C "$DEST" fetch --prune --tags origin
 fi
