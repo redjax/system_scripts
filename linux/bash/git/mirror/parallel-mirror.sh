@@ -28,6 +28,8 @@ GITHUB_TOKEN="${GIT_GITHUB_TOKEN:-}"
 GITLAB_TOKEN="${GIT_GITLAB_TOKEN:-}"
 CODEBERG_TOKEN="${GIT_CODEBERG_TOKEN:-}"
 
+export GIT_SSH_COMMAND="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
+
 function usage() {
   cat << EOF
 Usage:
