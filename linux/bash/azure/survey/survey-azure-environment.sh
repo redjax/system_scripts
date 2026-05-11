@@ -1,49 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-## Colors for readability
-GREEN="\033[1;32m"
-CYAN="\033[1;36m"
-RED="\033[1;31m"
-YELLOW="\033[1;33m"
-NC="\033[0m"
-
-## Print section divider
-function divider() {
-  printf "${CYAN}%s${NC}\n" "------------------------------------------------------------"
-}
-
-## Print a section heading
-function section() {
-  divider
-  printf "${GREEN}[ %s ]${NC}\n" "$1"
-  divider
-}
-
-## Run and display an az CLI command (with error/none detection)
-function run_az() {
-  local desc="$1"
-  shift
-  local output
-  if ! output="$("$@" 2>&1)"; then
-    if echo "$output" | grep -qi "authentication"; then
-      printf "${RED}[AUTH ERROR] %s -- Check your Azure login status and permissions.${NC}\n" "$desc"
-    elif echo "$output" | grep -iq "authorization"; then
-      printf "${RED}[PERMISSION ERROR] %s -- Access denied for this operation.${NC}\n" "$desc"
-    else
-      printf "${RED}[ERROR] Failed to run: %s${NC}\n%s\n" "$desc" "$output"
-    fi
-    echo
-    return 1
-  fi
-  if [[ -z "${output// /}" || "$output" == "[]" ]]; then
-    printf "${YELLOW}[NONE] No %s found in this subscription.${NC}\n\n" "$desc"
-  else
-    echo "$output"
-    echo
-  fi
-  return 0
-}
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${THIS_DIR}/_common.sh"
 
 ## Show help message
 function usage() {
@@ -68,16 +27,6 @@ Examples:
 EOF
   exit 0
 }
-
-## Strip color codes for output-to-file
-function strip_colors() {
-  sed -r "s/\x1B\[[0-9;]*[JKmsu]//g"
-}
-
-## SECTION NAMES
-SECTIONS_ALL=(account groups resources acr aks vms webapps plans storage sql vaults roles)
-declare -A SECTIONS_AVAILABLE
-for s in "${SECTIONS_ALL[@]}"; do SECTIONS_AVAILABLE["$s"]=1; done
 
 ## Parse CLI args
 QUICK=0
@@ -119,31 +68,28 @@ elif [[ ${#USER_SECTIONS[@]} -gt 0 ]]; then
   for s in "${USER_SECTIONS[@]}"; do
     ns=$(echo "$s" | tr '[:upper:]' '[:lower:]')
     [[ "$ns" == "all" ]] && {
-      SECTIONS=("${SECTIONS_ALL[@]}")
+      SECTIONS=("${SURVEY_SECTIONS_ALL[@]}")
       break
     }
-    [[ -n "${SECTIONS_AVAILABLE[$ns]:-}" ]] && SECTIONS+=("$ns") || echo -e "${YELLOW}[WARN] Skipping invalid section: $ns${NC}"
+    [[ -n "${SURVEY_SECTIONS_AVAILABLE[$ns]:-}" ]] && SECTIONS+=("$ns") || echo -e "${YELLOW}[WARN] Skipping invalid section: $ns${NC}"
   done
-  [[ ${#SECTIONS[@]} -eq 0 ]] && SECTIONS=("${SECTIONS_ALL[@]}")
+  [[ ${#SECTIONS[@]} -eq 0 ]] && SECTIONS=("${SURVEY_SECTIONS_ALL[@]}")
 else
-  SECTIONS=("${SECTIONS_ALL[@]}")
+  SECTIONS=("${SURVEY_SECTIONS_ALL[@]}")
 fi
 
 ## Set up output file, if desired
 if [[ -n "$OUTPUT" ]]; then
   : >"$OUTPUT" # truncate file now
-  LOG_PIPE="strip_colors | tee -a \"$OUTPUT\""
+  LOG_PIPE="survey_strip_colors | tee -a \"$OUTPUT\""
 else
   LOG_PIPE="cat"
 fi
 
-## Check for Azure CLI program
-if ! command -v az >/dev/null 2>&1; then
-  printf "${RED}[ERROR] The Azure CLI (az) is not installed${NC}\n" >&2
-  exit 1
-fi
+survey_require_az
 
 start_time=$(date)
+CUR_SUB_ID=""
 
 ## Main output header
 {
@@ -153,9 +99,8 @@ start_time=$(date)
 
 # Determine which subscriptions to query
 if [[ ${#USER_SUBS[@]} -eq 0 ]]; then
-  CUR_INFO=$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv)
-  CUR_SUB_ID=$(echo "$CUR_INFO" | awk '{print $1}')
-  CUR_SUB_NAME=$(echo "$CUR_INFO" | awk '{print $2}')
+  CUR_INFO="$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv)"
+  IFS=$'\t' read -r CUR_SUB_ID CUR_SUB_NAME CUR_TENANT_ID <<<"$CUR_INFO"
   USER_SUBS=("$CUR_SUB_ID")
 fi
 
@@ -167,80 +112,16 @@ for sub in "${USER_SUBS[@]}"; do
       continue
     fi
   fi
-  CUR_SUB=$(az account show --query '[id,name,tenantId]' -o tsv 2>/dev/null || echo "")
+  CUR_SUB=$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv 2>/dev/null || echo "")
   if [[ -z "$CUR_SUB" ]]; then
     echo -e "${RED}Failed to query details for subscription: $sub${NC}" | eval "$LOG_PIPE"
     continue
   fi
-  SUB_ID=$(echo "$CUR_SUB" | awk '{print $1}')
-  SUB_NAME=$(echo "$CUR_SUB" | awk '{print $2}')
-  TENANT_ID=$(echo "$CUR_SUB" | awk '{print $3}')
-  echo -e "${YELLOW}===[ SUBSCRIPTION: $SUB_NAME ($SUB_ID) | TENANT: $TENANT_ID ]===${NC}" | eval "$LOG_PIPE"
+  IFS=$'\t' read -r SUB_ID SUB_NAME TENANT_ID <<<"$CUR_SUB"
+  survey_emit_subscription_header "$SUB_ID" "$SUB_NAME" "$TENANT_ID" | eval "$LOG_PIPE"
 
   for sect in "${SECTIONS[@]}"; do
-    case "$sect" in
-    account)
-      section "Account & Subscription Info" | eval "$LOG_PIPE"
-      run_az "account info" az account show --output table | eval "$LOG_PIPE"
-      az ad signed-in-user show --output table 2>/dev/null | eval "$LOG_PIPE" ||
-        echo -e "${YELLOW}[WARN] Could not get signed-in user info.${NC}" | eval "$LOG_PIPE"
-      USER_OBJ_ID=$(az ad signed-in-user show --query objectId -o tsv 2>/dev/null || echo "")
-      [[ -n "$USER_OBJ_ID" ]] && {
-        echo "[Role assignments for you in this sub:]" | eval "$LOG_PIPE"
-        az role assignment list --assignee "$USER_OBJ_ID" --output table 2>/dev/null | eval "$LOG_PIPE" ||
-          echo -e "${YELLOW}[WARN] Could not get your role assignments.${NC}" | eval "$LOG_PIPE"
-      }
-      ;;
-    groups)
-      section "Resource Groups" | eval "$LOG_PIPE"
-      run_az "resource groups" az group list --output table | eval "$LOG_PIPE"
-      ;;
-    resources)
-      section "All Resources" | eval "$LOG_PIPE"
-      run_az "resources" az resource list --output table | eval "$LOG_PIPE"
-      ;;
-    acr)
-      section "Container Registries" | eval "$LOG_PIPE"
-      run_az "container registries" az acr list --output table | eval "$LOG_PIPE"
-      ;;
-    aks)
-      section "Kubernetes Clusters (AKS)" | eval "$LOG_PIPE"
-      run_az "Kubernetes clusters" az aks list --output table | eval "$LOG_PIPE"
-      ;;
-    vms)
-      section "Virtual Machines" | eval "$LOG_PIPE"
-      run_az "virtual machines" az vm list -d --output table | eval "$LOG_PIPE"
-      ;;
-    webapps)
-      section "Web Apps" | eval "$LOG_PIPE"
-      run_az "web apps" az webapp list --output table | eval "$LOG_PIPE"
-      ;;
-    plans)
-      section "App Service Plans" | eval "$LOG_PIPE"
-      run_az "app service plans" az appservice plan list --output table | eval "$LOG_PIPE"
-      ;;
-    storage)
-      section "Storage Accounts" | eval "$LOG_PIPE"
-      run_az "storage accounts" az storage account list --output table | eval "$LOG_PIPE"
-      ;;
-    sql)
-      section "SQL Servers" | eval "$LOG_PIPE"
-      run_az "SQL servers" az sql server list --output table | eval "$LOG_PIPE"
-      ;;
-    vaults)
-      section "Key Vaults" | eval "$LOG_PIPE"
-      run_az "key vaults" az keyvault list --output table | eval "$LOG_PIPE"
-      ;;
-    roles)
-      section "Role Assignments for Current User" | eval "$LOG_PIPE"
-      USER_OBJ_ID=$(az ad signed-in-user show --query objectId -o tsv 2>/dev/null || echo "")
-      if [[ -n "$USER_OBJ_ID" ]]; then
-        run_az "role assignments for current user" az role assignment list --assignee "$USER_OBJ_ID" --output table | eval "$LOG_PIPE"
-      else
-        echo -e "${YELLOW}[WARN] Could not fetch signed-in user info (possibly missing permissions)${NC}" | eval "$LOG_PIPE"
-      fi
-      ;;
-    esac
+    survey_run_section "$sect" | eval "$LOG_PIPE"
   done
 done
 
