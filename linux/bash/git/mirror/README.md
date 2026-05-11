@@ -10,6 +10,7 @@ The [`parallel-mirror.sh` script](./parallel-mirror.sh) enables loading reposito
 
 Usage:
 
+- Run the [`seed-known-hosts.sh`](./seed-known-hosts.sh) script to prepare SSH for remote connections
 - Copy `example.repos.txt` to `repos.txt`.
   - Add some URLs.
   - If you are using HTTPS and the repository is private, create a token and set the env var for it, or pass with `--<remote-name>-token`.
