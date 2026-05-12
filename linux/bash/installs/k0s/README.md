@@ -29,8 +29,77 @@
   - `sudo k0s kubeconfig admin > kubeconfig.yaml`
   - On a remote machine, create `~/.kube`
   - Copy the `kubeconfig.yaml` -> `~/.kube/config`
+  - Set `chmod 600 ~/.kube/config`
+  - Validate the server: `cat ~/.kube/config | grep server`
+    - This should show your remote server's IP
   - Test with `kubectl get nodes`
   - Remote machines only need `kubectl` installed, not `k0s`
+
+### Dev namespace & non-admin user
+
+It is good practice to create separate namespaces for apps & deployments, and a non-admin user with Kubernetes RBAC to run commands under.
+
+- Create a `dev` namespace to use as a sandbox
+  - `kubectl create namespace dev`
+- Create a service/user account
+  - `kubectl create serviceaccount dev-user -n dev`
+- Create an RBAC YAML file, i.e. `dev-role.yaml`:
+
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    namespace: dev
+    name: dev-role
+  rules:
+  - apiGroups: ["", "apps", "batch", "extensions"]
+    resources: ["pods", "deployments", "services", "jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+  ```
+
+  - Apply the dev role with `kubectl apply -f dev-role.yaml`
+- Create a binding, i.e. `dev-binding.yaml`:
+
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: dev-binding
+    namespace: dev
+  subjects:
+  - kind: ServiceAccount
+    name: dev-user
+    namespace: dev
+   roleRef:
+    kind: Role
+    name: dev-role
+    apiGroup: rbac.authorization.k8s.io
+  ```
+
+  - Apply the binding with `kubectl apply -f dev-binding.yaml`
+- Get a token for the dev user with `kubectl create token dev-user -n dev`
+- Create a second Kube config file, i.e. `~/.kube/config-dev`
+
+  ```yaml
+  apiVersion: v1
+  kind: Config
+  clusters:
+  - cluster:
+      server: https://192.168.1.14:6443
+      insecure-skip-tls-verify: true
+    name: k0s
+  users:
+  - name: dev-user
+    user:
+      token: <PASTE_TOKEN_HERE>
+  contexts:
+  - context:
+      cluster: k0s
+      user: dev-user
+      namespace: dev
+    name: dev-context
+  current-context: dev-context
+  ```
 
 ## Commands
 
@@ -76,6 +145,7 @@
 | `sudo k0s kubeconfig admin > kubeconfig.yaml` | Create a `kubeconfig.yaml` for the current node. Copy this file to other machines to access the node remotely |
 | `k0s kubectl api-resources` | List all Kubernetes resource types & what the API can manage |
 | `k0s kubectl get ns` | Show Kubernetes namespaces |
+| `kubectl config use-context <context>` | Switch `kubectl` to a specific context defined in a `~/.kube/config` file. For example, if you have a `config` (admin) and `config-dev` (dev user) in your `~/.kube`, instead of setting the `KUBECONFIG` env var you can use the `use-context` command to switch between them |
 
 ## Links
 
