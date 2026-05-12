@@ -8,6 +8,23 @@
 - The script creates a kubectl config file at `~/.kube/config`
   - Somewhere in your `.bashrc` (or the files it sources on startup), add this: `export KUBECONFIG="$HOME/.kube/config"`
   - Now your `k0s` commands will not require sudo
+- Check node networking with `k0s kubectl cluster-info`
+  - If you see `localhost` or `127.0.0.1`, the cluster is not reachable from outside the node yet.
+  - Create a cluster config with `sudo k0s config create > k0s.yaml`
+  - Edit the `k0s.yaml` to set your cluster's IP:
+
+    ```yaml
+    spec:
+      api:
+        address: 192.168.1.xxx
+    ```
+  - After modifying the cluster's config, reinstall it with: `sudo k0s install controller --single -c k0s.yaml`
+- Generate remote admin config (used to connect to the cluster on remote machines)
+  - `sudo k0s kubeconfig admin > kubeconfig.yaml`
+  - On a remote machine, create `~/.kube`
+  - Copy the `kubeconfig.yaml` -> `~/.kube/config`
+  - Test with `kubectl get nodes`
+  - Remote machines only need `kubectl` installed, not `k0s`
 
 ## Commands
 
@@ -24,6 +41,7 @@
 | `k0s kubectl logs --previous <pod-name>` | Show logs from a crashed pod |
 | `k0s kubectl exec -it <pod-name> -- sh` | Open a shell inside a container |
 | `k0s kubectl get deployments` | List deployments |
+| `k0s kubectl get deployments -A` | List all deployments |
 | `k0s kubectl create deployment hello --image=nginx` | Create a deployment (example is nginx) |
 | `k0s kubectl scale deployment hello --replicas=3` | Scale a deployment |
 | `k0s kubectl rollout restart deployment hello` | Restart a deployment |
@@ -47,6 +65,11 @@
 | `k0s kubectl delete pod <pod-name>` | Delete a pod |
 | `k0s kubectl delete deployment hello` | Delete a deployment |
 | `k0s kubectl delete all --all` | Delete everything in a namespace |
+| `sudo k0s config create > k0s.yaml` | Show Kubernetes cluster config on local node |
+| `sudo k0s install controller --single -c k0s.yaml` | Reinstall/update cluster configuration from a file |
+| `sudo k0s kubeconfig admin > kubeconfig.yaml` | Create a `kubeconfig.yaml` for the current node. Copy this file to other machines to access the node remotely |
+| `k0s kubectl api-resources` | List all Kubernetes resource types & what the API can manage |
+| `k0s kubectl get ns` | Show Kubernetes namespaces |
 
 ## Links
 
