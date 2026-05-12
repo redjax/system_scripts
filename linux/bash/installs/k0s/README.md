@@ -18,7 +18,13 @@
       api:
         address: 192.168.1.xxx
     ```
-  - After modifying the cluster's config, reinstall it with: `sudo k0s install controller --single -c k0s.yaml`
+  - After modifying the cluster's config, reinstall it with:
+    - `sudo k0s stop`
+    - `sudo k0s reset`
+    - `sudo k0s install controller --single -c k0s.yaml`
+    - `sudo k0s start`
+    - Rebuild the admin config: `sudo k0s kubeconfig admin > ~/.kube/config`
+    - Verify the cluster IP is correct now with `k0s kubectl cluster-info`
 - Generate remote admin config (used to connect to the cluster on remote machines)
   - `sudo k0s kubeconfig admin > kubeconfig.yaml`
   - On a remote machine, create `~/.kube`
