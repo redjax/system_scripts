@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 ########################################
 # k0s upgrader
 ########################################
+
+KUBECONFIG_PATH="${HOME}/.kube/config"
 
 function require_command() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -42,12 +43,12 @@ echo "[ Upgrade k0s ]"
 echo ""
 
 echo "[INFO] Current version:"
-k0s version || true
+k0s version
 
 echo ""
-echo "[INFO] Stopping k0s..."
+echo "[INFO] Stopping k0s"
 
-if ! sudo k0s stop; then
+if ! sudo k0s stop >/dev/null 2>&1; then
   echo "[ERROR] Failed stopping k0s."
 
   if ! prompt_yes_no "Proceed anyway?"; then
@@ -57,33 +58,33 @@ if ! sudo k0s stop; then
 fi
 
 echo ""
-echo "[INFO] Downloading latest k0s..."
+echo "[INFO] Downloading latest k0s"
 
 curl -sSLf https://get.k0s.sh | sudo sh
 
 echo "[INFO] Upgrade installed."
 
 echo ""
-echo "[INFO] Starting k0s..."
+echo "[INFO] Starting k0s"
 
 sudo k0s start
 
 echo ""
-echo "[INFO] Waiting for cluster..."
+echo "[INFO] Waiting for cluster"
 
 sleep 10
 
 echo ""
 echo "[INFO] New version:"
-k0s version || true
+k0s version
 
 echo ""
 echo "[INFO] Node status:"
-k0s kubectl get nodes || true
+KUBECONFIG="${KUBECONFIG_PATH}" k0s kubectl get nodes || true
 
 echo ""
 echo "[INFO] System pods:"
-k0s kubectl get pods -A || true
+KUBECONFIG="${KUBECONFIG_PATH}" k0s kubectl get pods -A || true
 
 echo ""
 echo "[INFO] k0s upgrade complete."
