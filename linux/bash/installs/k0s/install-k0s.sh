@@ -44,6 +44,9 @@ if command -v k0s >/dev/null 2>&1; then
   fi
 fi
 
+echo "[INFO] Stopping k0s before reinstall (if it's running)"
+sudo k0s stop || true
+
 echo "[INFO] Downloading and installing k0s"
 
 curl -sSLf https://get.k0s.sh | sudo sh
@@ -53,9 +56,13 @@ echo "[INFO] k0s installed successfully."
 if prompt_yes_no "Install single-node controller?"; then
   echo "[INFO] Installing k0s controller"
 
-  sudo k0s install controller --single
+  if [[ -f /etc/systemd/system/k0scontroller.service ]]; then
+    echo "[INFO] Controller already installed, skipping."
+  else
+    sudo k0s install controller --single
+  fi
 
-  echo "[INFO] Controller installed."
+  echo "[INFO] Controller ready."
 fi
 
 if prompt_yes_no "Start k0s now?"; then
@@ -76,6 +83,8 @@ if prompt_yes_no "Start k0s now?"; then
   sudo chown "$(id -u):$(id -g)" "${KUBECONFIG_DEST}"
 
   chmod 600 "${KUBECONFIG_DEST}"
+
+  export KUBECONFIG="${KUBECONFIG_DEST}"
 
   echo "[INFO] kubeconfig installed:"
   echo "       ${KUBECONFIG_DEST}"
