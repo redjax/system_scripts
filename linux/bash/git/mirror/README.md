@@ -54,6 +54,24 @@ echo "Mirroring git repos"
 
 ```
 
+This script looks for a `.env` file in the same path to source values like the github/gitlab/codeberg token, gotify url & token, etc:
+
+```env
+export GIT_GITHUB_TOKEN="ghp_XXXXX"
+export GIT_GITLAB_TOKEN="glpat-XXXXX"
+export GIT_CODEBERG_TOKEN="XXXXXXXXXXXX"
+
+export MIRROR_REPOS_FILE="./repos.txt"
+export MIRROR_REPOS_DIR="/path/to/git_mirrors"
+export MIRROR_STATE_DIR="./state"
+export MIRROR_LOG_DIR="./logs"
+export MIRROR_MAX_JOBS=5
+
+export GOTIFY_URL="https://gotify.example.com"
+export GOTIFY_TOKEN=""
+
+```
+
 This can be scheduled with cron:
 
 ```shell
