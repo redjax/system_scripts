@@ -78,7 +78,7 @@ else
   ## Upload photos recursively
   echo "Starting upload from $PHOTO_DIR to server: ${IMMICH_URL}"
 
-  if ! immich-go upload from-folder -s "$IMMICH_URL" -k "$IMMICH_KEY" --pause-immich-jobs=FALSE "$PHOTO_DIR" 2>&1; then
+  if ! immich-go upload from-folder -s "$IMMICH_URL" -k "$IMMICH_KEY" --pause-immich-jobs=FALSE --on-errors continue "$PHOTO_DIR" 2>&1; then
     echo "[ERROR] Failed uploading photos" >&2
     exit 1
   fi
