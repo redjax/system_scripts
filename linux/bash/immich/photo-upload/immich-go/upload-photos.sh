@@ -9,6 +9,8 @@ fi
 IMMICH_URL="${IMMICH_SERVER_URL:-}"
 IMMICH_KEY="${IMMICH_KEY:-}"
 PHOTO_DIR="${IMMICH_LOCAL_PHOTOS:-}"
+## Trim trailing slashes
+PHOTO_DIR="${PHOTO_DIR%/}"
 
 DRY_RUN="false"
 
@@ -71,17 +73,18 @@ if [[ ! -d "${PHOTO_DIR}" ]]; then
   exit 1
 fi
 
+cmd=(immich-go upload from-google-photos -s "$IMMICH_URL" -k "$IMMICH_KEY" --on-errors continue "$PHOTO_DIR")
+
 if [[ "$DRY_RUN" == "true" ]]; then
-  echo "[DRY RUN] Would authenticate to server: ${IMMICH_URL}"
-  echo "[DRY RUN] Would upload photos from: ${PHOTO_DIR}"
-else
-  ## Upload photos recursively
-  echo "Starting upload from $PHOTO_DIR to server: ${IMMICH_URL}"
-
-  if ! immich-go upload from-folder -s "$IMMICH_URL" -k "$IMMICH_KEY" --pause-immich-jobs=FALSE --on-errors continue "$PHOTO_DIR" 2>&1; then
-    echo "[ERROR] Failed uploading photos" >&2
-    exit 1
-  fi
-
-  echo "Upload complete"
+  echo "[DRY RUN] Running immich-go in dry-run mode"
+  cmd+=(--dry-run)
 fi
+
+echo "Starting upload from $PHOTO_DIR to server: $IMMICH_URL"
+
+if ! "${cmd[@]}"; then
+  echo "[ERROR] Failed uploading photos" >&2
+  exit 1
+fi
+
+echo "Upload complete"
