@@ -8,6 +8,7 @@ fi
 
 IMMICH_URL="${IMMICH_SERVER_URL:-}"
 IMMICH_KEY="${IMMICH_KEY:-}"
+IMMICH_ADMIN_KEY="${IMMICH_ADMIN_KEY:-}"
 PHOTO_DIR="${IMMICH_LOCAL_PHOTOS:-}"
 ## Trim trailing slashes
 PHOTO_DIR="${PHOTO_DIR%/}"
@@ -23,6 +24,7 @@ Options:
   -u, --server-url  Immich server URL
   -e, --email       Immich user email
   -k, --api-key     Immich API token
+  -K, --admin-key   Immich API token with admin privileges
   -p, --local-path  Path to local photos directory
   --dry-run         Describe actions without taking them
 EOF
@@ -45,6 +47,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   -k | --api-key)
     IMMICH_KEY="${2}"
+    shift 2
+    ;;
+  -K | --admin-key)
+    IMMICH_ADMIN_KEY="${2}"
     shift 2
     ;;
   -p | --local-path)
@@ -73,7 +79,16 @@ if [[ ! -d "${PHOTO_DIR}" ]]; then
   exit 1
 fi
 
-cmd=(immich-go upload from-google-photos -s "$IMMICH_URL" -k "$IMMICH_KEY" --on-errors continue "$PHOTO_DIR")
+cmd=(immich-go upload from-google-photos -s "$IMMICH_URL" -k "$IMMICH_KEY" --on-errors continue)
+
+if [[ -n "${IMMICH_ADMIN_KEY}" ]]; then
+  cmd+=(--admin-api-key "${IMMICH_ADMIN_KEY}")
+else
+  cmd+=(--pause-immich-jobs=FALSE)
+fi
+
+## Append photo dir to end of command
+cmd+=("$PHOTO_DIR")
 
 if [[ "$DRY_RUN" == "true" ]]; then
   echo "[DRY RUN] Running immich-go in dry-run mode"
