@@ -1,4 +1,4 @@
-git@github.com:username/repo1 ./repos/github/repo1 ssh
-https://github.com/username/repo2 ./repos/github/repo2 https
-https://gitlab.com/username/repo3 ./repos/gitlab/repo3 https
-git@codeberg.org:redjax/repo4 ./repos/codeberg/repo4 ssh
+git@github.com:username/repo1|./repos/github/repo1|ssh
+https://github.com/username/repo2|./repos/github/repo2|https
+https://gitlab.com/username/repo3|./repos/gitlab/repo3|https
+git@codeberg.org:redjax/repo4|./repos/path with spaces/codeberg/repo4|ssh
