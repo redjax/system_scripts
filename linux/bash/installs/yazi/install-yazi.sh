@@ -32,44 +32,26 @@ if [[ "$ARCH" == "x86_64" ]]; then
     ARCH="x86_64"
 elif [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
     ARCH="aarch64"
+elif [[ "$ARCH" == "armv7l" ]]; then
+    ARCH="armv7"
 else
     echo "Unsupported architecture: $ARCH"
     exit 1
 fi
 
-# Detect if Debian-based (for adding debian.griffo.io repo)
-IS_DEBIAN=0
-if [[ -f /etc/os-release ]]; then
-   . /etc/os-release
-   ID_LIKE="${ID_LIKE:-}"
-   if [[ "$ID" == "debian" || "$ID_LIKE" == *"debian"* ]]; then
-       IS_DEBIAN=1
-   fi
-fi
-
-if [[ "$IS_DEBIAN" -eq 1 ]]; then
-    echo "Detected Debian-based system. Installing Yazi from debian.griffo.io repo..."
-
-    # Add GPG key
-    curl -sS https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/debian.griffo.io.gpg
-
-    # Add repository to sources list
-    echo "deb https://debian.griffo.io/apt $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list
-
-    sudo apt-get update
-
-    # Install yazi and dependencies from repo
-    sudo apt-get install -y yazi
-
-else
-    # Fallback: install from GitHub release zip
-
+# Install from GitHub release zip
+function install_from_github() {
     LATEST_JSON=$(curl -s https://api.github.com/repos/sxyazi/yazi/releases/latest)
+
     ASSET="yazi-${ARCH}-${PLATFORM}.zip"
-    ASSET_URL=$(echo "$LATEST_JSON" | grep "browser_download_url" | grep "${ASSET}" | sed -E 's/.*"(https:[^"]+)".*/\1/')
+
+    ASSET_URL=$(echo "$LATEST_JSON" \
+        | grep "browser_download_url" \
+        | grep "${ASSET}" \
+        | sed -E 's/.*"(https:[^"]+)".*/\1/')
 
     if [[ -z "$ASSET_URL" ]]; then
-        echo "Could not find release asset for $ARCH-$PLATFORM"
+        echo "Could not find release asset for $ASSET"
         exit 1
     fi
 
@@ -93,10 +75,52 @@ else
     fi
 
     chmod +x "$YAZI_BIN" "$YA_BIN"
+
     echo "Moving binaries to /usr/local/bin/"
     sudo mv "$YAZI_BIN" /usr/local/bin/yazi
     sudo mv "$YA_BIN" /usr/local/bin/ya
+
     echo "Binaries installed to /usr/local/bin/"
+}
+
+# Detect if Debian-based (for adding debian.griffo.io repo)
+IS_DEBIAN=0
+if [[ -f /etc/os-release ]]; then
+   . /etc/os-release
+   ID_LIKE="${ID_LIKE:-}"
+   if [[ "$ID" == "debian" || "$ID_LIKE" == *"debian"* ]]; then
+       IS_DEBIAN=1
+   fi
+fi
+
+APT_ARCH=""
+if command -v dpkg &>/dev/null; then
+    APT_ARCH="$(dpkg --print-architecture)"
+fi
+
+if [[ "$IS_DEBIAN" -eq 1 && "$APT_ARCH" != "armhf" ]]; then
+    echo "Detected Debian-based system. Installing Yazi from debian.griffo.io repo"
+
+    # Add GPG key
+    curl -sS https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/debian.griffo.io.gpg
+
+    # Add repository to sources list
+    echo "deb https://debian.griffo.io/apt $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list
+
+    sudo apt-get update
+
+    # Install yazi and dependencies from repo
+    if sudo apt-get install -y yazi; then
+        echo "Yazi installed from debian.griffo.io repo."
+    else
+        echo "Failed to install Yazi from repo. Falling back to GitHub release zip"
+        install_from_github
+    fi
+
+else
+    # Fallback: install from GitHub release zip
+
+    install_from_github
 fi
 
 # Handle completions directory if exists

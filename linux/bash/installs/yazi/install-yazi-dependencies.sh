@@ -5,6 +5,7 @@ set -euo pipefail
 OS=$(uname -s)
 DISTRO=""
 PACKAGE_INSTALL_CMD=""
+PM=""
 
 if [[ "$OS" == "Darwin" ]]; then
     PM="brew"
@@ -43,33 +44,55 @@ fi
 install_mac() {
     # Install Homebrew if missing
     if ! command -v brew &>/dev/null; then
-        echo "Homebrew not found, installing..."
+        echo "Homebrew not found, installing"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 
-    echo "Updating Homebrew..."
+    echo "Updating Homebrew"
     brew update
 
-    echo "Installing dependencies on macOS via Homebrew..."
-    brew install ffmpeg jq poppler fd ripgrep fzf zoxide resvg imagemagick xclip || true
+    echo "Installing dependencies on macOS via Homebrew"
+    brew install ffmpeg jq poppler fd ripgrep fzf zoxide resvg imagemagick || true
     # 7-Zip on macOS via brew is "p7zip"
     brew install p7zip || true
 
     # Nerd Fonts via Homebrew Cask Fonts
     brew tap homebrew/cask-fonts
+
     # Install a popular nerd font; user can customize this if needed
-    brew install --cask font-hack-nerd-font
+    brew install --cask font-hack-nerd-font || true
 
     echo "Dependencies installed on macOS."
 }
 
 install_debian() {
     sudo apt-get update
-    sudo apt-get install -y ffmpeg jq poppler-utils fd-find ripgrep fzf zoxide rsync imagemagick xclip p7zip-full unzip curl fontconfig || true
+
+    sudo apt-get install -y \
+        ffmpeg \
+        jq \
+        poppler-utils \
+        fd-find \
+        ripgrep \
+        fzf \
+        zoxide \
+        rsync \
+        imagemagick \
+        xclip \
+        p7zip-full \
+        unzip \
+        curl \
+        fontconfig
+
+    # Debian uses "fdfind" instead of "fd"
+    if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+    fi
 
     # Nerd Fonts installer script
     if ! fc-list | grep -qi nerd; then
-        echo "Installing Nerd Fonts on Debian via manual script..."
+        echo "Installing Nerd Fonts on Debian via manual script"
         curl -fsSL https://raw.githubusercontent.com/monoira/nefoin/main/install.sh | bash -s -- "FiraCode"
         fc-cache -fv
     fi
@@ -78,11 +101,25 @@ install_debian() {
 }
 
 install_fedora() {
-    sudo dnf install -y ffmpeg jq poppler-utils fd-find ripgrep fzf zoxide rsync ImageMagick xclip p7zip-full unzip curl fontconfig || true
+    sudo dnf install -y \
+        ffmpeg \
+        jq \
+        poppler-utils \
+        fd-find \
+        ripgrep \
+        fzf \
+        zoxide \
+        rsync \
+        ImageMagick \
+        xclip \
+        p7zip \
+        unzip \
+        curl \
+        fontconfig
 
     # Nerd Fonts manual installation as Fedora doesn't package Nerd Fonts
     fc-list | grep -qi nerd || {
-        echo "Installing Nerd Fonts on Fedora via manual script..."
+        echo "Installing Nerd Fonts on Fedora via manual script"
         curl -fsSL https://raw.githubusercontent.com/monoira/nefoin/main/install.sh | bash -s -- "FiraCode"
         fc-cache -fv
     }
@@ -91,7 +128,22 @@ install_fedora() {
 }
 
 install_arch() {
-    sudo pacman -Sy --noconfirm ffmpeg jq poppler fd ripgrep fzf zoxide imagemagick xclip p7zip unzip curl fontconfig || true
+    sudo pacman -Sy --noconfirm \
+        ffmpeg \
+        jq \
+        poppler \
+        fd \
+        ripgrep \
+        fzf \
+        zoxide \
+        rsync \
+        imagemagick \
+        xclip \
+        p7zip \
+        unzip \
+        curl \
+        fontconfig
+
     # Nerd Fonts user install via GitHub or community repo
     fc-list | grep -qi nerd || {
         echo "Please install nerd-fonts manually from AUR or using a helper like paru/yay."
@@ -101,10 +153,23 @@ install_arch() {
 }
 
 install_opensuse() {
-    sudo zypper install -y ffmpeg jq poppler-tools fd ripgrep fzf zoxide ImageMagick xclip p7zip unzip curl fontconfig || true
+    sudo zypper install -y \
+        ffmpeg \
+        jq \
+        poppler-tools \
+        fd \
+        ripgrep \
+        fzf \
+        zoxide \
+        ImageMagick \
+        xclip \
+        p7zip \
+        unzip \
+        curl \
+        fontconfig
 
     if ! fc-list | grep -qi nerd; then
-        echo "Installing Nerd Fonts on openSUSE via manual script..."
+        echo "Installing Nerd Fonts on openSUSE via manual script"
         curl -fsSL https://raw.githubusercontent.com/monoira/nefoin/main/install.sh | bash -s -- "FiraCode"
         fc-cache -fv
     fi
@@ -114,7 +179,7 @@ install_opensuse() {
 
 # Clipboard support on Linux: check environment and install the best clipboard tool available
 install_clipboard_linux() {
-    if [[ "$(pgrep -x wayland)" ]]; then
+    if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
         # Wayland detected, install wl-clipboard if available
         if [[ "$PM" == "apt-get" ]]; then
             sudo apt-get install -y wl-clipboard || true
