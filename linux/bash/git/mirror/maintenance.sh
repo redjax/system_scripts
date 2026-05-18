@@ -17,7 +17,6 @@ LOG_FILE="${LOG_FILE:-$DIR/logs/maintenance.log}"
 
 DRY_RUN=0
 
-# mode: all | fsck | gc | logs
 MODE="all"
 
 mkdir -p "$(dirname "$LOG_FILE")"
@@ -43,10 +42,6 @@ EOF
 
 function log() {
   echo "[$(date '+%F %T')] $*" | tee -a "$LOG_FILE"
-}
-
-function repo_name() {
-  basename "$1"
 }
 
 function run_fsck() {
@@ -160,7 +155,6 @@ done
 
 log "[START] maintenance run"
 
-# log-only mode bypasses repo loop entirely
 if [[ "$MODE" == "logs" ]]; then
   cleanup_logs
   log "[DONE] maintenance complete"
@@ -179,7 +173,7 @@ function wait_for_slot() {
   done
 }
 
-while read -r url dest auth; do
+while IFS='|' read -r url dest auth; do
   [[ -z "$url" || "$url" == \#* ]] && continue
 
   if [[ ! -d "$dest" ]]; then

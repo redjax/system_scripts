@@ -8,9 +8,13 @@ TOKEN="${4:-}"
 STATE_DIR="${5:-./state}"
 LOG_DIR="${6:-./logs}"
 
-NAME="$(basename "$DEST")"
-
 mkdir -p "$STATE_DIR"/{success,failed,retries} "$LOG_DIR"
+
+repo_id() {
+  printf '%s' "$DEST" | sed 's#^/##; s#/#__#g; s#[[:space:]]\+#_#g'
+}
+
+NAME="$(repo_id)"
 
 LOG_FILE="$LOG_DIR/$NAME.log"
 
@@ -27,9 +31,8 @@ function mark_failed() {
   echo "$(date +%s)" > "$STATE_DIR/failed/$NAME.state"
 }
 
-log "[START] $URL ($AUTH_MODE)"
+log "[START] url=$URL dest=$DEST auth=$AUTH_MODE"
 
-# IMPORTANT: build auth URL safely per mode
 AUTH_URL="$URL"
 
 case "$AUTH_MODE" in
@@ -53,10 +56,10 @@ MAX=3
 while (( ATTEMPT < MAX )); do
 
   if [[ ! -d "$DEST" ]]; then
-    log "[CLONE] $AUTH_URL"
+    log "[CLONE] $AUTH_URL -> $DEST"
     git clone --mirror "$AUTH_URL" "$DEST" && break
   else
-    log "[FETCH] $URL"
+    log "[FETCH] $URL in $DEST"
     git -C "$DEST" fetch --all --prune && break
   fi
 

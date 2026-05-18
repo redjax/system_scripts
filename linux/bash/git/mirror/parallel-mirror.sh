@@ -28,7 +28,6 @@ GITHUB_TOKEN="${GIT_GITHUB_TOKEN:-}"
 GITLAB_TOKEN="${GIT_GITLAB_TOKEN:-}"
 CODEBERG_TOKEN="${GIT_CODEBERG_TOKEN:-}"
 
-## Prevent interactive SSH prompts during unattended runs
 export GIT_SSH_COMMAND="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
 
 function usage() {
@@ -86,10 +85,10 @@ function show_status() {
   echo "[ Git Mirror Status ]"
   echo ""
 
-  while read -r url dest auth; do
+  while IFS='|' read -r url dest auth; do
     [[ -z "$url" || "$url" == \#* ]] && continue
 
-    name="$(basename "$dest")"
+    name="$(printf '%s' "$dest" | sed 's#^/##; s#/#__#g; s#[[:space:]]\+#_#g')"
 
     success_file="$STATE_DIR/success/$name.state"
     failed_file="$STATE_DIR/failed/$name.state"
@@ -113,17 +112,17 @@ function show_status() {
 
 function build_input() {
   if [[ "$RETRY_FAILED" -eq 1 ]]; then
-    while read -r url dest auth; do
+    while IFS='|' read -r url dest auth; do
       [[ -z "$url" || "$url" == \#* ]] && continue
 
-      name="$(basename "$dest")"
+      name="$(printf '%s' "$dest" | sed 's#^/##; s#/#__#g; s#[[:space:]]\+#_#g')"
 
       if [[ -f "$STATE_DIR/failed/$name.state" ]]; then
         echo "$url|$dest|$auth"
       fi
     done < "$REPOS_FILE"
   else
-    while read -r url dest auth; do
+    while IFS='|' read -r url dest auth; do
       [[ -z "$url" || "$url" == \#* ]] && continue
       echo "$url|$dest|$auth"
     done < "$REPOS_FILE"
@@ -211,7 +210,6 @@ function wait_for_slot() {
       fi
     done
 
-    # re-index sparse array
     PIDS=("${PIDS[@]}")
 
     sleep 0.2
@@ -240,7 +238,7 @@ function run_worker() {
   PIDS+=("$!")
 }
 
-while IFS="|" read -r url dest auth; do
+while IFS='|' read -r url dest auth; do
   [[ -z "$url" ]] && continue
 
   provider="$(detect_provider "$url")"

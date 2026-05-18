@@ -8,6 +8,16 @@ The [`local-mirror.sh` script](./local-mirror.sh) creates a mirror of a remote r
 
 The [`parallel-mirror.sh` script](./parallel-mirror.sh) enables loading repositories from a [`repos.txt` file](./example.repos.txt) and mirroring them concurrently. It uses environment variables or CLI args for remote tokens (for private repos), and the host's SSH config (`~/.ssh/config`) for `git@<remote>:username/repo` patterns.
 
+The text file has 3 "columns":
+
+```text
+repo-url local-path method
+```
+
+The 3rd "method" column is really only used for printing the clone/mirror method in the CLI when the application is running. It doesn't matter what you put there, but you have to put *something*. If you don't want to use that column or aren't sure what to put, just use `none`.
+
+For the local path, you should use subdirectories per forge. If you have the same repository name on Github and Gitlab, for instance, the script would have trouble cloning both repositories to the `/path/on/local/git-backups/repo-name`. Instead, you should use `github/` and `gitlab/` subdirectories, i.e. `/path/on/local/git-backups/github/repo-name` and `/path/on/local/git-backups/gitlab/repo-name`.
+
 Usage:
 
 - Run the [`seed-known-hosts.sh`](./seed-known-hosts.sh) script to prepare SSH for remote connections
