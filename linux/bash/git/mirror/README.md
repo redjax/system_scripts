@@ -8,10 +8,10 @@ The [`local-mirror.sh` script](./local-mirror.sh) creates a mirror of a remote r
 
 The [`parallel-mirror.sh` script](./parallel-mirror.sh) enables loading repositories from a [`repos.txt` file](./example.repos.txt) and mirroring them concurrently. It uses environment variables or CLI args for remote tokens (for private repos), and the host's SSH config (`~/.ssh/config`) for `git@<remote>:username/repo` patterns.
 
-The text file has 3 "columns":
+The text file has 3 "columns", and uses a pipe `|` for the delimiter:
 
 ```text
-repo-url local-path method
+repo-url|local-path|method
 ```
 
 The 3rd "method" column is really only used for printing the clone/mirror method in the CLI when the application is running. It doesn't matter what you put there, but you have to put *something*. If you don't want to use that column or aren't sure what to put, just use `none`.
