@@ -24,7 +24,7 @@ trap 'rm -rf "$TMPDIR"' EXIT
 echo "Fetching latest release" >&2
 JSON="$(curl -fsSL "$API_URL")"
 
-## Parse latest release tag name 
+## Parse latest release tag name
 TAG="$(echo "$JSON" | sed -n 's/.*"tag_name":[[:space:]]*"\([^"]*\)".*/\1/p')"
 
 if [[ -z "$TAG" ]]; then
@@ -39,22 +39,22 @@ OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH="$(uname -m)"
 
 case "$ARCH" in
-  x86_64) ARCH="amd64" ;;
-  aarch64|arm64) ARCH="arm64" ;;
-  armv7l) ARCH="arm" ;;
-  i386|i686) ARCH="386" ;;
-  *)
-    echo "Unsupported architecture: $ARCH" >&2
-    exit 1
-    ;;
+x86_64) ARCH="amd64" ;;
+aarch64 | arm64) ARCH="arm64" ;;
+armv7l) ARCH="arm" ;;
+i386 | i686) ARCH="386" ;;
+*)
+  echo "Unsupported architecture: $ARCH" >&2
+  exit 1
+  ;;
 esac
 
 case "$OS" in
-  linux|darwin|freebsd|openbsd|netbsd) ;;
-  *)
-    echo "Unsupported OS: $OS" >&2
-    exit 1
-    ;;
+linux | darwin | freebsd | openbsd | netbsd) ;;
+*)
+  echo "Unsupported OS: $OS" >&2
+  exit 1
+  ;;
 esac
 
 ## Build asset name
@@ -80,14 +80,44 @@ if [[ -z "$BIN" ]]; then
 fi
 
 ## Install
-INSTALL_DIR="/usr/local/bin"
+SYSTEM_DIR="/usr/local/bin"
+USER_DIR="$HOME/.local/bin"
 
-if [[ ! -w "$INSTALL_DIR" ]]; then
-  INSTALL_DIR="$HOME/.local/bin"
-  mkdir -p "$INSTALL_DIR"
+INSTALL_DIR=""
+USE_SUDO="false"
+
+## Use SYSTEM_DIR if script was run with sudo, otherwise prompt for sudo password
+if [[ -w "$SYSTEM_DIR" ]]; then
+  INSTALL_DIR="$SYSTEM_DIR"
+else
+  echo "[WARNING] Cannot write to $SYSTEM_DIR."
+
+  while true; do
+    read -r -p "Install to /usr/local/bin with sudo? (y/n): " ans
+
+    case "$ans" in
+    [Yy])
+      INSTALL_DIR="$SYSTEM_DIR"
+      USE_SUDO="true"
+      break
+      ;;
+    [Nn])
+      INSTALL_DIR="$USER_DIR"
+      mkdir -p "$INSTALL_DIR"
+      break
+      ;;
+    *)
+      echo "Enter 'y' or 'n'"
+      ;;
+    esac
+  done
 fi
 
-install -m 755 "$BIN" "$INSTALL_DIR/lf"
+## Install lf
+if [[ "$USE_SUDO" == "true" ]]; then
+  sudo install -m 755 "$BIN" "$INSTALL_DIR/lf"
+else
+  install -m 755 "$BIN" "$INSTALL_DIR/lf"
+fi
 
 echo "Installed lf to $INSTALL_DIR/lf"
-
