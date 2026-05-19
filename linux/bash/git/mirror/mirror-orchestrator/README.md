@@ -99,22 +99,6 @@ export AUTH_MODE=ssh
 ./mirror-multi [options]
 ```
 
-Most-used flags:
-
-```text
---jobs-file <path>      text jobs, one line per job
---jobs-yaml <path>      YAML jobs
---parallel <n>          default: 4
---retries <n>           default: 1
---retry-delay <secs>    default: 2
---resume                skip already-successful jobs
---fail-on-error         return non-zero if any job failed
---clean                 wipe old run/job/status files before run
---dry-run               forwarded to mirror-git-repo
---debug                 forwarded to mirror-git-repo
---verbose               forwarded to mirror-git-repo
-```
-
 ## Jobs
 
 The `mirror-multi` script can accept a "jobs file" in YAML format, where you can define the cloning operations.
