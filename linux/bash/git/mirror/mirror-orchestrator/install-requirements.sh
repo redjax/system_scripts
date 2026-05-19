@@ -326,7 +326,7 @@ function main() {
   log "Download URL: ${url}"
 
   tmp="$(mktemp)"
-  trap 'rm -f "$tmp"' EXIT
+  trap 'rm -f "${tmp:-}"' EXIT
 
   download_file "$url" "$tmp"
   install_binary "$tmp" "$INSTALL_DIR"
