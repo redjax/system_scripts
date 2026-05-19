@@ -28,6 +28,7 @@ CONFIG_FILE=""
 JOBS_FORMAT="text"
 FAIL_ON_ERROR=0
 LOG_RETENTION_DAYS=30
+LOCAL_ROOT="${MIRROR_LOCAL_ROOT:-}"
 
 RUN_LOG=""
 STATUS_DIR=""
@@ -54,6 +55,7 @@ Options:
   --lock-file <path>       flock lock file path. Default: /tmp/mirror-multi.lock
   --log-dir <path>         Directory for run and per-job logs. Default: ./logs
   --mirror-script <path>   Path to mirror-git-repo. Default: ./mirror-git-repo
+  --local-root <dir>       Local mirror root forwarded to mirror-git-repo.
   --clean                  Remove old status and log files before running.
   --log-retention-days <n> Auto-delete logs/status older than <n> days. Default: 30.
   --fail-on-error          Exit non-zero if any job fails (strict mode).
@@ -70,6 +72,7 @@ Config file example (INI format):
   log-retention-days=30
   log-dir=./mirrors-logs
   jobs-file=./my-jobs.txt
+  local-root=./repos
 
 Environment variables:
   MIRROR_LOCAL_ROOT       Default local mirror root for mirror-git-repo.
@@ -196,6 +199,9 @@ function load_config_file() {
       mirror-script)
         [[ -z "$MIRROR_SCRIPT" || "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
         ;;
+      local-root | mirror-local-root)
+        [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
+        ;;
       esac
     done <"$config_file"
 
@@ -235,6 +241,9 @@ function load_config_file() {
         ;;
       mirror-script)
         [[ "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
+        ;;
+      local-root | mirror-local-root)
+        [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
         ;;
       esac
     done <"$config_file"
@@ -342,6 +351,10 @@ function parse_args() {
       ;;
     --mirror-script)
       MIRROR_SCRIPT="${2:-}"
+      shift 2
+      ;;
+    --local-root)
+      LOCAL_ROOT="${2:-}"
       shift 2
       ;;
     --dry-run)
@@ -809,6 +822,10 @@ function main() {
   log "INFO" "jobs file: $JOBS_FILE (format: $JOBS_FORMAT)"
   log "INFO" "parallel=${PARALLEL} retries=${RETRIES} retry-delay=${RETRY_DELAY}s"
   log "INFO" "mirror script: $MIRROR_SCRIPT"
+  if [[ -n "$LOCAL_ROOT" ]]; then
+    export MIRROR_LOCAL_ROOT="$LOCAL_ROOT"
+    log "INFO" "local mirror root: $LOCAL_ROOT"
+  fi
   [[ "$RESUME_MODE" == "1" ]] && log "INFO" "resume mode enabled (skipping succeeded jobs)"
   [[ "$FAIL_ON_ERROR" == "1" ]] && log "INFO" "strict mode enabled (fail on first run summary with failures)"
 
