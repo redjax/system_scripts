@@ -109,6 +109,8 @@ export AUTH_MODE=ssh
 
 `mirror-multi` reads jobs and calls `mirror-git-repo` for each one.
 
+During execution, job output is streamed to stdout and also written to log files.
+
 ```bash
 ./mirror-multi [options]
 ```
