@@ -590,7 +590,7 @@ function launch_job() {
 
   (
     execute_job "$idx" "$line" "$status_file"
-  ) >"$job_log" 2>&1 &
+  ) 2>&1 | tee -a "$job_log" "$RUN_LOG" &
 }
 
 ## Read all jobs from yaml file
