@@ -14,6 +14,20 @@ There are 2 main entrypoint scripts:
 - flock (`util-linux`)
 - yq (YAML jobs only)
 
+To install/verify required tools (especially the correct Mike Farah `yq`), run:
+
+```bash
+./install-requirements.sh
+```
+
+Optional:
+
+```bash
+./install-requirements.sh --force
+./install-requirements.sh --version v4.44.3
+INSTALL_DIR="$HOME/.local/bin" ./install-requirements.sh
+```
+
 ## Usage
 
 General usage:
