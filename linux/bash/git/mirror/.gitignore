@@ -1,9 +1,0 @@
-repos/*
-logs/*
-state/*
-
-*.log
-*.log.*
-
-repos.txt
-
