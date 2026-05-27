@@ -167,14 +167,16 @@ if [[ -n "$RCLONE_BUCKET_PATH" ]]; then
   REMOTE_PATH="${REMOTE_PATH}/${RCLONE_BUCKET_PATH}"
 fi
 
-LOCK_FILE="/tmp/restic-rclone-sync.lock"
+LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/restic-rclone-sync.lock"
 
 exec 200>"$LOCK_FILE"
 
-flock -n 200 || {
-  error "Another sync is already running"
+if ! flock -n 200; then
+  error "Another sync is already running (lock: $LOCK_FILE)"
   exit 1
-}
+fi
+
+echo "PID: $$ USER: $(whoami)" >&200
 
 RCLONE_ARGS=(
   sync
