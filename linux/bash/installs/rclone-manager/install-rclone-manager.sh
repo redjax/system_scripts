@@ -18,17 +18,25 @@ function detect_distro() {
 }
 
 function install_flatpak() {
-  if ! exists flatpak; then
+  if ! command -v flatpak >/dev/null 2>&1; then
     return 1
   fi
 
   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-  if flatpak install -y flathub "$FLATPAK_ID"; then
-    return 0
+  if ! flatpak install -y flathub "$FLATPAK_ID"; then
+    return 1
   fi
 
-  return 1
+  echo "Creating rclone-manager Flatpak overrides"
+  sudo flatpak override "$FLATPAK_ID" \
+    --filesystem=home \
+    --filesystem=xdg-documents \
+    --filesystem=xdg-download \
+    --filesystem=/run/media \
+    --share=network
+
+  return 0
 }
 
 function install_aur() {
