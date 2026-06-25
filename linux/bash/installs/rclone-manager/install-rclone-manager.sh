@@ -29,11 +29,14 @@ function install_flatpak() {
   fi
 
   echo "Creating rclone-manager Flatpak overrides"
-  sudo flatpak override "$FLATPAK_ID" \
-    --filesystem=home \
-    --filesystem=xdg-documents \
-    --filesystem=xdg-download \
-    --filesystem=/run/media \
+  sudo flatpak override io.github.zarestia_dev.rclone-manager \
+    --filesystem=/usr/bin \
+    --filesystem=/bin \
+    --filesystem=/sbin \
+    --filesystem=/usr/sbin \
+    --filesystem=/run/mount \
+    --filesystem=/run/host \
+    --talk-name=org.freedesktop.UDisks2 \
     --share=network
 
   return 0
