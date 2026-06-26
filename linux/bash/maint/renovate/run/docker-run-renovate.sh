@@ -10,7 +10,7 @@ ENV_FILE="${ENV_FILE:-env/github/.env}"
 IMAGE="${IMAGE:-renovate/renovate:latest}"
 NAME="${NAME:-renovate}"
 CONFIG_FILE_PATH="${RENOVATE_CONFIG_FILE_PATH:-config/config.js}"
-CACHE_HOST_DIR="${RENOVATE_CACHE_HOST_DIR:-./cache}"
+CACHE_HOST_DIR="${RENOVATE_CACHE_HOST_DIR:-./cache/renovate-docker}"
 CACHE_HOST_PATH="$REPO_ROOT/${CACHE_HOST_DIR#./}"
 
 EXTRA_ARGS=()
