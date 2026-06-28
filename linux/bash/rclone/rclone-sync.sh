@@ -8,6 +8,7 @@ fi
 
 LOCAL_PATH="${RCLONE_LOCAL_PATH:-}"
 
+RCLONE_CONFIG_FILE="${RCLONE_CONFIG_FILE:-}"
 RCLONE_REMOTE_NAME="${RCLONE_REMOTE_NAME:-}"
 RCLONE_BUCKET_NAME="${RCLONE_BUCKET_NAME:-}"
 RCLONE_BUCKET_PATH="${RCLONE_BUCKET_PATH:-}"
@@ -26,16 +27,17 @@ function usage() {
 Usage: ${0} [OPTIONS]
 
 Options:
-  --local-path PATH
+  --config      PATH
+  --local-path  PATH
   --remote-name NAME
   --bucket-name NAME
   --bucket-path PATH
 
-  --transfers NUM
-  --checkers NUM
+  --transfers          NUM
+  --checkers           NUM
   --upload-concurrency NUM
 
-  --bwlimit VALUE
+  --bwlimit  VALUE
   --log-file PATH
 
   --dry-run
@@ -45,6 +47,7 @@ Options:
 CLI args override env vars.
 
 Environment variables:
+  RCLONE_CONFIG_FILE
   RCLONE_LOCAL_PATH
   RCLONE_REMOTE_NAME
   RCLONE_BUCKET_NAME
@@ -59,10 +62,11 @@ Environment variables:
 Example:
 
 ${0} \
+  --config     /home/user/.config/rclone/rclone.conf \
   --local-path /backup/restic \
   --remote-name wasabi-restic \
-  --bucket-name jk-restic-backups \
-  --bucket-path cybernex
+  --bucket-name restic-backup-bucket \
+  --bucket-path bucket-foldername
 
 EOF
 }
@@ -78,6 +82,10 @@ function info() {
 ## Parse CLI args
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --config)
+      RCLONE_CONFIG_FILE="$2"
+      shift 2
+      ;;
     --local-path)
       LOCAL_PATH="$2"
       shift 2
@@ -141,6 +149,11 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+[[ -z "${RCLONE_CONFIG_FILE}" ]] && {
+  error "--config or RCLONE_CONFIG_FILE is required"
+  exit 1
+}
+
 [[ -z "$LOCAL_PATH" ]] && {
   error "--local-path or RCLONE_LOCAL_PATH is required"
   exit 1
@@ -167,14 +180,16 @@ if [[ -n "$RCLONE_BUCKET_PATH" ]]; then
   REMOTE_PATH="${REMOTE_PATH}/${RCLONE_BUCKET_PATH}"
 fi
 
-LOCK_FILE="/tmp/restic-rclone-sync.lock"
+LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/restic-rclone-sync.lock"
 
 exec 200>"$LOCK_FILE"
 
-flock -n 200 || {
-  error "Another sync is already running"
+if ! flock -n 200; then
+  error "Another sync is already running (lock: $LOCK_FILE)"
   exit 1
-}
+fi
+
+echo "PID: $$ USER: $(whoami)" >&200
 
 RCLONE_ARGS=(
   sync
@@ -194,6 +209,10 @@ RCLONE_ARGS=(
   --stats-one-line
   --progress
 )
+
+if [[ -n "$RCLONE_CONFIG_FILE" ]]; then
+  RCLONE_ARGS+=(--config "$RCLONE_CONFIG_FILE")
+fi
 
 if [[ -n "$RCLONE_BWLIMIT" ]]; then
   RCLONE_ARGS+=(--bwlimit "$RCLONE_BWLIMIT")
