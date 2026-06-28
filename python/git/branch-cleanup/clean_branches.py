@@ -1,7 +1,6 @@
 # /// script
-# requires-python = ">=3.12"
+# requires-python = ">=3.13"
 # dependencies = [
-#     "asyncio",
 #     "httpx",
 #     "loguru",
 #     "pyyaml",

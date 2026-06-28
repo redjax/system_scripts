@@ -8,3 +8,10 @@ __pycache__/
 ## Logs
 *.log
 *.log.*
+
+## Secrets
+.env
+.env/*
+*.env
+*.local
+*.local.*
