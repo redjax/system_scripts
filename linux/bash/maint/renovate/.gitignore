@@ -1,0 +1,7 @@
+config/*
+cache/*
+
+!config/
+!*example*.*
+!*.*example*
+!.gitkeep

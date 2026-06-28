@@ -1,0 +1,835 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+############################################################
+# Multi mirror entrypoint                               #
+#                                                      #
+# This script parses a jobs YAML file defining mirror s,  #
+# then calls the mirror-git-repo script repeatedly,       #
+# managing concurrency, errors, and logging output.       #
+############################################################
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_MIRROR_SCRIPT="${SCRIPT_DIR}/mirror-git-repo"
+
+## Defaults
+JOBS_FILE="${SCRIPT_DIR}/jobs"
+PARALLEL=4
+RETRIES=1
+RETRY_DELAY=2
+LOCK_FILE="/tmp/mirror-multi.lock"
+LOG_DIR="${SCRIPT_DIR}/logs"
+MIRROR_SCRIPT="$DEFAULT_MIRROR_SCRIPT"
+FORWARD_DRY_RUN=0
+FORWARD_DEBUG=0
+FORWARD_VERBOSE=0
+RESUME_MODE=0
+CONFIG_FILE=""
+JOBS_FORMAT="text"
+FAIL_ON_ERROR=0
+LOG_RETENTION_DAYS=30
+LOCAL_ROOT="${MIRROR_LOCAL_ROOT:-}"
+
+RUN_LOG=""
+STATUS_DIR=""
+ERROR_LOG=""
+declare -A JOB_START_TIME
+declare -A JOB_ERRORS
+
+## Help menu
+function usage() {
+  cat <<'EOF'
+Usage:
+  mirror-multi [options]
+
+Runs mirror-git-repo entries in parallel with lockfile protection, retries, and logs.
+
+Options:
+  --jobs-file <path>       Path to jobs file. Default: ./jobs
+  --jobs-yaml <path>       Path to YAML-formatted jobs file (alternative to --jobs-file).
+  --config <path>          Config file for options (INI or YAML format).
+  --resume                 Skip jobs that already succeeded; only retry failed ones.
+  --parallel <n>           Max concurrent jobs. Default: 4
+  --retries <n>            Retry count after first failure. Default: 1
+  --retry-delay <secs>     Seconds to wait between retries. Default: 2
+  --lock-file <path>       flock lock file path. Default: /tmp/mirror-multi.lock
+  --log-dir <path>         Directory for run and per-job logs. Default: ./logs
+  --mirror-script <path>   Path to mirror-git-repo. Default: ./mirror-git-repo
+  --local-root <dir>       Local mirror root forwarded to mirror-git-repo.
+  --clean                  Remove old status and log files before running.
+  --log-retention-days <n> Auto-delete logs/status older than <n> days. Default: 30.
+  --fail-on-error          Exit non-zero if any job fails (strict mode).
+  --dry-run                Forward --dry-run to each mirror-git-repo invocation.
+  --debug                  Forward --debug to each mirror-git-repo invocation.
+  --verbose                Forward --verbose to each mirror-git-repo invocation.
+  -h, --help               Show help.
+
+Config file example (INI format):
+  [mirror-multi]
+  parallel=8
+  retries=3
+  retry-delay=5
+  log-retention-days=30
+  log-dir=./mirrors-logs
+  jobs-file=./my-jobs.txt
+  local-root=./repos
+
+Environment variables:
+  MIRROR_LOCAL_ROOT       Default local mirror root for mirror-git-repo.
+  MIRROR_DRY_RUN          Default dry-run mode for mirror-git-repo (0/1).
+  MIRROR_DEBUG            Default debug mode for mirror-git-repo (0/1).
+  MIRROR_VERBOSE          Default verbose mode for mirror-git-repo (0/1).
+  AUTH_MODE               Default auth mode for mirror-git-repo (ssh|https).
+  SSH_KEY_FILE            Default SSH private key file path.
+  SSH_KEY_ENV             Name of env var containing SSH private key text.
+  HTTPS_TOKEN             Default HTTPS bearer token value.
+  HTTPS_TOKEN_ENV         Name of env var containing HTTPS bearer token.
+
+Examples:
+  mirror-multi
+  mirror-multi --config git-mirror.conf --jobs-file jobs.yml
+  mirror-multi --jobs-yaml jobs.yml --parallel 8 --retries 2
+  mirror-multi --resume --log-retention-days 14
+  mirror-multi --clean --fail-on-error --verbose
+EOF
+}
+
+## Return formatted timestamp
+function ts() {
+  date +"%Y-%m-%d %H:%M:%S"
+}
+
+## Logging
+function log() {
+  local level="$1"
+  shift
+  local msg="$*"
+
+  printf '[%s] %s: %s\n' "$(ts)" "$level" "$msg" | tee -a "$RUN_LOG"
+}
+
+## Trim whitespace from string
+function trim() {
+  local s="$1"
+  s="${s#"${s%%[![:space:]]*}"}"
+  s="${s%"${s##*[![:space:]]}"}"
+  printf '%s\n' "$s"
+}
+
+## Ensure required program is installed
+function require_program() {
+  local bin="$1"
+
+  if ! command -v "$bin" >/dev/null 2>&1; then
+    printf 'ERROR: required program not found: %s\n' "$bin" >&2
+    exit 127
+  fi
+}
+
+## Ensure a value is an integer
+function require_int() {
+  local name="$1"
+  local value="$2"
+
+  [[ "$value" =~ ^[0-9]+$ ]] || {
+    printf 'ERROR: %s must be a non-negative integer, got: %s\n' "$name" "$value" >&2
+    exit 2
+  }
+}
+
+## Detect YAML or text file for jobs
+function auto_detect_jobs_format() {
+  ## Respect explicit YAML selection, otherwise detect common YAML signals.
+  if [[ "$JOBS_FORMAT" != "text" ]]; then
+    return
+  fi
+
+  if [[ "$JOBS_FILE" == *.yml || "$JOBS_FILE" == *.yaml ]]; then
+    JOBS_FORMAT="yaml"
+    return
+  fi
+
+  if grep -Eq '^[[:space:]]*jobs:[[:space:]]*$' "$JOBS_FILE"; then
+    JOBS_FORMAT="yaml"
+  fi
+}
+
+## Read script config from file
+function load_config_file() {
+  local config_file="$1"
+
+  [[ -f "$config_file" ]] || {
+    printf 'ERROR: config file not found: %s\n' "$config_file" >&2
+    exit 2
+  }
+
+  if [[ "$config_file" == *.yaml || "$config_file" == *.yml ]]; then
+    ## YAML config file
+    while IFS='=' read -r key value; do
+      key="$(trim "$key")"
+      value="$(trim "$value")"
+
+      [[ -z "$key" || "$key" == \#* ]] && continue
+      
+      case "$key" in
+      parallel)
+        [[ -z "$PARALLEL" || "$PARALLEL" == "4" ]] && PARALLEL="$value"
+        ;;
+      retries)
+        [[ -z "$RETRIES" || "$RETRIES" == "1" ]] && RETRIES="$value"
+        ;;
+      retry-delay)
+        [[ -z "$RETRY_DELAY" || "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
+        ;;
+      jobs-file)
+        [[ -z "$JOBS_FILE" || "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
+        ;;
+      jobs-yaml)
+        [[ -z "$JOBS_YAML" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
+        ;;
+      log-dir)
+        [[ -z "$LOG_DIR" || "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
+        ;;
+      log-retention-days)
+        [[ -z "$LOG_RETENTION_DAYS" || "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
+        ;;
+      lock-file)
+        [[ -z "$LOCK_FILE" || "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
+        ;;
+      mirror-script)
+        [[ -z "$MIRROR_SCRIPT" || "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
+        ;;
+      local-root | mirror-local-root)
+        [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
+        ;;
+      esac
+    done <"$config_file"
+
+  else
+    ## INI-style config file
+    while IFS='=' read -r key value; do
+      key="$(trim "$key")"
+      value="$(trim "$value")"
+
+      [[ -z "$key" || "$key" == \#* ]] && continue
+      [[ "$key" == \[* ]] && continue
+      
+      case "$key" in
+      parallel)
+        [[ "$PARALLEL" == "4" ]] && PARALLEL="$value"
+        ;;
+      retries)
+        [[ "$RETRIES" == "1" ]] && RETRIES="$value"
+        ;;
+      retry-delay)
+        [[ "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
+        ;;
+      jobs-file)
+        [[ "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
+        ;;
+      jobs-yaml)
+        [[ "$JOBS_FORMAT" == "text" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
+        ;;
+      log-dir)
+        [[ "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
+        ;;
+      log-retention-days)
+        [[ "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
+        ;;
+      lock-file)
+        [[ "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
+        ;;
+      mirror-script)
+        [[ "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
+        ;;
+      local-root | mirror-local-root)
+        [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
+        ;;
+      esac
+    done <"$config_file"
+  fi
+}
+
+## Detect failures for more informative logging
+function detect_error_type() {
+  local error_output="$1"
+
+  if echo "$error_output" | grep -qi "permission denied"; then
+    echo "permission"
+  elif echo "$error_output" | grep -qi "authentication\|unauthorized\|invalid.*credential\|ssh.*permission"; then
+    echo "auth"
+  elif echo "$error_output" | grep -qi "network\|connection\|timeout\|unreachable\|host not found\|name resolution"; then
+    echo "network"
+  elif echo "$error_output" | grep -qi "certificate\|ssl\|tls"; then
+    echo "ssl"
+  elif echo "$error_output" | grep -qi "not found\|no such\|does not exist"; then
+    echo "notfound"
+  else
+    echo "unknown"
+  fi
+}
+
+## If an error is resolve-able, say so
+function error_remediation_hint() {
+  local error_type="$1"
+
+  case "$error_type" in
+  permission)
+    echo "Check file/directory permissions on local or remote."
+    ;;
+  auth)
+    echo "Check SSH key, HTTPS token, or authentication credentials."
+    ;;
+  network)
+    echo "Check network connectivity and remote host availability."
+    ;;
+  ssl)
+    echo "Check SSL/TLS certificate validity or configure cert verification."
+    ;;
+  notfound)
+    echo "Check repository URL and ensure it exists."
+    ;;
+  *)
+    echo "Review full error log for details."
+    ;;
+  esac
+}
+
+## Parse CLI args
+function parse_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --jobs-file | --repos-file)
+      JOBS_FILE="${2:-}"
+      JOBS_FORMAT="text"
+      shift 2
+      ;;
+    --jobs-yaml)
+      JOBS_FILE="${2:-}"
+      JOBS_FORMAT="yaml"
+      shift 2
+      ;;
+    --config)
+      CONFIG_FILE="${2:-}"
+      shift 2
+      ;;
+    --resume)
+      RESUME_MODE=1
+      shift
+      ;;
+    --clean)
+      CLEAN_MODE=1
+      shift
+      ;;
+    --log-retention-days)
+      LOG_RETENTION_DAYS="${2:-}"
+      shift 2
+      ;;
+    --fail-on-error)
+      FAIL_ON_ERROR=1
+      shift
+      ;;
+    --parallel)
+      PARALLEL="${2:-}"
+      shift 2
+      ;;
+    --retries)
+      RETRIES="${2:-}"
+      shift 2
+      ;;
+    --retry-delay)
+      RETRY_DELAY="${2:-}"
+      shift 2
+      ;;
+    --lock-file)
+      LOCK_FILE="${2:-}"
+      shift 2
+      ;;
+    --log-dir)
+      LOG_DIR="${2:-}"
+      shift 2
+      ;;
+    --mirror-script)
+      MIRROR_SCRIPT="${2:-}"
+      shift 2
+      ;;
+    --local-root)
+      LOCAL_ROOT="${2:-}"
+      shift 2
+      ;;
+    --dry-run)
+      FORWARD_DRY_RUN=1
+      shift
+      ;;
+    --debug)
+      FORWARD_DEBUG=1
+      shift
+      ;;
+    --verbose)
+      FORWARD_VERBOSE=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      printf 'ERROR: unknown option: %s\n' "$1" >&2
+      usage >&2
+      exit 2
+      ;;
+    esac
+  done
+
+  ## Detect config file & load
+  if [[ -n "$CONFIG_FILE" ]]; then
+    load_config_file "$CONFIG_FILE"
+  fi
+
+  ## Validate inputs
+  require_int "parallel" "$PARALLEL"
+  require_int "retries" "$RETRIES"
+  require_int "retry-delay" "$RETRY_DELAY"
+  require_int "log-retention-days" "$LOG_RETENTION_DAYS"
+
+  [[ "$PARALLEL" -ge 1 ]] || {
+    printf 'ERROR: --parallel must be at least 1\n' >&2
+    exit 2
+  }
+
+  if [[ -d "$JOBS_FILE" ]]; then
+    JOBS_FILE="${JOBS_FILE%/}/jobs"
+  fi
+
+  [[ -f "$JOBS_FILE" ]] || {
+    printf 'ERROR: jobs file not found: %s\n' "$JOBS_FILE" >&2
+    exit 2
+  }
+
+  ## Detect jobs filetype
+  auto_detect_jobs_format
+
+  [[ -x "$MIRROR_SCRIPT" ]] || {
+    printf 'ERROR: mirror script not executable: %s\n' "$MIRROR_SCRIPT" >&2
+    exit 2
+  }
+}
+
+## Ensure all required programs are installed & dirs exist
+function ensure_runtime_requirements() {
+  require_program "flock"
+  require_program "git"
+  
+  if [[ "$JOBS_FORMAT" == "yaml" ]]; then
+    require_program "yq"
+  fi
+
+  mkdir -p "$LOG_DIR"
+  STATUS_DIR="${LOG_DIR}/status"
+  mkdir -p "$STATUS_DIR"
+
+  ## Set logging
+  RUN_LOG="${LOG_DIR}/mirror-multi-$(date +"%Y%m%d-%H%M%S").log"
+  ERROR_LOG="${LOG_DIR}/mirror-multi-$(date +"%Y%m%d-%H%M%S").errors"
+  : >"$RUN_LOG"
+  : >"$ERROR_LOG"
+
+  ## Do cleanup
+  if [[ "${CLEAN_MODE:-0}" == "1" ]]; then
+    log "INFO" "cleaning all previous run/job/status files"
+
+    find "$STATUS_DIR" -type f -name 'job-*.status' -delete 2>/dev/null || true
+    find "$LOG_DIR" -maxdepth 1 -type f \( -name 'mirror-multi-*.log' -o -name 'mirror-multi-*.errors' -o -name 'job-*.log' -o -name 'job-*.err' \) -delete 2>/dev/null || true
+
+    : >"$RUN_LOG"
+    : >"$ERROR_LOG"
+  fi
+
+  ## Automated retention cleanup keeps the log directory manageable over time.
+  find "$STATUS_DIR" -type f -name 'job-*.status' -mtime +"$LOG_RETENTION_DAYS" -delete 2>/dev/null || true
+  find "$LOG_DIR" -maxdepth 1 -type f \( -name 'mirror-multi-*.log' -o -name 'mirror-multi-*.errors' -o -name 'job-*.log' -o -name 'job-*.err' \) -mtime +"$LOG_RETENTION_DAYS" -delete 2>/dev/null || true
+
+  if [[ "$LOG_RETENTION_DAYS" -gt 0 ]]; then
+    log "INFO" "retention cleanup complete (older than ${LOG_RETENTION_DAYS}d)"
+  fi
+
+  local lock_dir
+  lock_dir="$(dirname -- "$LOCK_FILE")"
+  mkdir -p "$lock_dir"
+
+  exec 9>"$LOCK_FILE"
+  if ! flock -n 9; then
+    log "ERROR" "another mirror-multi run is active (lock: $LOCK_FILE)"
+    exit 1
+  fi
+}
+
+## Build git mirror command from lines in jobs file
+function build_command_from_line() {
+  local line="$1"
+
+  eval "set -- $line"
+  local -a args=("$@")
+
+  if [[ "${#args[@]}" -eq 0 ]]; then
+    return 1
+  fi
+
+  case "${args[0]}" in
+  mirror | sync | replicate)
+    ;;
+  *)
+    args=(mirror "${args[@]}")
+    ;;
+  esac
+
+  local -a cmd
+  cmd=("$MIRROR_SCRIPT" "${args[@]}")
+
+  if [[ "$FORWARD_DRY_RUN" == "1" ]]; then
+    cmd+=(--dry-run)
+  fi
+  if [[ "$FORWARD_DEBUG" == "1" ]]; then
+    cmd+=(--debug)
+  fi
+  if [[ "$FORWARD_VERBOSE" == "1" ]]; then
+    cmd+=(--verbose)
+  fi
+
+  printf '%q ' "${cmd[@]}"
+  printf '\n'
+}
+
+## Run mirror job
+function execute_job() {
+  local idx="$1"
+  local line="$2"
+  local status_file="$3"
+
+  local cmd_str
+  if ! cmd_str="$(build_command_from_line "$line")"; then
+    printf 'ERROR: job %s has no arguments\n' "$idx"
+    echo 2 >"$status_file"
+
+    return 2
+  fi
+
+  local max_attempts=$((RETRIES + 1))
+  local attempt=1
+  local rc=1
+  local job_start_time
+
+  job_start_time=$(date +%s)
+
+  ## Run jobs in loop, detect errors & log
+  while [[ "$attempt" -le "$max_attempts" ]]; do
+    printf '[%s] JOB %s attempt %d/%d\n' "$(ts)" "$idx" "$attempt" "$max_attempts"
+    printf '[%s] JOB %s cmd: %s\n' "$(ts)" "$idx" "$cmd_str"
+
+    if eval "$cmd_str" 2>"${LOG_DIR}/job-${idx}.err"; then
+      rc=0
+
+      printf '[%s] JOB %s success\n' "$(ts)" "$idx"
+      break
+    else
+      rc=$?
+    fi
+
+    printf '[%s] JOB %s failed with exit %d\n' "$(ts)" "$idx" "$rc"
+
+    if [[ -f "${LOG_DIR}/job-${idx}.err" ]]; then
+      local error_output
+
+      error_output="$(cat "${LOG_DIR}/job-${idx}.err")"
+
+      if [[ -n "$error_output" ]]; then
+        local error_type
+        error_type="$(detect_error_type "$error_output")"
+        local hint
+        hint="$(error_remediation_hint "$error_type")"
+
+        printf '[%s] JOB %s error type: %s\n' "$(ts)" "$idx" "$error_type"
+        printf '[%s] JOB %s hint: %s\n' "$(ts)" "$idx" "$hint"
+        {
+          echo "=== JOB $idx attempt $attempt ==="
+          echo "Error type: $error_type"
+          echo "Remediation: $hint"
+          echo "---"
+          echo "$error_output"
+          echo ""
+        } >>"$ERROR_LOG"
+      fi
+    fi
+
+    ## Retry jobs on failure
+    if [[ "$attempt" -lt "$max_attempts" ]]; then
+      printf '[%s] JOB %s retrying in %ss\n' "$(ts)" "$idx" "$RETRY_DELAY"
+      sleep "$RETRY_DELAY"
+    fi
+
+    attempt=$((attempt + 1))
+  done
+
+  local job_end_time
+  job_end_time=$(date +%s)
+  local duration=$((job_end_time - job_start_time))
+  
+  echo "$rc" >"$status_file"
+  printf '[%s] JOB %s duration: %ds\n' "$(ts)" "$idx" "$duration"
+  
+  return "$rc"
+}
+
+## Execute a single job
+function launch_job() {
+  local idx="$1"
+  local line="$2"
+
+  local job_log="${LOG_DIR}/job-${idx}.log"
+  local status_file="${STATUS_DIR}/job-${idx}.status"
+
+  (
+    execute_job "$idx" "$line" "$status_file"
+  ) 2>&1 | tee -a "$job_log" "$RUN_LOG" &
+}
+
+## Read all jobs from yaml file
+function read_jobs_from_yaml() {
+  local yaml_file="$1"
+
+  if ! command -v yq >/dev/null 2>&1; then
+    printf 'ERROR: yq not found but YAML format requested\n' >&2
+    exit 127
+  fi
+
+  ## Check if this is simplified format (has src/dest) or old format (has cmd)
+  local has_cmd
+  has_cmd="$(yq eval '.jobs[0].cmd' "$yaml_file" 2>/dev/null)" || true
+  
+  if [[ -n "$has_cmd" && "$has_cmd" != "null" ]]; then
+    ## Old format with explicit cmd strings
+    yq eval '.jobs[].cmd' "$yaml_file" 2>/dev/null || {
+      printf 'ERROR: failed to parse YAML file: %s\n' "$yaml_file" >&2
+      exit 2
+    }
+
+  else
+    ## Simplified format with src/dest - convert to commands
+    local job_count
+
+    job_count="$(yq eval '.jobs | length' "$yaml_file" 2>/dev/null)" || {
+      printf 'ERROR: failed to parse YAML file: %s\n' "$yaml_file" >&2
+      exit 2
+    }
+
+    [[ "$job_count" =~ ^[0-9]+$ ]] || {
+      printf 'ERROR: invalid YAML jobs format in %s (jobs must be an array)\n' "$yaml_file" >&2
+      exit 2
+    }
+    [[ "$job_count" -gt 0 ]] || {
+      printf 'ERROR: YAML jobs list is empty in %s\n' "$yaml_file" >&2
+      exit 2
+    }
+    
+    local i
+
+    for ((i = 0; i < job_count; i++)); do
+      local src
+      src="$(yq eval ".jobs[$i].src" "$yaml_file")"
+
+      if [[ -z "$src" || "$src" == "null" ]]; then
+        printf 'ERROR: YAML job %d is missing required field: src\n' "$((i + 1))" >&2
+        exit 2
+      fi
+
+      local dest_count
+
+      dest_count="$(yq eval ".jobs[$i].dest | length" "$yaml_file" 2>/dev/null)"
+      [[ "$dest_count" =~ ^[0-9]+$ ]] || {
+        printf 'ERROR: YAML job %d has invalid dest (must be an array)\n' "$((i + 1))" >&2
+        exit 2
+      }
+      [[ "$dest_count" -gt 0 ]] || {
+        printf 'ERROR: YAML job %d must include at least one destination in dest\n' "$((i + 1))" >&2
+        exit 2
+      }
+      
+      ## Build command from simplified spec, extract destinations as array
+      build_command_from_job_spec "$yaml_file" "$i" "$src"
+    done
+  fi
+}
+
+## Build clone command from jobs file
+function build_command_from_job_spec() {
+  local yaml_file="$1"
+  local idx="$2"
+  local src="$3"
+
+  ## Parse destinations directly from YAML using yq
+  local -a dests=()
+  local has_local=0
+  local remote_count=0
+  
+  ## Extract each destination from the dest YAML array using yq
+  local dest_line
+
+  while IFS= read -r dest_line; do
+    ## yq output is clean, no need to strip quotes
+    if [[ -z "$dest_line" || "$dest_line" == "null" ]]; then
+      printf 'ERROR: YAML job %d has an empty/null destination entry\n' "$((idx + 1))" >&2
+      return 1
+    fi
+    
+    if [[ "$dest_line" == "local" ]]; then
+      has_local=1
+    else
+      dests+=("$dest_line")
+      remote_count=$((remote_count + 1))
+    fi
+  done < <(yq eval ".jobs[$idx].dest[]" "$yaml_file" 2>/dev/null)
+
+  ## Infer operation and build command
+  local cmd=""
+  
+  if [[ "$has_local" == "1" ]]; then
+    ## Local mirror, optionally with remote destinations
+    cmd="mirror $src"
+
+    if [[ "$remote_count" -gt 0 ]]; then
+      local dest
+
+      for dest in "${dests[@]}"; do
+        cmd="$cmd --dest $dest"
+      done
+    fi
+
+  elif [[ "$remote_count" -eq 1 ]]; then
+    ## Single remote destination - sync
+    cmd="sync $src --dest ${dests[0]}"
+
+  elif [[ "$remote_count" -gt 1 ]]; then
+    ## Multiple remote destinations - replicate
+    cmd="replicate $src ${dests[*]}"
+  else
+    ## No destinations
+    printf 'ERROR: YAML job %d has no valid destinations\n' "$((idx + 1))" >&2
+    return 1
+  fi
+
+  printf '%s\n' "$cmd"
+}
+
+## Main job execution entrypoint
+function run_jobs() {
+  local total=0
+  local raw_line
+  
+  ## Select appropriate job source based on format
+  local job_source
+
+  if [[ "$JOBS_FORMAT" == "yaml" ]]; then
+    job_source="$(read_jobs_from_yaml "$JOBS_FILE")"
+  else
+    job_source="$(cat "$JOBS_FILE")"
+  fi
+
+  while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
+    local line
+    line="$(trim "$raw_line")"
+
+    if [[ -z "$line" || "$line" == \#* ]]; then
+      continue
+    fi
+
+    total=$((total + 1))
+    local status_file="${STATUS_DIR}/job-${total}.status"
+
+    ## Check resume mode: skip if job already succeeded
+    if [[ "$RESUME_MODE" == "1" && -f "$status_file" ]]; then
+      local prev_rc
+      prev_rc="$(cat "$status_file")"
+
+      if [[ "$prev_rc" == "0" ]]; then
+        log "INFO" "skipping job ${total} (already succeeded)"
+        continue
+      fi
+    fi
+
+    log "INFO" "queueing job ${total}"
+    launch_job "$total" "$line"
+
+    while [[ "$(jobs -pr | wc -l | tr -d ' ')" -ge "$PARALLEL" ]]; do
+      wait -n || true
+    done
+  done <<<"$job_source"
+
+  while [[ "$(jobs -pr | wc -l | tr -d ' ')" -gt 0 ]]; do
+    wait -n || true
+  done
+
+  local succeeded=0
+  local failed=0
+  local skipped=0
+  local -a failed_jobs=()
+  local i
+
+  for ((i = 1; i <= total; i++)); do
+    local status_file="${STATUS_DIR}/job-${i}.status"
+
+    if [[ ! -f "$status_file" ]]; then
+      failed=$((failed + 1))
+      failed_jobs+=("$i")
+      continue
+    fi
+
+    local rc
+    rc="$(cat "$status_file")"
+
+    if [[ "$rc" == "0" ]]; then
+      succeeded=$((succeeded + 1))
+    else
+      failed=$((failed + 1))
+      failed_jobs+=("$i")
+    fi
+  done
+
+  log "INFO" "summary: total=${total} succeeded=${succeeded} failed=${failed} skipped=${skipped}"
+  log "INFO" "run log: $RUN_LOG"
+  log "INFO" "job logs: ${LOG_DIR}/job-<n>.log"
+  
+  if [[ "$failed" -gt 0 ]]; then
+    log "INFO" "error log: $ERROR_LOG"
+    log "ERROR" "failed jobs: ${failed_jobs[*]}"
+
+    if [[ "$FAIL_ON_ERROR" == "1" ]]; then
+      return 1
+    fi
+
+    log "INFO" "continuing despite failures (non-strict mode)"
+    return 0
+  fi
+
+  return 0
+}
+
+## Entrypoint
+function main() {
+  parse_args "$@"
+  ensure_runtime_requirements
+
+  log "INFO" "starting mirror-multi"
+  log "INFO" "jobs file: $JOBS_FILE (format: $JOBS_FORMAT)"
+  log "INFO" "parallel=${PARALLEL} retries=${RETRIES} retry-delay=${RETRY_DELAY}s"
+  log "INFO" "mirror script: $MIRROR_SCRIPT"
+  if [[ -n "$LOCAL_ROOT" ]]; then
+    export MIRROR_LOCAL_ROOT="$LOCAL_ROOT"
+    log "INFO" "local mirror root: $LOCAL_ROOT"
+  fi
+  [[ "$RESUME_MODE" == "1" ]] && log "INFO" "resume mode enabled (skipping succeeded jobs)"
+  [[ "$FAIL_ON_ERROR" == "1" ]] && log "INFO" "strict mode enabled (fail on first run summary with failures)"
+
+  run_jobs
+}
+
+main "$@"
