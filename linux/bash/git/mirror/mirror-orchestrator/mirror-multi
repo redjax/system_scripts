@@ -486,7 +486,7 @@ function build_command_from_line() {
   if [[ "$FORWARD_DRY_RUN" == "1" ]]; then
     out_cmd+=(--dry-run)
   fi
-  
+
   if [[ "$FORWARD_DEBUG" == "1" ]]; then
     out_cmd+=(--debug)
   fi
@@ -520,7 +520,9 @@ function execute_job() {
   ## Run jobs in loop, detect errors & log
   while [[ "$attempt" -le "$max_attempts" ]]; do
     printf '[%s] JOB %s attempt %d/%d\n' "$(ts)" "$idx" "$attempt" "$max_attempts"
-    printf '[%s] JOB %s cmd: %q\n' "$(ts)" "$idx" "${cmd[@]}"
+    printf '[%s] JOB %s cmd:' "$(ts)" "$idx"
+    printf ' %q' "${cmd[@]}"
+    printf '\n'
 
     if "${cmd[@]}" 2>"${LOG_DIR}/job-${idx}.err"; then
       rc=0
@@ -598,7 +600,7 @@ function read_jobs_from_yaml() {
     exit 127
   fi
 
-  ## New format: src + local + push
+  ## Read src, local, push keys
   local job_count
   job_count="$(yq eval '.jobs | length' "$yaml_file" 2>/dev/null)" || {
     printf 'ERROR: failed to parse YAML file: %s\n' "$yaml_file" >&2
@@ -642,8 +644,13 @@ function read_jobs_from_yaml() {
       exit 2
     fi
 
-    ## Build command from simplified spec, extract destinations as array
-    build_command_from_job_spec "$yaml_file" "$i" "$src" "$local_flag"
+    local -a cmd=()
+    if ! build_command_from_job_spec "$yaml_file" "$i" "$src" "$local_flag" cmd; then
+      return 1
+    fi
+
+    printf '%q ' "${cmd[@]}"
+    printf '\n'
   done
 }
 
@@ -653,9 +660,8 @@ function build_command_from_job_spec() {
   local idx="$2"
   local src="$3"
   local local_flag="$4"
-  local cmd_array_name="$5"
+  local -n out_cmd="$5"
 
-  ## Parse push destinations directly from YAML using yq
   local -a push_dests=()
   local push_line
 
@@ -668,33 +674,26 @@ function build_command_from_job_spec() {
     push_dests+=("$push_line")
   done < <(yq eval ".jobs[$idx].push[]" "$yaml_file" 2>/dev/null || true)
 
-  ## Infer operation and build command
-  local -a cmd=()
-
   if [[ "$local_flag" == "true" && "${#push_dests[@]}" -eq 0 ]]; then
-    ## Local mirror only
-    cmd=("$MIRROR_SCRIPT" "mirror" "$src")
-
+    out_cmd=("$MIRROR_SCRIPT" "mirror" "$src")
   elif [[ "$local_flag" == "true" && "${#push_dests[@]}" -gt 0 ]]; then
-    ## Local mirror + push destinations
-    cmd=("$MIRROR_SCRIPT" "sync" "$src")
+    out_cmd=("$MIRROR_SCRIPT" "sync" "$src")
 
     local dest
+
     for dest in "${push_dests[@]}"; do
-      cmd+=("--dest" "$dest")
+      out_cmd+=("--dest" "$dest")
     done
 
   elif [[ "$local_flag" == "false" && "${#push_dests[@]}" -eq 1 ]]; then
-    ## Push-only to a single remote
-    cmd=("$MIRROR_SCRIPT" "replicate" "$src" "${push_dests[0]}")
-
+    out_cmd=("$MIRROR_SCRIPT" "replicate" "$src" "${push_dests[0]}")
   elif [[ "$local_flag" == "false" && "${#push_dests[@]}" -gt 1 ]]; then
-    ## Push-only to multiple remotes
-    cmd=("$MIRROR_SCRIPT" "sync" "$src")
+    out_cmd=("$MIRROR_SCRIPT" "sync" "$src")
 
     local dest
+
     for dest in "${push_dests[@]}"; do
-      cmd+=("--dest" "$dest")
+      out_cmd+=("--dest" "$dest")
     done
 
   else
@@ -702,9 +701,6 @@ function build_command_from_job_spec() {
     printf 'ERROR: YAML job %d has no valid operation\n' "$((idx + 1))" >&2
     return 1
   fi
-
-  printf -v "$cmd_array_name" '%s' ""
-  eval "$cmd_array_name=(\"\${cmd[@]}\")"
 }
 
 ## Main job execution entrypoint
@@ -809,10 +805,12 @@ function main() {
   log "INFO" "jobs file: $JOBS_FILE (format: $JOBS_FORMAT)"
   log "INFO" "parallel=${PARALLEL} retries=${RETRIES} retry-delay=${RETRY_DELAY}s"
   log "INFO" "mirror script: $MIRROR_SCRIPT"
+
   if [[ -n "$LOCAL_ROOT" ]]; then
     export MIRROR_LOCAL_ROOT="$LOCAL_ROOT"
     log "INFO" "local mirror root: $LOCAL_ROOT"
   fi
+
   [[ "$RESUME_MODE" == "1" ]] && log "INFO" "resume mode enabled (skipping succeeded jobs)"
   [[ "$FAIL_ON_ERROR" == "1" ]] && log "INFO" "strict mode enabled (fail on first run summary with failures)"
 
