@@ -9,12 +9,13 @@ There are 2 main entrypoint scripts:
 
 ## Requirements
 
-- bash
-- git
-- flock (`util-linux`)
-- yq (YAML jobs only)
+- Bash 4.3+
+- `git`
+- `flock` (`apt/dnf/yum install util-linux`)
+- [`yq`](https://github.com/mikefarah/yq)
+  - **NOTE**: The package included in your repositories might be out of date. It's best to install [directly from Github](https://github.com/mikefarah/yq#install).
 
-To install/verify required tools (especially the correct Mike Farah `yq`), run:
+To install/verify required tools, run:
 
 ```bash
 ./install-requirements.sh
