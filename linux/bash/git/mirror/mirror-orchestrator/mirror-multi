@@ -654,6 +654,7 @@ function build_command_from_job_spec() {
   local idx="$2"
   local src="$3"
   local local_flag="$4"
+  local cmd_array_name="$5"
 
   ## Parse push destinations directly from YAML using yq
   local -a push_dests=()
@@ -703,8 +704,8 @@ function build_command_from_job_spec() {
     return 1
   fi
 
-  printf '%q ' "${cmd[@]}"
-  printf '\n'
+  printf -v "$cmd_array_name" '%s' ""
+  eval "$cmd_array_name=(\"\${cmd[@]}\")"
 }
 
 ## Main job execution entrypoint
