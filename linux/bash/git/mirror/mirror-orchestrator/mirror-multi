@@ -33,6 +33,8 @@ LOCAL_ROOT="${MIRROR_LOCAL_ROOT:-}"
 RUN_LOG=""
 STATUS_DIR=""
 ERROR_LOG=""
+declare -A JOB_CMDS
+declare -A JOB_START_TIME
 
 ## Help menu
 function usage() {
@@ -462,6 +464,124 @@ function ensure_runtime_requirements() {
   fi
 }
 
+## Build command for a single job from YAML
+function build_command_from_job_spec() {
+  local yaml_file="$1"
+  local idx="$2"
+  local src="$3"
+  local local_flag="$4"
+  local -n out_cmd="$5"
+
+  local -a push_dests=()
+  local push_line
+
+  while IFS= read -r push_line; do
+    if [[ -z "$push_line" || "$push_line" == "null" ]]; then
+      printf 'ERROR: YAML job %d has an empty/null push entry\n' "$((idx + 1))" >&2
+      return 1
+    fi
+    push_dests+=("$push_line")
+  done < <(yq eval ".jobs[$idx].push[]" "$yaml_file" 2>/dev/null || true)
+
+  if [[ "$local_flag" == "true" && "${#push_dests[@]}" -eq 0 ]]; then
+    out_cmd=("$MIRROR_SCRIPT" "mirror" "$src")
+  elif [[ "$local_flag" == "true" && "${#push_dests[@]}" -gt 0 ]]; then
+    out_cmd=("$MIRROR_SCRIPT" "sync" "$src")
+    local dest
+    for dest in "${push_dests[@]}"; do
+      out_cmd+=("--dest" "$dest")
+    done
+  elif [[ "$local_flag" == "false" && "${#push_dests[@]}" -eq 1 ]]; then
+    out_cmd=("$MIRROR_SCRIPT" "replicate" "$src" "${push_dests[0]}")
+  elif [[ "$local_flag" == "false" && "${#push_dests[@]}" -gt 1 ]]; then
+    out_cmd=("$MIRROR_SCRIPT" "sync" "$src")
+    local dest
+    for dest in "${push_dests[@]}"; do
+      out_cmd+=("--dest" "$dest")
+    done
+  else
+    printf 'ERROR: YAML job %d has no valid operation\n' "$((idx + 1))" >&2
+    return 1
+  fi
+}
+
+## Execute a single job
+function launch_job() {
+  local idx="$1"
+  local -n job_cmd="$2"
+
+  local job_log="${LOG_DIR}/job-${idx}.log"
+  local status_file="${STATUS_DIR}/job-${idx}.status"
+
+  JOB_START_TIME["$idx"]="$(date +%s)"
+  JOB_CMDS["$idx"]="${job_cmd[*]}"
+
+  (
+    "${job_cmd[@]}"
+    echo $? >"$status_file"
+  ) > >(tee -a "$job_log" "$RUN_LOG") 2> >(tee -a "$job_log" "$RUN_LOG" >&2) &
+}
+
+## Read all jobs from yaml file
+function read_jobs_from_yaml() {
+  local yaml_file="$1"
+
+  if ! command -v yq >/dev/null 2>&1; then
+    printf 'ERROR: yq not found but YAML format requested\n' >&2
+    exit 127
+  fi
+
+  local job_count
+  job_count="$(yq eval '.jobs | length' "$yaml_file" 2>/dev/null)" || {
+    printf 'ERROR: failed to parse YAML file: %s\n' "$yaml_file" >&2
+    exit 2
+  }
+
+  [[ "$job_count" =~ ^[0-9]+$ ]] || {
+    printf 'ERROR: invalid YAML jobs format in %s (jobs must be an array)\n' "$yaml_file" >&2
+    exit 2
+  }
+  [[ "$job_count" -gt 0 ]] || {
+    printf 'ERROR: YAML jobs list is empty in %s\n' "$yaml_file" >&2
+    exit 2
+  }
+
+  local i
+  for ((i = 0; i < job_count; i++)); do
+    local src local_flag push_count
+    src="$(yq eval ".jobs[$i].src" "$yaml_file")"
+    local_flag="$(yq eval ".jobs[$i].local // false" "$yaml_file")"
+    push_count="$(yq eval ".jobs[$i].push | length" "$yaml_file" 2>/dev/null || echo 0)"
+
+    if [[ -z "$src" || "$src" == "null" ]]; then
+      printf 'ERROR: YAML job %d is missing required field: src\n' "$((i + 1))" >&2
+      exit 2
+    fi
+
+    if [[ "$local_flag" != "true" && "$local_flag" != "false" ]]; then
+      printf 'ERROR: YAML job %d has invalid local value (must be true or false)\n' "$((i + 1))" >&2
+      exit 2
+    fi
+
+    [[ "$push_count" =~ ^[0-9]+$ ]] || {
+      printf 'ERROR: YAML job %d has invalid push (must be an array)\n' "$((i + 1))" >&2
+      exit 2
+    }
+
+    if [[ "$local_flag" == "false" && "$push_count" -eq 0 ]]; then
+      printf 'ERROR: YAML job %d must have local: true or at least one push destination\n' "$((i + 1))" >&2
+      exit 2
+    fi
+
+    local -a cmd=()
+    if ! build_command_from_job_spec "$yaml_file" "$i" "$src" "$local_flag" cmd; then
+      return 1
+    fi
+
+    printf '%s\n' "$(declare -p cmd)"
+  done
+}
+
 ## Build git mirror command from lines in jobs file
 function build_command_from_line() {
   local line="$1"
@@ -578,137 +698,10 @@ function execute_job() {
   return "$rc"
 }
 
-## Execute a single job
-function launch_job() {
-  local idx="$1"
-  local line="$2"
-
-  local job_log="${LOG_DIR}/job-${idx}.log"
-  local status_file="${STATUS_DIR}/job-${idx}.status"
-
-  (
-    execute_job "$idx" "$line" "$status_file"
-  ) 2>&1 | tee -a "$job_log" "$RUN_LOG" &
-}
-
-## Read all jobs from yaml file
-function read_jobs_from_yaml() {
-  local yaml_file="$1"
-
-  if ! command -v yq >/dev/null 2>&1; then
-    printf 'ERROR: yq not found but YAML format requested\n' >&2
-    exit 127
-  fi
-
-  ## Read src, local, push keys
-  local job_count
-  job_count="$(yq eval '.jobs | length' "$yaml_file" 2>/dev/null)" || {
-    printf 'ERROR: failed to parse YAML file: %s\n' "$yaml_file" >&2
-    exit 2
-  }
-
-  [[ "$job_count" =~ ^[0-9]+$ ]] || {
-    printf 'ERROR: invalid YAML jobs format in %s (jobs must be an array)\n' "$yaml_file" >&2
-    exit 2
-  }
-  [[ "$job_count" -gt 0 ]] || {
-    printf 'ERROR: YAML jobs list is empty in %s\n' "$yaml_file" >&2
-    exit 2
-  }
-
-  local i
-
-  for ((i = 0; i < job_count; i++)); do
-    local src local_flag push_count
-    src="$(yq eval ".jobs[$i].src" "$yaml_file")"
-    local_flag="$(yq eval ".jobs[$i].local // false" "$yaml_file")"
-    push_count="$(yq eval ".jobs[$i].push | length" "$yaml_file" 2>/dev/null || echo 0)"
-
-    if [[ -z "$src" || "$src" == "null" ]]; then
-      printf 'ERROR: YAML job %d is missing required field: src\n' "$((i + 1))" >&2
-      exit 2
-    fi
-
-    if [[ "$local_flag" != "true" && "$local_flag" != "false" ]]; then
-      printf 'ERROR: YAML job %d has invalid local value (must be true or false)\n' "$((i + 1))" >&2
-      exit 2
-    fi
-
-    [[ "$push_count" =~ ^[0-9]+$ ]] || {
-      printf 'ERROR: YAML job %d has invalid push (must be an array)\n' "$((i + 1))" >&2
-      exit 2
-    }
-
-    if [[ "$local_flag" == "false" && "$push_count" -eq 0 ]]; then
-      printf 'ERROR: YAML job %d must have local: true or at least one push destination\n' "$((i + 1))" >&2
-      exit 2
-    fi
-
-    local -a cmd=()
-    if ! build_command_from_job_spec "$yaml_file" "$i" "$src" "$local_flag" cmd; then
-      return 1
-    fi
-
-    printf '%q ' "${cmd[@]}"
-    printf '\n'
-  done
-}
-
-## Build clone/push command from jobs file
-function build_command_from_job_spec() {
-  local yaml_file="$1"
-  local idx="$2"
-  local src="$3"
-  local local_flag="$4"
-  local -n out_cmd="$5"
-
-  local -a push_dests=()
-  local push_line
-
-  while IFS= read -r push_line; do
-    if [[ -z "$push_line" || "$push_line" == "null" ]]; then
-      printf 'ERROR: YAML job %d has an empty/null push entry\n' "$((idx + 1))" >&2
-      return 1
-    fi
-
-    push_dests+=("$push_line")
-  done < <(yq eval ".jobs[$idx].push[]" "$yaml_file" 2>/dev/null || true)
-
-  if [[ "$local_flag" == "true" && "${#push_dests[@]}" -eq 0 ]]; then
-    out_cmd=("$MIRROR_SCRIPT" "mirror" "$src")
-  elif [[ "$local_flag" == "true" && "${#push_dests[@]}" -gt 0 ]]; then
-    out_cmd=("$MIRROR_SCRIPT" "sync" "$src")
-
-    local dest
-
-    for dest in "${push_dests[@]}"; do
-      out_cmd+=("--dest" "$dest")
-    done
-
-  elif [[ "$local_flag" == "false" && "${#push_dests[@]}" -eq 1 ]]; then
-    out_cmd=("$MIRROR_SCRIPT" "replicate" "$src" "${push_dests[0]}")
-  elif [[ "$local_flag" == "false" && "${#push_dests[@]}" -gt 1 ]]; then
-    out_cmd=("$MIRROR_SCRIPT" "sync" "$src")
-
-    local dest
-
-    for dest in "${push_dests[@]}"; do
-      out_cmd+=("--dest" "$dest")
-    done
-
-  else
-    ## No destinations
-    printf 'ERROR: YAML job %d has no valid operation\n' "$((idx + 1))" >&2
-    return 1
-  fi
-}
-
 ## Main job execution entrypoint
 function run_jobs() {
   local total=0
   local raw_line
-
-  ## Select appropriate job source based on format
   local job_source
 
   if [[ "$JOBS_FORMAT" == "yaml" ]]; then
@@ -740,7 +733,19 @@ function run_jobs() {
     fi
 
     log "INFO" "queueing job ${total}"
-    launch_job "$total" "$line"
+
+    if [[ "$JOBS_FORMAT" == "yaml" ]]; then
+      local -a job_cmd=()
+      if ! build_command_from_job_spec "$JOBS_FILE" "$((total - 1))" "$(yq eval ".jobs[$((total - 1))].src" "$JOBS_FILE")" "$(yq eval ".jobs[$((total - 1))].local // false" "$JOBS_FILE")" job_cmd; then
+        return 1
+      fi
+
+      launch_job "$total" job_cmd
+    else
+      local -a job_cmd=()
+      build_command_from_line "$line" job_cmd
+      launch_job "$total" job_cmd
+    fi
 
     while [[ "$(jobs -pr | wc -l | tr -d ' ')" -ge "$PARALLEL" ]]; do
       wait -n || true
