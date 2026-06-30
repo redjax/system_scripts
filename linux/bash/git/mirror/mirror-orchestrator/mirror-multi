@@ -465,6 +465,7 @@ function ensure_runtime_requirements() {
 ## Build git mirror command from lines in jobs file
 function build_command_from_line() {
   local line="$1"
+  local cmd_array_name="$2"
 
   eval "set -- $line"
   local -a args=("$@")
@@ -493,8 +494,8 @@ function build_command_from_line() {
     cmd+=(--verbose)
   fi
 
-  printf '%q ' "${cmd[@]}"
-  printf '\n'
+  printf -v "$cmd_array_name" '%s' ""
+  eval "$cmd_array_name=(\"\${cmd[@]}\")"
 }
 
 ## Run mirror job
