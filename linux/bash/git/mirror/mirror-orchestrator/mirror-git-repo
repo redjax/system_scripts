@@ -292,15 +292,15 @@ function main() {
   trap auth_cleanup EXIT
 
   case "$MODE" in
-  mirror)
-    mirror_run "$SOURCE_URL"
-    ;;
-  sync)
-    sync_run "$SOURCE_URL" "${DESTS[@]}"
-    ;;
-  replicate)
-    replicate_run "$SOURCE_URL" "$TARGET_URL"
-    ;;
+    mirror)
+      mirror_run "$SOURCE_URL"
+      ;;
+    sync)
+      sync_run "$SOURCE_URL" "${DESTS[@]}"
+      ;;
+    replicate)
+      replicate_run "$SOURCE_URL" "$TARGET_URL"
+      ;;
   esac
 }
 
