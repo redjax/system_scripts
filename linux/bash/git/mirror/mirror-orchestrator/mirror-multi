@@ -503,8 +503,8 @@ function execute_job() {
   local line="$2"
   local status_file="$3"
 
-  local cmd_str
-  if ! cmd_str="$(build_command_from_line "$line")"; then
+  local -a cmd=()
+  if ! build_command_from_line "$line" cmd; then
     printf 'ERROR: job %s has no arguments\n' "$idx"
     echo 2 >"$status_file"
 
@@ -521,9 +521,9 @@ function execute_job() {
   ## Run jobs in loop, detect errors & log
   while [[ "$attempt" -le "$max_attempts" ]]; do
     printf '[%s] JOB %s attempt %d/%d\n' "$(ts)" "$idx" "$attempt" "$max_attempts"
-    printf '[%s] JOB %s cmd: %s\n' "$(ts)" "$idx" "$cmd_str"
+    printf '[%s] JOB %s cmd: %q\n' "$(ts)" "$idx" "${cmd[@]}"
 
-    if eval "$cmd_str" 2>"${LOG_DIR}/job-${idx}.err"; then
+    if "${cmd[@]}" 2>"${LOG_DIR}/job-${idx}.err"; then
       rc=0
 
       printf '[%s] JOB %s success\n' "$(ts)" "$idx"
