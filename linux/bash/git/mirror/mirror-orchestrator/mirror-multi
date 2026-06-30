@@ -42,12 +42,11 @@ function usage() {
 Usage:
   mirror-multi [options]
 
-Runs mirror-git-repo entries in parallel with lockfile protection, retries, and logs.
+Runs mirror-git-repo entries from a YAML jobs file in parallel with lockfile protection, retries, and logs.
 
 Options:
-  --jobs-file <path>       Path to jobs file. Default: ./jobs
-  --jobs-yaml <path>       Path to YAML-formatted jobs file (alternative to --jobs-file).
-  --config <path>          Config file for options (INI or YAML format).
+  --jobs-yaml <path>       Path to YAML-formatted jobs file. Default: ./jobs.yaml
+  --config <path>          Config file for options (YAML format).
   --resume                 Skip jobs that already succeeded; only retry failed ones.
   --parallel <n>           Max concurrent jobs. Default: 4
   --retries <n>            Retry count after first failure. Default: 1
@@ -64,15 +63,14 @@ Options:
   --verbose                Forward --verbose to each mirror-git-repo invocation.
   -h, --help               Show help.
 
-Config file example (INI format):
-  [mirror-multi]
-  parallel=8
-  retries=3
-  retry-delay=5
-  log-retention-days=30
-  log-dir=./mirrors-logs
-  jobs-file=./my-jobs.yaml
-  local-root=./repos
+Config file example (YAML format):
+  parallel: 8
+  retries: 3
+  retry-delay: 5
+  log-retention-days: 30
+  log-dir: ./mirrors-logs
+  jobs-yaml: ./mirror-repos.yaml
+  local-root: ./repos
 
 Environment variables:
   MIRROR_LOCAL_ROOT       Default local mirror root for mirror-git-repo.
@@ -86,9 +84,9 @@ Environment variables:
   HTTPS_TOKEN_ENV         Name of env var containing HTTPS bearer token.
 
 Examples:
-  mirror-multi
-  mirror-multi --config git-mirror.conf --jobs-file jobs.yml
-  mirror-multi --jobs-yaml jobs.yml --parallel 8 --retries 2
+  mirror-multi --jobs-yaml mirror-repos.yaml
+  mirror-multi --config git-mirror.yaml --jobs-yaml jobs.yaml
+  mirror-multi --jobs-yaml jobs.yaml --parallel 8 --retries 2
   mirror-multi --resume --log-retention-days 14
   mirror-multi --clean --fail-on-error --verbose
 EOF
