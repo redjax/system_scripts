@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-##########################################################################
+########################################################################
 # Mirror a Git repository from many remotes.                           #
-#                                                                    #
-# Can create a local mirror/archive, or mirror to one or more remotes,   #
-# i.e. github to gitlab, codeberg to github and gitlab, etc.            #
-#                                                                    #
-# The script should work with any Git-compliant forge. It can clone     #
-# public and private repositories over HTTPS or SSH. For SSH cloning,   #
+#                                                                      #
+# Can create a local mirror/archive, or mirror to one or more remotes, #
+# i.e. github to gitlab, codeberg to github and gitlab, etc.           #
+#                                                                      #
+# The script should work with any Git-compliant forge. It can clone    #
+# public and private repositories over HTTPS or SSH. For SSH cloning,  #
 # the script uses the host's SSH agent by default.                     #
-#                                                                    #
+#                                                                      #
 # Run with -h or --help to see usage and options.                      #
-##########################################################################
+########################################################################
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/lib"
