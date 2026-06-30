@@ -361,6 +361,43 @@ function parse_args() {
   }
 }
 
+## Print job command log messages
+function job_label_from_cmd() {
+  local -n cmd_ref="$1"
+
+  local mode="${cmd_ref[1]:-}"
+  local src="${cmd_ref[2]:-}"
+  local label=""
+
+  case "$mode" in
+  mirror)
+    label="mirror ${src}"
+    ;;
+  replicate)
+    label="replicate ${src} -> ${cmd_ref[3]:-}"
+    ;;
+  sync)
+    label="sync ${src}"
+    local dests=()
+    local i
+    for ((i = 3; i < ${#cmd_ref[@]}; i++)); do
+      if [[ "${cmd_ref[$i]}" == "--dest" && $((i + 1)) -lt ${#cmd_ref[@]} ]]; then
+        dests+=("${cmd_ref[$((i + 1))]}")
+        i=$((i + 1))
+      fi
+    done
+    if [[ "${#dests[@]}" -gt 0 ]]; then
+      label+=" -> ${dests[*]}"
+    fi
+    ;;
+  *)
+    label="${mode} ${src}"
+    ;;
+  esac
+
+  printf '%s\n' "$label"
+}
+
 ## Ensure all required programs are installed & dirs exist
 function ensure_runtime_requirements() {
   require_program "flock"
@@ -494,9 +531,13 @@ function launch_job() {
 
   local job_log="${LOG_DIR}/job-${idx}.log"
   local status_file="${STATUS_DIR}/job-${idx}.status"
+  local label
+  label="$(job_label_from_cmd "$cmd_name")"
 
   JOB_START_TIME["$idx"]="$(date +%s)"
   JOB_CMDS["$idx"]="${cmd_ref[*]}"
+
+  log "INFO" "job ${idx}: ${label}"
 
   (
     if "${cmd_ref[@]}"; then

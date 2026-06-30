@@ -74,7 +74,7 @@ function clone_or_update() {
   local path="$2"
 
   if [[ -d "$path" ]]; then
-    info "Updating mirror"
+    info "updating mirror for ${url} at ${path}"
 
     if [[ -n "${GIT_HTTP_EXTRA_HEADER:-}" ]]; then
       run_git_cmd "$url" git -C "$path" -c "http.extraHeader=${GIT_HTTP_EXTRA_HEADER}" remote update --prune
@@ -82,7 +82,7 @@ function clone_or_update() {
       run_git_cmd "$url" git -C "$path" remote update --prune
     fi
   else
-    info "Cloning mirror"
+    info "cloning mirror for ${url} into ${path}"
     ensure_dir "$(dirname "$path")"
 
     if [[ -n "${GIT_HTTP_EXTRA_HEADER:-}" ]]; then

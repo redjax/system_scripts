@@ -22,7 +22,7 @@ function replicate_run() {
   # Always clean temp mirror, even if clone/push fails.
   trap "rm -rf \"$tmp\"" RETURN
 
-  info "replicating $src -> $dst"
+  info "replicating source ${src} to destination ${dst}"
 
   if [[ -n "${GIT_HTTP_EXTRA_HEADER:-}" ]]; then
     ## Add auth & other headers if present
