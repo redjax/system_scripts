@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-############################################################
-# Multi mirror entrypoint                               #
-#                                                      #
+###########################################################
+# Multi mirror entrypoint                                 #
+#                                                         #
 # This script parses a jobs YAML file defining mirror s,  #
 # then calls the mirror-git-repo script repeatedly,       #
 # managing concurrency, errors, and logging output.       #
-############################################################
+###########################################################
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_MIRROR_SCRIPT="${SCRIPT_DIR}/mirror-git-repo"
