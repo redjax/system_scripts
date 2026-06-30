@@ -465,7 +465,7 @@ function ensure_runtime_requirements() {
 ## Build git mirror command from lines in jobs file
 function build_command_from_line() {
   local line="$1"
-  local cmd_array_name="$2"
+  local -n out_cmd="$2"
 
   eval "set -- $line"
   local -a args=("$@")
@@ -481,21 +481,19 @@ function build_command_from_line() {
       ;;
   esac
 
-  local -a cmd
-  cmd=("$MIRROR_SCRIPT" "${args[@]}")
+  out_cmd=("$MIRROR_SCRIPT" "${args[@]}")
 
   if [[ "$FORWARD_DRY_RUN" == "1" ]]; then
-    cmd+=(--dry-run)
+    out_cmd+=(--dry-run)
   fi
+  
   if [[ "$FORWARD_DEBUG" == "1" ]]; then
-    cmd+=(--debug)
-  fi
-  if [[ "$FORWARD_VERBOSE" == "1" ]]; then
-    cmd+=(--verbose)
+    out_cmd+=(--debug)
   fi
 
-  printf -v "$cmd_array_name" '%s' ""
-  eval "$cmd_array_name=(\"\${cmd[@]}\")"
+  if [[ "$FORWARD_VERBOSE" == "1" ]]; then
+    out_cmd+=(--verbose)
+  fi
 }
 
 ## Run mirror job
