@@ -172,36 +172,16 @@ function load_config_file() {
       [[ -z "$key" || "$key" == \#* ]] && continue
 
       case "$key" in
-        parallel)
-          [[ -z "$PARALLEL" || "$PARALLEL" == "4" ]] && PARALLEL="$value"
-          ;;
-        retries)
-          [[ -z "$RETRIES" || "$RETRIES" == "1" ]] && RETRIES="$value"
-          ;;
-        retry-delay)
-          [[ -z "$RETRY_DELAY" || "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
-          ;;
-        jobs-file)
-          [[ -z "$JOBS_FILE" || "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
-          ;;
-        jobs-yaml)
-          [[ -z "$JOBS_YAML" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
-          ;;
-        log-dir)
-          [[ -z "$LOG_DIR" || "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
-          ;;
-        log-retention-days)
-          [[ -z "$LOG_RETENTION_DAYS" || "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
-          ;;
-        lock-file)
-          [[ -z "$LOCK_FILE" || "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
-          ;;
-        mirror-script)
-          [[ -z "$MIRROR_SCRIPT" || "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
-          ;;
-        local-root | mirror-local-root)
-          [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
-          ;;
+        parallel) [[ -z "$PARALLEL" || "$PARALLEL" == "4" ]] && PARALLEL="$value" ;;
+        retries) [[ -z "$RETRIES" || "$RETRIES" == "1" ]] && RETRIES="$value" ;;
+        retry-delay) [[ -z "$RETRY_DELAY" || "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value" ;;
+        jobs-file) [[ -z "$JOBS_FILE" || "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value" ;;
+        jobs-yaml) [[ -z "${JOBS_YAML:-}" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml" ;;
+        log-dir) [[ -z "$LOG_DIR" || "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value" ;;
+        log-retention-days) [[ -z "$LOG_RETENTION_DAYS" || "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value" ;;
+        lock-file) [[ -z "$LOCK_FILE" || "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value" ;;
+        mirror-script) [[ -z "$MIRROR_SCRIPT" || "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value" ;;
+        local-root | mirror-local-root) [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value" ;;
       esac
     done <"$config_file"
 
@@ -215,36 +195,16 @@ function load_config_file() {
       [[ "$key" == \[* ]] && continue
 
       case "$key" in
-        parallel)
-          [[ "$PARALLEL" == "4" ]] && PARALLEL="$value"
-          ;;
-        retries)
-          [[ "$RETRIES" == "1" ]] && RETRIES="$value"
-          ;;
-        retry-delay)
-          [[ "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
-          ;;
-        jobs-file)
-          [[ "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
-          ;;
-        jobs-yaml)
-          [[ "$JOBS_FORMAT" == "text" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
-          ;;
-        log-dir)
-          [[ "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
-          ;;
-        log-retention-days)
-          [[ "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
-          ;;
-        lock-file)
-          [[ "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
-          ;;
-        mirror-script)
-          [[ "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
-          ;;
-        local-root | mirror-local-root)
-          [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
-          ;;
+        parallel) [[ "$PARALLEL" == "4" ]] && PARALLEL="$value" ;;
+        retries) [[ "$RETRIES" == "1" ]] && RETRIES="$value" ;;
+        retry-delay) [[ "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value" ;;
+        jobs-file) [[ "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value" ;;
+        jobs-yaml) [[ "$JOBS_FORMAT" == "text" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml" ;;
+        log-dir) [[ "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value" ;;
+        log-retention-days) [[ "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value" ;;
+        lock-file) [[ "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value" ;;
+        mirror-script) [[ "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value" ;;
+        local-root | mirror-local-root) [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value" ;;
       esac
     done <"$config_file"
   fi
@@ -274,24 +234,12 @@ function error_remediation_hint() {
   local error_type="$1"
 
   case "$error_type" in
-    permission)
-      echo "Check file/directory permissions on local or remote."
-      ;;
-    auth)
-      echo "Check SSH key, HTTPS token, or authentication credentials."
-      ;;
-    network)
-      echo "Check network connectivity and remote host availability."
-      ;;
-    ssl)
-      echo "Check SSL/TLS certificate validity or configure cert verification."
-      ;;
-    notfound)
-      echo "Check repository URL and ensure it exists."
-      ;;
-    *)
-      echo "Review full error log for details."
-      ;;
+    permission) echo "Check file/directory permissions on local or remote." ;;
+    auth) echo "Check SSH key, HTTPS token, or authentication credentials." ;;
+    network) echo "Check network connectivity and remote host availability." ;;
+    ssl) echo "Check SSL/TLS certificate validity or configure cert verification." ;;
+    notfound) echo "Check repository URL and ensure it exists." ;;
+    *) echo "Review full error log for details." ;;
   esac
 }
 
@@ -473,15 +421,20 @@ function build_command_from_job_spec() {
   local -n out_cmd="$5"
 
   local -a push_dests=()
-  local push_line
+  local push_count
+  push_count="$(yq eval ".jobs[$idx].push | length" "$yaml_file" 2>/dev/null || echo 0)"
 
-  while IFS= read -r push_line; do
-    if [[ -z "$push_line" || "$push_line" == "null" ]]; then
-      printf 'ERROR: YAML job %d has an empty/null push entry\n' "$((idx + 1))" >&2
-      return 1
-    fi
-    push_dests+=("$push_line")
-  done < <(yq eval ".jobs[$idx].push[]" "$yaml_file" 2>/dev/null || true)
+  if [[ "$push_count" =~ ^[0-9]+$ ]] && [[ "$push_count" -gt 0 ]]; then
+    local i push_line
+    for ((i = 0; i < push_count; i++)); do
+      push_line="$(yq eval -r ".jobs[$idx].push[$i]" "$yaml_file")"
+      [[ -z "$push_line" || "$push_line" == "null" ]] && {
+        printf 'ERROR: YAML job %d has an empty/null push entry\n' "$((idx + 1))" >&2
+        return 1
+      }
+      push_dests+=("$push_line")
+    done
+  fi
 
   if [[ "$local_flag" == "true" && "${#push_dests[@]}" -eq 0 ]]; then
     out_cmd=("$MIRROR_SCRIPT" "mirror" "$src")
@@ -508,17 +461,21 @@ function build_command_from_job_spec() {
 ## Execute a single job
 function launch_job() {
   local idx="$1"
-  local -n job_cmd="$2"
+  local cmd_name="$2"
+  local -n cmd_ref="$cmd_name"
 
   local job_log="${LOG_DIR}/job-${idx}.log"
   local status_file="${STATUS_DIR}/job-${idx}.status"
 
   JOB_START_TIME["$idx"]="$(date +%s)"
-  JOB_CMDS["$idx"]="${job_cmd[*]}"
+  JOB_CMDS["$idx"]="${cmd_ref[*]}"
 
   (
-    "${job_cmd[@]}"
-    echo $? >"$status_file"
+    if "${cmd_ref[@]}"; then
+      echo 0 >"$status_file"
+    else
+      echo $? >"$status_file"
+    fi
   ) > >(tee -a "$job_log" "$RUN_LOG") 2> >(tee -a "$job_log" "$RUN_LOG" >&2) &
 }
 
@@ -580,40 +537,6 @@ function read_jobs_from_yaml() {
 
     printf '%s\n' "$(declare -p cmd)"
   done
-}
-
-## Build git mirror command from lines in jobs file
-function build_command_from_line() {
-  local line="$1"
-  local -n out_cmd="$2"
-
-  eval "set -- $line"
-  local -a args=("$@")
-
-  if [[ "${#args[@]}" -eq 0 ]]; then
-    return 1
-  fi
-
-  case "${args[0]}" in
-    mirror | sync | replicate) ;;
-    *)
-      args=(mirror "${args[@]}")
-      ;;
-  esac
-
-  out_cmd=("$MIRROR_SCRIPT" "${args[@]}")
-
-  if [[ "$FORWARD_DRY_RUN" == "1" ]]; then
-    out_cmd+=(--dry-run)
-  fi
-
-  if [[ "$FORWARD_DEBUG" == "1" ]]; then
-    out_cmd+=(--debug)
-  fi
-
-  if [[ "$FORWARD_VERBOSE" == "1" ]]; then
-    out_cmd+=(--verbose)
-  fi
 }
 
 ## Run mirror job
@@ -701,56 +624,67 @@ function execute_job() {
 ## Main job execution entrypoint
 function run_jobs() {
   local total=0
-  local raw_line
   local job_source
+  local line
 
   if [[ "$JOBS_FORMAT" == "yaml" ]]; then
-    job_source="$(read_jobs_from_yaml "$JOBS_FILE")"
-  else
-    job_source="$(cat "$JOBS_FILE")"
-  fi
+    while IFS= read -r line; do
+      [[ -z "$line" ]] && continue
+      total=$((total + 1))
+      local status_file="${STATUS_DIR}/job-${total}.status"
 
-  while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
-    local line
-    line="$(trim "$raw_line")"
-
-    if [[ -z "$line" || "$line" == \#* ]]; then
-      continue
-    fi
-
-    total=$((total + 1))
-    local status_file="${STATUS_DIR}/job-${total}.status"
-
-    ## Check resume mode: skip if job already succeeded
-    if [[ "$RESUME_MODE" == "1" && -f "$status_file" ]]; then
-      local prev_rc
-      prev_rc="$(cat "$status_file")"
-
-      if [[ "$prev_rc" == "0" ]]; then
-        log "INFO" "skipping job ${total} (already succeeded)"
-        continue
+      if [[ "$RESUME_MODE" == "1" && -f "$status_file" ]]; then
+        local prev_rc
+        prev_rc="$(cat "$status_file")"
+        if [[ "$prev_rc" == "0" ]]; then
+          log "INFO" "skipping job ${total} (already succeeded)"
+          continue
+        fi
       fi
-    fi
 
-    log "INFO" "queueing job ${total}"
-
-    if [[ "$JOBS_FORMAT" == "yaml" ]]; then
       local -a job_cmd=()
-      if ! build_command_from_job_spec "$JOBS_FILE" "$((total - 1))" "$(yq eval ".jobs[$((total - 1))].src" "$JOBS_FILE")" "$(yq eval ".jobs[$((total - 1))].local // false" "$JOBS_FILE")" job_cmd; then
+      if ! build_command_from_job_spec "$JOBS_FILE" "$((total - 1))" "$(yq eval -r ".jobs[$((total - 1))].src" "$JOBS_FILE")" "$(yq eval -r ".jobs[$((total - 1))].local // false" "$JOBS_FILE")" job_cmd; then
         return 1
       fi
 
+      log "INFO" "queueing job ${total}"
       launch_job "$total" job_cmd
-    else
-      local -a job_cmd=()
-      build_command_from_line "$line" job_cmd
-      launch_job "$total" job_cmd
-    fi
 
-    while [[ "$(jobs -pr | wc -l | tr -d ' ')" -ge "$PARALLEL" ]]; do
-      wait -n || true
-    done
-  done <<<"$job_source"
+      while [[ "$(jobs -pr | wc -l | tr -d ' ')" -ge "$PARALLEL" ]]; do
+        wait -n || true
+      done
+    done < <(yq eval -r '.jobs[] | ""' "$JOBS_FILE")
+  else
+    job_source="$(cat "$JOBS_FILE")"
+    while IFS= read -r line || [[ -n "$line" ]]; do
+      line="$(trim "$line")"
+      [[ -z "$line" || "$line" == \#* ]] && continue
+
+      total=$((total + 1))
+      local status_file="${STATUS_DIR}/job-${total}.status"
+
+      if [[ "$RESUME_MODE" == "1" && -f "$status_file" ]]; then
+        local prev_rc
+        prev_rc="$(cat "$status_file")"
+        if [[ "$prev_rc" == "0" ]]; then
+          log "INFO" "skipping job ${total} (already succeeded)"
+          continue
+        fi
+      fi
+
+      local -a job_cmd=()
+      if ! build_command_from_line "$line" job_cmd; then
+        return 1
+      fi
+
+      log "INFO" "queueing job ${total}"
+      launch_job "$total" job_cmd
+
+      while [[ "$(jobs -pr | wc -l | tr -d ' ')" -ge "$PARALLEL" ]]; do
+        wait -n || true
+      done
+    done <<<"$job_source"
+  fi
 
   while [[ "$(jobs -pr | wc -l | tr -d ' ')" -gt 0 ]]; do
     wait -n || true
@@ -801,7 +735,37 @@ function run_jobs() {
   return 0
 }
 
-## Entrypoint
+function build_command_from_line() {
+  local line="$1"
+  local -n out_cmd="$2"
+
+  eval "set -- $line"
+  local -a args=("$@")
+
+  if [[ "${#args[@]}" -eq 0 ]]; then
+    return 1
+  fi
+
+  case "${args[0]}" in
+    mirror | sync | replicate) ;;
+    *)
+      args=(mirror "${args[@]}")
+      ;;
+  esac
+
+  out_cmd=("$MIRROR_SCRIPT" "${args[@]}")
+
+  if [[ "$FORWARD_DRY_RUN" == "1" ]]; then
+    out_cmd+=(--dry-run)
+  fi
+  if [[ "$FORWARD_DEBUG" == "1" ]]; then
+    out_cmd+=(--debug)
+  fi
+  if [[ "$FORWARD_VERBOSE" == "1" ]]; then
+    out_cmd+=(--verbose)
+  fi
+}
+
 function main() {
   parse_args "$@"
   ensure_runtime_requirements
