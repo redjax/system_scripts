@@ -122,17 +122,13 @@ The `mirror-multi` script can accept a "jobs file" in YAML format, where you can
 ```yaml
 jobs:
   - src: git@github.com:username/repo
-    dest:
-      - local
+    local: true
 
   - src: git@github.com:my-org/service-a
-    dest:
-      - local
+    local: true
+    push:
       - git@gitlab.com:my-org/service-a
 
-  - src: https://github.com/my-org/public-repo
-    dest:
-      - local
 ```
 
 ```bash
