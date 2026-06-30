@@ -26,6 +26,8 @@ function sync_run() {
       run_cmd git -C "$path" remote add "$name" "$target"
     fi
 
-    run_cmd git -C "$path" push --mirror "$name"
+    if ! run_git_cmd "$target" git -C "$path" push --mirror "$name"; then
+      return 1
+    fi
   done
 }
