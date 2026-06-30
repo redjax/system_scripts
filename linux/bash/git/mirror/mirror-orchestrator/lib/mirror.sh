@@ -16,7 +16,9 @@ function mirror_run() {
   info "Mirror path: $path"
   info "Source: $url"
 
-  clone_or_update "$url" "$path"
+  if ! clone_or_update "$url" "$path"; then
+    return 1
+  fi
 
   info "Mirror complete"
 }

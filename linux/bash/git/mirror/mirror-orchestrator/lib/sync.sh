@@ -8,6 +8,7 @@ function sync_run() {
   local path
   path="$(infer_local_path "$url" "$root")"
 
+  info "syncing source ${url} into local mirror ${path}"
   clone_or_update "$url" "$path"
 
   local i=0
@@ -18,7 +19,7 @@ function sync_run() {
     name="$(resolve_target_name "$dest" "$i")"
     target="$(resolve_target_url "$dest")"
 
-    info "sync -> $name"
+    info "syncing ${url} -> ${target} as remote ${name}"
 
     if git -C "$path" remote get-url "$name" >/dev/null 2>&1; then
       run_cmd git -C "$path" remote set-url "$name" "$target"
@@ -26,6 +27,8 @@ function sync_run() {
       run_cmd git -C "$path" remote add "$name" "$target"
     fi
 
-    run_cmd git -C "$path" push --mirror "$name"
+    if ! run_git_cmd "$target" git -C "$path" push --mirror "$name"; then
+      return 1
+    fi
   done
 }

@@ -22,22 +22,30 @@ function replicate_run() {
   # Always clean temp mirror, even if clone/push fails.
   trap "rm -rf \"$tmp\"" RETURN
 
-  info "replicating $src -> $dst"
+  info "replicating source ${src} to destination ${dst}"
 
   if [[ -n "${GIT_HTTP_EXTRA_HEADER:-}" ]]; then
     ## Add auth & other headers if present
-    run_cmd git -c "http.extraHeader=${GIT_HTTP_EXTRA_HEADER}" clone --mirror "$src" "$path"
+    if ! run_git_cmd "$src" git -c "http.extraHeader=${GIT_HTTP_EXTRA_HEADER}" clone --mirror "$src" "$path"; then
+      return 1
+    fi
   else
     ## Standard git mirror clone
-    run_cmd git clone --mirror "$src" "$path"
+    if ! run_git_cmd "$src" git clone --mirror "$src" "$path"; then
+      return 1
+    fi
   fi
 
   ## Push local mirror to remote
   run_cmd git -C "$path" remote add target "$dst"
 
   if [[ -n "${GIT_HTTP_EXTRA_HEADER:-}" ]]; then
-    run_cmd git -C "$path" -c "http.extraHeader=${GIT_HTTP_EXTRA_HEADER}" push --mirror target
+    if ! run_git_cmd "$dst" git -C "$path" -c "http.extraHeader=${GIT_HTTP_EXTRA_HEADER}" push --mirror target; then
+      return 1
+    fi
   else
-    run_cmd git -C "$path" push --mirror target
+    if ! run_git_cmd "$dst" git -C "$path" push --mirror target; then
+      return 1
+    fi
   fi
 }

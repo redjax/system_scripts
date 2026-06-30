@@ -5,23 +5,21 @@
 # Simple format: src + list of destinations
 # Supports: "local" for local mirror, or remote URLs for sync/replicate
 # Operation is inferred from destinations:
-#   - dest: [local]              -> mirror locally
-#   - dest: [local, remote1, ..] -> mirror locally + push to remotes
-#   - dest: [remote1]            -> sync to single remote
-#   - dest: [remote1, remote2]   -> replicate to multiple remotes
+#   - push: [local]              -> mirror locally
+#   - push: [local, remote1, ..] -> mirror locally + push to remotes
+#   - push: [remote1]            -> sync to single remote
+#   - push: [remote1, remote2]   -> replicate to multiple remotes
 
 jobs:
   - src: git@github.com:redjax/dotfiles
-    dest:
-      - local
+    local: true
+    push:
       - git@gitlab.com:redjax/dotfiles
 
   - src: https://github.com:octocat/Hello-World
-    dest:
-      - local
+    local: true
 
   - src: git@github.com:my-org/important-repo
-    dest:
-      - local
+    push:
       - git@gitlab.com:my-org/important-repo
       - git@codeberg.org:my-org/important-repo
