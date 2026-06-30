@@ -168,38 +168,38 @@ function load_config_file() {
       value="$(trim "$value")"
 
       [[ -z "$key" || "$key" == \#* ]] && continue
-      
+
       case "$key" in
-      parallel)
-        [[ -z "$PARALLEL" || "$PARALLEL" == "4" ]] && PARALLEL="$value"
-        ;;
-      retries)
-        [[ -z "$RETRIES" || "$RETRIES" == "1" ]] && RETRIES="$value"
-        ;;
-      retry-delay)
-        [[ -z "$RETRY_DELAY" || "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
-        ;;
-      jobs-file)
-        [[ -z "$JOBS_FILE" || "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
-        ;;
-      jobs-yaml)
-        [[ -z "$JOBS_YAML" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
-        ;;
-      log-dir)
-        [[ -z "$LOG_DIR" || "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
-        ;;
-      log-retention-days)
-        [[ -z "$LOG_RETENTION_DAYS" || "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
-        ;;
-      lock-file)
-        [[ -z "$LOCK_FILE" || "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
-        ;;
-      mirror-script)
-        [[ -z "$MIRROR_SCRIPT" || "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
-        ;;
-      local-root | mirror-local-root)
-        [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
-        ;;
+        parallel)
+          [[ -z "$PARALLEL" || "$PARALLEL" == "4" ]] && PARALLEL="$value"
+          ;;
+        retries)
+          [[ -z "$RETRIES" || "$RETRIES" == "1" ]] && RETRIES="$value"
+          ;;
+        retry-delay)
+          [[ -z "$RETRY_DELAY" || "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
+          ;;
+        jobs-file)
+          [[ -z "$JOBS_FILE" || "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
+          ;;
+        jobs-yaml)
+          [[ -z "$JOBS_YAML" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
+          ;;
+        log-dir)
+          [[ -z "$LOG_DIR" || "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
+          ;;
+        log-retention-days)
+          [[ -z "$LOG_RETENTION_DAYS" || "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
+          ;;
+        lock-file)
+          [[ -z "$LOCK_FILE" || "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
+          ;;
+        mirror-script)
+          [[ -z "$MIRROR_SCRIPT" || "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
+          ;;
+        local-root | mirror-local-root)
+          [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
+          ;;
       esac
     done <"$config_file"
 
@@ -211,38 +211,38 @@ function load_config_file() {
 
       [[ -z "$key" || "$key" == \#* ]] && continue
       [[ "$key" == \[* ]] && continue
-      
+
       case "$key" in
-      parallel)
-        [[ "$PARALLEL" == "4" ]] && PARALLEL="$value"
-        ;;
-      retries)
-        [[ "$RETRIES" == "1" ]] && RETRIES="$value"
-        ;;
-      retry-delay)
-        [[ "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
-        ;;
-      jobs-file)
-        [[ "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
-        ;;
-      jobs-yaml)
-        [[ "$JOBS_FORMAT" == "text" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
-        ;;
-      log-dir)
-        [[ "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
-        ;;
-      log-retention-days)
-        [[ "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
-        ;;
-      lock-file)
-        [[ "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
-        ;;
-      mirror-script)
-        [[ "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
-        ;;
-      local-root | mirror-local-root)
-        [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
-        ;;
+        parallel)
+          [[ "$PARALLEL" == "4" ]] && PARALLEL="$value"
+          ;;
+        retries)
+          [[ "$RETRIES" == "1" ]] && RETRIES="$value"
+          ;;
+        retry-delay)
+          [[ "$RETRY_DELAY" == "2" ]] && RETRY_DELAY="$value"
+          ;;
+        jobs-file)
+          [[ "$JOBS_FILE" == "${SCRIPT_DIR}/jobs" ]] && JOBS_FILE="$value"
+          ;;
+        jobs-yaml)
+          [[ "$JOBS_FORMAT" == "text" ]] && JOBS_YAML="$value" && JOBS_FORMAT="yaml"
+          ;;
+        log-dir)
+          [[ "$LOG_DIR" == "${SCRIPT_DIR}/logs" ]] && LOG_DIR="$value"
+          ;;
+        log-retention-days)
+          [[ "$LOG_RETENTION_DAYS" == "30" ]] && LOG_RETENTION_DAYS="$value"
+          ;;
+        lock-file)
+          [[ "$LOCK_FILE" == "/tmp/mirror-multi.lock" ]] && LOCK_FILE="$value"
+          ;;
+        mirror-script)
+          [[ "$MIRROR_SCRIPT" == "$DEFAULT_MIRROR_SCRIPT" ]] && MIRROR_SCRIPT="$value"
+          ;;
+        local-root | mirror-local-root)
+          [[ -z "$LOCAL_ROOT" ]] && LOCAL_ROOT="$value"
+          ;;
       esac
     done <"$config_file"
   fi
@@ -272,24 +272,24 @@ function error_remediation_hint() {
   local error_type="$1"
 
   case "$error_type" in
-  permission)
-    echo "Check file/directory permissions on local or remote."
-    ;;
-  auth)
-    echo "Check SSH key, HTTPS token, or authentication credentials."
-    ;;
-  network)
-    echo "Check network connectivity and remote host availability."
-    ;;
-  ssl)
-    echo "Check SSL/TLS certificate validity or configure cert verification."
-    ;;
-  notfound)
-    echo "Check repository URL and ensure it exists."
-    ;;
-  *)
-    echo "Review full error log for details."
-    ;;
+    permission)
+      echo "Check file/directory permissions on local or remote."
+      ;;
+    auth)
+      echo "Check SSH key, HTTPS token, or authentication credentials."
+      ;;
+    network)
+      echo "Check network connectivity and remote host availability."
+      ;;
+    ssl)
+      echo "Check SSL/TLS certificate validity or configure cert verification."
+      ;;
+    notfound)
+      echo "Check repository URL and ensure it exists."
+      ;;
+    *)
+      echo "Review full error log for details."
+      ;;
   esac
 }
 
@@ -297,85 +297,85 @@ function error_remediation_hint() {
 function parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    --jobs-file | --repos-file)
-      JOBS_FILE="${2:-}"
-      JOBS_FORMAT="text"
-      shift 2
-      ;;
-    --jobs-yaml)
-      JOBS_FILE="${2:-}"
-      JOBS_FORMAT="yaml"
-      shift 2
-      ;;
-    --config)
-      CONFIG_FILE="${2:-}"
-      shift 2
-      ;;
-    --resume)
-      RESUME_MODE=1
-      shift
-      ;;
-    --clean)
-      CLEAN_MODE=1
-      shift
-      ;;
-    --log-retention-days)
-      LOG_RETENTION_DAYS="${2:-}"
-      shift 2
-      ;;
-    --fail-on-error)
-      FAIL_ON_ERROR=1
-      shift
-      ;;
-    --parallel)
-      PARALLEL="${2:-}"
-      shift 2
-      ;;
-    --retries)
-      RETRIES="${2:-}"
-      shift 2
-      ;;
-    --retry-delay)
-      RETRY_DELAY="${2:-}"
-      shift 2
-      ;;
-    --lock-file)
-      LOCK_FILE="${2:-}"
-      shift 2
-      ;;
-    --log-dir)
-      LOG_DIR="${2:-}"
-      shift 2
-      ;;
-    --mirror-script)
-      MIRROR_SCRIPT="${2:-}"
-      shift 2
-      ;;
-    --local-root)
-      LOCAL_ROOT="${2:-}"
-      shift 2
-      ;;
-    --dry-run)
-      FORWARD_DRY_RUN=1
-      shift
-      ;;
-    --debug)
-      FORWARD_DEBUG=1
-      shift
-      ;;
-    --verbose)
-      FORWARD_VERBOSE=1
-      shift
-      ;;
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    *)
-      printf 'ERROR: unknown option: %s\n' "$1" >&2
-      usage >&2
-      exit 2
-      ;;
+      --jobs-file | --repos-file)
+        JOBS_FILE="${2:-}"
+        JOBS_FORMAT="text"
+        shift 2
+        ;;
+      --jobs-yaml)
+        JOBS_FILE="${2:-}"
+        JOBS_FORMAT="yaml"
+        shift 2
+        ;;
+      --config)
+        CONFIG_FILE="${2:-}"
+        shift 2
+        ;;
+      --resume)
+        RESUME_MODE=1
+        shift
+        ;;
+      --clean)
+        CLEAN_MODE=1
+        shift
+        ;;
+      --log-retention-days)
+        LOG_RETENTION_DAYS="${2:-}"
+        shift 2
+        ;;
+      --fail-on-error)
+        FAIL_ON_ERROR=1
+        shift
+        ;;
+      --parallel)
+        PARALLEL="${2:-}"
+        shift 2
+        ;;
+      --retries)
+        RETRIES="${2:-}"
+        shift 2
+        ;;
+      --retry-delay)
+        RETRY_DELAY="${2:-}"
+        shift 2
+        ;;
+      --lock-file)
+        LOCK_FILE="${2:-}"
+        shift 2
+        ;;
+      --log-dir)
+        LOG_DIR="${2:-}"
+        shift 2
+        ;;
+      --mirror-script)
+        MIRROR_SCRIPT="${2:-}"
+        shift 2
+        ;;
+      --local-root)
+        LOCAL_ROOT="${2:-}"
+        shift 2
+        ;;
+      --dry-run)
+        FORWARD_DRY_RUN=1
+        shift
+        ;;
+      --debug)
+        FORWARD_DEBUG=1
+        shift
+        ;;
+      --verbose)
+        FORWARD_VERBOSE=1
+        shift
+        ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      *)
+        printf 'ERROR: unknown option: %s\n' "$1" >&2
+        usage >&2
+        exit 2
+        ;;
     esac
   done
 
@@ -417,7 +417,7 @@ function parse_args() {
 function ensure_runtime_requirements() {
   require_program "flock"
   require_program "git"
-  
+
   if [[ "$JOBS_FORMAT" == "yaml" ]]; then
     require_program "yq"
   fi
@@ -474,11 +474,10 @@ function build_command_from_line() {
   fi
 
   case "${args[0]}" in
-  mirror | sync | replicate)
-    ;;
-  *)
-    args=(mirror "${args[@]}")
-    ;;
+    mirror | sync | replicate) ;;
+    *)
+      args=(mirror "${args[@]}")
+      ;;
   esac
 
   local -a cmd
@@ -571,10 +570,10 @@ function execute_job() {
   local job_end_time
   job_end_time=$(date +%s)
   local duration=$((job_end_time - job_start_time))
-  
+
   echo "$rc" >"$status_file"
   printf '[%s] JOB %s duration: %ds\n' "$(ts)" "$idx" "$duration"
-  
+
   return "$rc"
 }
 
@@ -600,7 +599,7 @@ function read_jobs_from_yaml() {
     exit 127
   fi
 
-  ## Read 'src', 'local', 'push' keys
+  ## New format: src + local + push
   local job_count
   job_count="$(yq eval '.jobs | length' "$yaml_file" 2>/dev/null)" || {
     printf 'ERROR: failed to parse YAML file: %s\n' "$yaml_file" >&2
@@ -615,7 +614,7 @@ function read_jobs_from_yaml() {
     printf 'ERROR: YAML jobs list is empty in %s\n' "$yaml_file" >&2
     exit 2
   }
-  
+
   local i
 
   for ((i = 0; i < job_count; i++)); do
@@ -671,7 +670,7 @@ function build_command_from_job_spec() {
 
   ## Infer operation and build command
   local -a cmd=()
-  
+
   if [[ "$local_flag" == "true" && "${#push_dests[@]}" -eq 0 ]]; then
     ## Local mirror only
     cmd=("$MIRROR_SCRIPT" "mirror" "$src")
@@ -712,7 +711,7 @@ function build_command_from_job_spec() {
 function run_jobs() {
   local total=0
   local raw_line
-  
+
   ## Select appropriate job source based on format
   local job_source
 
@@ -785,7 +784,7 @@ function run_jobs() {
   log "INFO" "summary: total=${total} succeeded=${succeeded} failed=${failed} skipped=${skipped}"
   log "INFO" "run log: $RUN_LOG"
   log "INFO" "job logs: ${LOG_DIR}/job-<n>.log"
-  
+
   if [[ "$failed" -gt 0 ]]; then
     log "INFO" "error log: $ERROR_LOG"
     log "ERROR" "failed jobs: ${failed_jobs[*]}"
