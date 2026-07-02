@@ -20,12 +20,38 @@ tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT
 cd "$tmpdir"
 
-## Find latest version & set download URL
-DOWNLOAD_URL="$(
+## Detect CPU architecture
+arch="$(uname -m)"
+
+case "$arch" in
+  x86_64)
+    ookla_arch="x86_64"
+    ;;
+  aarch64 | arm64)
+    ookla_arch="aarch64"
+    ;;
+  armv7l | armv7*)
+    ookla_arch="armhf"
+    ;;
+  *)
+    echo "[ERROR] Unsupported architecture: $arch" >&2
+    exit 1
+    ;;
+esac
+
+## Set platform OS
+#  TODO: Add macOS support
+os="linux"
+
+## Get latest version string
+version="$(
   curl -fsSL https://www.speedtest.net/apps/cli |
-    grep -oE 'https://install\.speedtest\.net/app/cli/ookla-speedtest-[^"]*-linux-x86_64\.tgz' |
-    head -n1
+    grep -oE 'ookla-speedtest-[0-9]+\.[0-9]+\.[0-9]+' |
+    head -n1 |
+    sed 's/ookla-speedtest-//'
 )"
+
+DOWNLOAD_URL="https://install.speedtest.net/app/cli/ookla-speedtest-${version}-${os}-${ookla_arch}.tgz"
 
 if [[ -z "$DOWNLOAD_URL" ]]; then
   echo "[ERROR] Could not determine the latest Speedtest CLI download URL." >&2
