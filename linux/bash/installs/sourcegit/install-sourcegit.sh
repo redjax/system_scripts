@@ -179,6 +179,31 @@ if [[ $gcm_installed -eq 0 && $libsecret_installed -eq 0 ]]; then
   echo "WARNING:"
   echo "Neither git-credential-manager nor git-credential-libsecret is installed."
   echo "HTTPS authentication may not work correctly."
+  echo
+
+  if confirm "Would you like to install a supported Git credential helper?"; then
+
+    if command -v apt >/dev/null 2>&1; then
+      echo "Installing git-credential-manager"
+
+      sudo apt update
+
+      if sudo apt install -y git-credential-manager; then
+        echo "git-credential-manager installed."
+      else
+        echo "git-credential-manager package not available."
+        echo "Installing libsecret-tools instead"
+        sudo apt install -y libsecret-tools
+      fi
+
+    else
+      echo
+      echo "[WARNING] Automatic installation of Git credential helpers is not supported on this distribution."
+      echo "Please install either:"
+      echo "  - git-credential-manager"
+      echo "  - git-credential-libsecret"
+    fi
+  fi
 fi
 
 echo
