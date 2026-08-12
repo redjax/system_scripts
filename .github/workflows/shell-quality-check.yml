@@ -1,0 +1,67 @@
+---
+#################################################################################
+# Run shellcheck & shellfmt using the PipelineTemplates shell-quality pipeline. #
+#                                                                               #
+# This pipeline runs in "check only" mode, it will not change any files.        #
+#################################################################################
+
+name: Shell Quality
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/shell-quality-check.yml"
+      - ".shellcheckrc"
+      - "linux/bash/**"
+      - "repo_scripts/**"
+
+  push:
+    branches:
+      ## Temporary branch trigger while validating centralized quality workflows.
+      - feat/central-quality-pipeline
+    paths:
+      - ".github/workflows/shell-quality-check.yml"
+      - ".shellcheckrc"
+      - "linux/bash/**"
+      - "repo_scripts/**"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shell-quality:
+    name: ShellCheck and shellfmt
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    with:
+      ## Use central shared scripts and central default configuration from main.
+      pipelinetemplates-ref: main
+
+      ## Run both tools
+      tools: both
+
+      ## Scan the complete repository. The shell include patterns limit actual
+      #  tool input to *.sh, *.bash, and *.bats files
+      scan-path: "."
+
+      ## ShellCheck uses this repository's baseline configuration
+      shellcheck-config-path: ".shellcheckrc"
+      use-default-shellcheck-config: false
+
+      ## shellfmt uses PipelineTemplates config/shellfmt/options
+      use-default-shellfmt-config: true
+
+      ## Check formatting only. Do not modify files or create commits
+      shellfmt-mode: check
+      shellfmt-commit-changes: false
+
+      ## Treat detected lint and formatting issues as CI failures
+      fail-on-findings: true
+
+      ## Use repository-specific artifact names
+      shellcheck-artifact-name: system-scripts-shellcheck-results
+      shellfmt-artifact-name: system-scripts-shellfmt-results
+      artifact-retention-days: 30
