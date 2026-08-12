@@ -35,10 +35,10 @@ permissions:
 jobs:
   shell-quality:
     name: ShellCheck and shellfmt
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shellcheck-shellfmt-reports
     with:
       ## Use central shared scripts and central default configuration from main.
-      pipelinetemplates-ref: main
+      pipelinetemplates-ref: feat/shellcheck-shellfmt-reports
 
       ## Run both tools
       tools: both
