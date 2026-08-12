@@ -28,40 +28,95 @@ on:
       - "repo_scripts/**"
 
   workflow_dispatch:
+    inputs:
+      pipelinetemplates-ref:
+        description: PipelineTemplates branch, tag, or commit SHA to use
+        required: false
+        type: string
+        default: feat/shellcheck-shellfmt-reports
+
+      tools:
+        description: Quality tools to run
+        required: false
+        type: choice
+        default: both
+        options:
+          - both
+          - shellcheck
+          - shellfmt
+
+      scan-path:
+        description: Repository path to scan
+        required: false
+        type: string
+        default: "."
+
+      shellcheck-mode:
+        description: ShellCheck finding policy
+        required: false
+        type: choice
+        default: enforce
+        options:
+          - enforce
+          - report-only
+
+      shellfmt-mode:
+        description: shellfmt execution mode
+        required: false
+        type: choice
+        default: check
+        options:
+          - check
+          - write
+
+      shellfmt-finding-policy:
+        description: shellfmt finding policy
+        required: false
+        type: choice
+        default: enforce
+        options:
+          - enforce
+          - report-only
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   shell-quality:
     name: ShellCheck and shellfmt
     uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shellcheck-shellfmt-reports
     with:
-      ## Use central shared scripts and central default configuration from main.
-      pipelinetemplates-ref: feat/shellcheck-shellfmt-reports
+      ## Automatic runs use this feature branch; manual dispatch may override it.
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'feat/shellcheck-shellfmt-reports' }}
 
-      ## Run both tools
-      tools: both
+      ## Automatic runs use both tools.
+      tools: ${{ inputs.tools || 'both' }}
 
-      ## Scan the complete repository. The shell include patterns limit actual
-      #  tool input to *.sh, *.bash, and *.bats files
-      scan-path: "."
+      ## Automatic runs scan the entire repository.
+      scan-path: ${{ inputs.scan-path || '.' }}
 
-      ## ShellCheck uses this repository's baseline configuration
+      ## ShellCheck uses this repository's baseline configuration.
       shellcheck-config-path: ".shellcheckrc"
       use-default-shellcheck-config: false
 
-      ## shellfmt uses PipelineTemplates config/shellfmt/options
+      ## ShellCheck is inherently check-only. Its selectable mode controls
+      #  whether lint findings fail the workflow or are reported as warnings.
+      shellcheck-fail-on-findings: ${{ inputs.shellcheck-mode != 'report-only' }}
+
+      ## shellfmt uses PipelineTemplates config/shellfmt/options.
       use-default-shellfmt-config: true
 
-      ## Check formatting only. Do not modify files or create commits
-      shellfmt-mode: check
+      ## Automatic runs always use check mode. A manual run may select write.
+      shellfmt-mode: ${{ inputs.shellfmt-mode || 'check' }}
+
+      ## This workflow never commits formatting changes.
       shellfmt-commit-changes: false
 
-      ## Treat detected lint and formatting issues as CI failures
-      fail-on-findings: true
+      ## shellfmt findings fail by default; report-only preserves the report,
+      #  annotations, and artifacts but does not fail the job.
+      shellfmt-fail-on-findings: ${{ inputs.shellfmt-finding-policy != 'report-only' }}
 
-      ## Use repository-specific artifact names
+      ## Use repository-specific artifact names.
       shellcheck-artifact-name: system-scripts-shellcheck-results
       shellfmt-artifact-name: system-scripts-shellfmt-results
       artifact-retention-days: 30
