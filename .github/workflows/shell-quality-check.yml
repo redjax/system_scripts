@@ -8,24 +8,14 @@
 name: Shell Quality
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/shell-quality-check.yml"
-      - ".shellcheckrc"
-      - "linux/bash/**"
-      - "repo_scripts/**"
-
-  push:
-    branches:
-      ## Temporary branch trigger while validating centralized quality workflows.
-      - feat/central-quality-pipeline
-    paths:
-      - ".github/workflows/shell-quality-check.yml"
-      - ".shellcheckrc"
-      - "linux/bash/**"
-      - "repo_scripts/**"
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - ".github/workflows/shell-quality-check.yml"
+  #     - ".shellcheckrc"
+  #     - "linux/bash/**"
+  #     - "repo_scripts/**"
 
   workflow_dispatch:
     inputs:
@@ -33,7 +23,7 @@ on:
         description: PipelineTemplates ref used for shared-script/config checkout
         required: false
         type: string
-        default: feat/shellcheck-shellfmt-reports
+        default: main
 
       tools:
         description: Quality tools to run
@@ -75,11 +65,11 @@ permissions:
 jobs:
   shell-quality:
     name: ShellCheck and shellfmt
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shellcheck-shellfmt-reports
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
     with:
       ## This controls PipelineTemplates content checked out inside the central
       #  workflows, rather than the revision of the reusable workflow itself.
-      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'feat/shellcheck-shellfmt-reports' }}
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
 
 
       ## Automatic runs use both tools.
