@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-##########################################################################
+########################################################################
 # Mirror a Git repository from many remotes.                           #
-#                                                                    #
-# Can create a local mirror/archive, or mirror to one or more remotes,   #
-# i.e. github to gitlab, codeberg to github and gitlab, etc.            #
-#                                                                    #
-# The script should work with any Git-compliant forge. It can clone     #
-# public and private repositories over HTTPS or SSH. For SSH cloning,   #
+#                                                                      #
+# Can create a local mirror/archive, or mirror to one or more remotes, #
+# i.e. github to gitlab, codeberg to github and gitlab, etc.           #
+#                                                                      #
+# The script should work with any Git-compliant forge. It can clone    #
+# public and private repositories over HTTPS or SSH. For SSH cloning,  #
 # the script uses the host's SSH agent by default.                     #
-#                                                                    #
+#                                                                      #
 # Run with -h or --help to see usage and options.                      #
-##########################################################################
+########################################################################
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/lib"
@@ -36,7 +36,7 @@ DEBUG="0"
 VERBOSE="0"
 DESTS=()
 
-# Env defaults; CLI flags override these values.
+## Env defaults; CLI flags override these values.
 AUTH_MODE="${AUTH_MODE:-}"
 SSH_KEY_FILE="${SSH_KEY_FILE:-}"
 SSH_KEY_ENV="${SSH_KEY_ENV:-}"
@@ -89,18 +89,14 @@ Auth notes:
 
 Examples:
   mirror-git-repo mirror git@github.com:org/repo.git
-  mirror-git-repo mirror https://github.com/org/repo.git --local-root /tmp/repos
+  mirror-git-repo mirror [https://github.com/org/repo.git](https://github.com/org/repo.git) --local-root /tmp/repos
   mirror-git-repo sync git@github.com:org/repo.git --dest gitlab=git@gitlab.com:org/repo.git
   mirror-git-repo sync git@github.com:org/repo.git --dest git@gitlab.com:org/repo.git
   mirror-git-repo replicate git@github.com:org/repo.git git@gitlab.com:org/repo.git
   mirror-git-repo mirror git@github.com:org/repo.git --ssh-key-file /run/secrets/id_ed25519
   mirror-git-repo mirror git@github.com:org/repo.git --ssh-key-env MIRROR_SSH_KEY
-  mirror-git-repo mirror https://github.com/org/repo.git --https-token ghp_xxx
-  mirror-git-repo mirror https://github.com/org/repo.git --https-token-env GIT_TOKEN
-
-Environment variable defaults:
-  MIRROR_LOCAL_ROOT, MIRROR_DRY_RUN, MIRROR_DEBUG, MIRROR_VERBOSE,
-  AUTH_MODE, SSH_KEY_FILE, SSH_KEY_ENV, HTTPS_TOKEN, HTTPS_TOKEN_ENV
+  mirror-git-repo mirror [https://github.com/org/repo.git](https://github.com/org/repo.git) --https-token ghp_xxx
+  mirror-git-repo mirror [https://github.com/org/repo.git](https://github.com/org/repo.git) --https-token-env GIT_TOKEN
 EOF
 }
 
@@ -122,57 +118,57 @@ function parse_replication_target() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    --dest)
-      require_arg "--dest" "${2:-}"
-      DESTS+=("$2")
-      shift 2
-      ;;
-    --local-root)
-      require_arg "--local-root" "${2:-}"
-      LOCAL_ROOT="$2"
-      shift 2
-      ;;
-    --dry-run)
-      DRY_RUN=1
-      shift
-      ;;
-    --debug)
-      DEBUG=1
-      shift
-      ;;
-    --verbose)
-      VERBOSE=1
-      shift
-      ;;
-    --auth-mode)
-      require_arg "--auth-mode" "${2:-}"
-      AUTH_MODE="$2"
-      shift 2
-      ;;
-    --ssh-key-file)
-      require_arg "--ssh-key-file" "${2:-}"
-      SSH_KEY_FILE="$2"
-      shift 2
-      ;;
-    --ssh-key-env)
-      require_arg "--ssh-key-env" "${2:-}"
-      SSH_KEY_ENV="$2"
-      shift 2
-      ;;
-    --https-token)
-      require_arg "--https-token" "${2:-}"
-      HTTPS_TOKEN="$2"
-      shift 2
-      ;;
-    --https-token-env)
-      require_arg "--https-token-env" "${2:-}"
-      HTTPS_TOKEN_ENV="$2"
-      shift 2
-      ;;
-    *)
-      error "unknown: $1"
-      exit 2
-      ;;
+      --dest)
+        require_arg "--dest" "${2:-}"
+        DESTS+=("$2")
+        shift 2
+        ;;
+      --local-root)
+        require_arg "--local-root" "${2:-}"
+        LOCAL_ROOT="$2"
+        shift 2
+        ;;
+      --dry-run)
+        DRY_RUN=1
+        shift
+        ;;
+      --debug)
+        DEBUG=1
+        shift
+        ;;
+      --verbose)
+        VERBOSE=1
+        shift
+        ;;
+      --auth-mode)
+        require_arg "--auth-mode" "${2:-}"
+        AUTH_MODE="$2"
+        shift 2
+        ;;
+      --ssh-key-file)
+        require_arg "--ssh-key-file" "${2:-}"
+        SSH_KEY_FILE="$2"
+        shift 2
+        ;;
+      --ssh-key-env)
+        require_arg "--ssh-key-env" "${2:-}"
+        SSH_KEY_ENV="$2"
+        shift 2
+        ;;
+      --https-token)
+        require_arg "--https-token" "${2:-}"
+        HTTPS_TOKEN="$2"
+        shift 2
+        ;;
+      --https-token-env)
+        require_arg "--https-token-env" "${2:-}"
+        HTTPS_TOKEN_ENV="$2"
+        shift 2
+        ;;
+      *)
+        error "unknown: $1"
+        exit 2
+        ;;
     esac
   done
 
@@ -189,10 +185,10 @@ function parse_replication_target() {
 function parse_args() {
   for arg in "$@"; do
     case "$arg" in
-    -h | --help)
-      usage
-      exit 0
-      ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
     esac
   done
 
@@ -202,10 +198,10 @@ function parse_args() {
   }
 
   case "$1" in
-  mirror | sync | replicate)
-    MODE="$1"
-    shift
-    ;;
+    mirror | sync | replicate)
+      MODE="$1"
+      shift
+      ;;
   esac
 
   [[ $# -gt 0 ]] || {
@@ -224,57 +220,57 @@ function parse_args() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    --local-root)
-      require_arg "--local-root" "${2:-}"
-      LOCAL_ROOT="$2"
-      shift 2
-      ;;
-    --dest)
-      require_arg "--dest" "${2:-}"
-      DESTS+=("$2")
-      shift 2
-      ;;
-    --dry-run)
-      DRY_RUN=1
-      shift
-      ;;
-    --debug)
-      DEBUG=1
-      shift
-      ;;
-    --verbose)
-      VERBOSE=1
-      shift
-      ;;
-    --auth-mode)
-      require_arg "--auth-mode" "${2:-}"
-      AUTH_MODE="$2"
-      shift 2
-      ;;
-    --ssh-key-file)
-      require_arg "--ssh-key-file" "${2:-}"
-      SSH_KEY_FILE="$2"
-      shift 2
-      ;;
-    --ssh-key-env)
-      require_arg "--ssh-key-env" "${2:-}"
-      SSH_KEY_ENV="$2"
-      shift 2
-      ;;
-    --https-token)
-      require_arg "--https-token" "${2:-}"
-      HTTPS_TOKEN="$2"
-      shift 2
-      ;;
-    --https-token-env)
-      require_arg "--https-token-env" "${2:-}"
-      HTTPS_TOKEN_ENV="$2"
-      shift 2
-      ;;
-    *)
-      error "unknown: $1"
-      exit 2
-      ;;
+      --local-root)
+        require_arg "--local-root" "${2:-}"
+        LOCAL_ROOT="$2"
+        shift 2
+        ;;
+      --dest)
+        require_arg "--dest" "${2:-}"
+        DESTS+=("$2")
+        shift 2
+        ;;
+      --dry-run)
+        DRY_RUN=1
+        shift
+        ;;
+      --debug)
+        DEBUG=1
+        shift
+        ;;
+      --verbose)
+        VERBOSE=1
+        shift
+        ;;
+      --auth-mode)
+        require_arg "--auth-mode" "${2:-}"
+        AUTH_MODE="$2"
+        shift 2
+        ;;
+      --ssh-key-file)
+        require_arg "--ssh-key-file" "${2:-}"
+        SSH_KEY_FILE="$2"
+        shift 2
+        ;;
+      --ssh-key-env)
+        require_arg "--ssh-key-env" "${2:-}"
+        SSH_KEY_ENV="$2"
+        shift 2
+        ;;
+      --https-token)
+        require_arg "--https-token" "${2:-}"
+        HTTPS_TOKEN="$2"
+        shift 2
+        ;;
+      --https-token-env)
+        require_arg "--https-token-env" "${2:-}"
+        HTTPS_TOKEN_ENV="$2"
+        shift 2
+        ;;
+      *)
+        error "unknown: $1"
+        exit 2
+        ;;
     esac
   done
 }
@@ -285,23 +281,26 @@ function main() {
 
   debug "Mode=$MODE"
   debug "Source=$SOURCE_URL"
+  debug "Local root=$LOCAL_ROOT"
   if [[ -n "$TARGET_URL" ]]; then
     debug "Target=$TARGET_URL"
   fi
+
+  export MIRROR_LOCAL_ROOT="$LOCAL_ROOT"
 
   setup_auth "$SOURCE_URL"
   trap auth_cleanup EXIT
 
   case "$MODE" in
-  mirror)
-    mirror_run "$SOURCE_URL"
-    ;;
-  sync)
-    sync_run "$SOURCE_URL" "${DESTS[@]}"
-    ;;
-  replicate)
-    replicate_run "$SOURCE_URL" "$TARGET_URL"
-    ;;
+    mirror)
+      mirror_run "$SOURCE_URL"
+      ;;
+    sync)
+      sync_run "$SOURCE_URL" "${DESTS[@]}"
+      ;;
+    replicate)
+      replicate_run "$SOURCE_URL" "$TARGET_URL"
+      ;;
   esac
 }
 

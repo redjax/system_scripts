@@ -75,16 +75,30 @@ function list_finished_torrents() {
 }
 
 function remove_finished_torrents() {
-  local session="$1" url="$2" auth="$3" delete_data="$4"
-  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
-    -d '{"method":"torrent-get","arguments":{"fields":["id","percentDone","status"]}}' \
-    "$url" | jq -r '.arguments.torrents[] | select(.percentDone == 1 and (.status==0 or .status==6)) | .id' | while read -r torrent_id; do
-      [[ -z "$torrent_id" ]] && continue
-      echo "Removing torrent ID: $torrent_id"
-      curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
-        -d "{\"method\":\"torrent-remove\",\"arguments\":{\"ids\":[$torrent_id],\"delete-local-data\":$([[ "$delete_data" == "true" ]] && echo true || echo false)}}" \
-        "$url" >/dev/null
-    done
+  local session="$1" url="$2" auth="$3" delete_data="${4:-false}"
+
+  local ids_json
+  ids_json=$(
+    curl -sS -u "$auth" \
+      -H "X-Transmission-Session-Id: $session" \
+      -H "Content-Type: application/json" \
+      -d '{"method":"torrent-get","arguments":{"fields":["id","percentDone","status"]}}' \
+      "$url" |
+      jq '[.arguments.torrents[]
+          | select(.percentDone == 1 and (.status == 0 or .status == 6))
+          | .id]'
+  )
+
+  [[ "$(jq 'length' <<<"$ids_json")" -eq 0 ]] && return
+
+  echo "Removing $(jq 'length' <<<"$ids_json") finished torrent(s)"
+
+  rpc_torrent_remove \
+    "$session" \
+    "$url" \
+    "$auth" \
+    "$ids_json" \
+    "$delete_data" >/dev/null
 }
 
 function check_dependencies() {
@@ -112,16 +126,30 @@ function list_stalled_torrents() {
 }
 
 function remove_stalled_torrents() {
-  local session="$1" url="$2" auth="$3" delete_data="$4"
-  curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
-    -d '{"method":"torrent-get","arguments":{"fields":["id","isStalled"]}}' \
-    "$url" | jq -r '.arguments.torrents[] | select(.isStalled == true) | .id' | while read -r torrent_id; do
-      [[ -z "$torrent_id" ]] && continue
-      echo "Removing stalled torrent ID: $torrent_id"
-      curl -s -u "$auth" -H "X-Transmission-Session-Id: $session" \
-        -d "{\"method\":\"torrent-remove\",\"arguments\":{\"ids\":[$torrent_id],\"delete-local-data\":$([[ "$delete_data" == "true" ]] && echo true || echo false)}}" \
-        "$url" >/dev/null
-    done
+  local session="$1" url="$2" auth="$3" delete_data="${4:-false}"
+
+  local ids_json
+  ids_json=$(
+    curl -sS -u "$auth" \
+      -H "X-Transmission-Session-Id: $session" \
+      -H "Content-Type: application/json" \
+      -d '{"method":"torrent-get","arguments":{"fields":["id","isStalled"]}}' \
+      "$url" |
+      jq '[.arguments.torrents[]
+          | select(.isStalled == true)
+          | .id]'
+  )
+
+  [[ "$(jq 'length' <<<"$ids_json")" -eq 0 ]] && return
+
+  echo "Removing $(jq 'length' <<<"$ids_json") stalled torrent(s)"
+
+  rpc_torrent_remove \
+    "$session" \
+    "$url" \
+    "$auth" \
+    "$ids_json" \
+    "$delete_data" >/dev/null
 }
 
 function build_ids_json() {

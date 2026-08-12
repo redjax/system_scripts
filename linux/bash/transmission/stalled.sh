@@ -5,17 +5,19 @@ THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${THIS_DIR}/_common.sh"
 
 RM_STALLED="false"
+DELETE_DATA="false"
 
 function usage() {
   cat << 'EOF'
 Usage: stalled.sh [OPTIONS]
 
-  -h, --help                   Print this help menu
+  -h, --help                    Print this help menu
   -H, --host     <ip-or-fqdn>   Transmission server address
   -p, --port     <port>         Transmission port
   -u, --username <string>       Transmission RPC username
   -P, --password <string>       Transmission RPC password
   --rm-stalled                  Removes all torrents in 'stalled' state
+  --delete-data                 Delete data on disk when removing stalled torrent
   --debug                       Enable debug logging
 EOF
 }
@@ -45,6 +47,10 @@ function parse_arguments() {
         ;;
       --rm-stalled)
         RM_STALLED="true"
+        shift
+        ;;
+      --delete-data)
+        DELETE_DATA="true"
         shift
         ;;
       --debug)
@@ -80,6 +86,12 @@ check_dependencies
 parse_arguments "$@"
 validate_config
 
+if [[ "$DELETE_DATA" == "true" && "$RM_STALLED" != "true" ]]; then
+  echo "[ERROR] --delete-data requires --rm-stalled" >&2
+  usage
+  exit 1
+fi
+
 readonly TRANSMISSION_AUTH_STR="${TRANSMISSION_USERNAME}:${TRANSMISSION_PASSWORD}"
 readonly RPC_URL="http://${TRANSMISSION_HOST}:${TRANSMISSION_PORT}/transmission/rpc"
 SESSION_ID=$(get_session_id "$TRANSMISSION_AUTH_STR" "$RPC_URL")
@@ -97,5 +109,9 @@ if [[ "$RM_STALLED" == "true" ]]; then
   [[ $STALLED_TORRENTS -eq 0 ]] && { echo "No stalled torrents to remove"; exit 0; }
 
   echo "Removing $STALLED_TORRENTS stalled torrents"
-  remove_stalled_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "false"
+  remove_stalled_torrents \
+    "$SESSION_ID" \
+    "$RPC_URL" \
+    "$TRANSMISSION_AUTH_STR" \
+    "$DELETE_DATA"
 fi

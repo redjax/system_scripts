@@ -5,6 +5,7 @@ THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${THIS_DIR}/_common.sh"
 
 RM_FINISHED="false"
+DELETE_DATA="false"
 
 function usage() {
   cat << 'EOF'
@@ -16,6 +17,7 @@ Usage: finished.sh [OPTIONS]
   -u, --username <string>      Transmission RPC username
   -P, --password <string>      Transmission RPC password
   --rm-finished                Removes all torrents in 'finished' state
+  --delete-data                Delete data from disk when removing torrent
   --debug                      Enable debug logging
 EOF
 }
@@ -67,6 +69,10 @@ function parse_arguments() {
         RM_FINISHED="true"
         shift
         ;;
+      --delete-data)
+        DELETE_DATA="true"
+        shift
+        ;;
       --debug)
         DEBUG="true"
         shift
@@ -114,10 +120,26 @@ TOTAL_TORRENTS=$(count_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR
 echo
 list_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR"
 
+if [[ "$DELETE_DATA" == "true" && "$RM_FINISHED" != "true" ]]; then
+  echo "[ERROR] --delete-data requires --rm-finished" >&2
+  usage
+  exit 1
+fi
+
 if [[ "$RM_FINISHED" == "true" ]]; then
   FINISHED_TORRENTS=$(count_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
   [[ $FINISHED_TORRENTS -eq 0 ]] && { echo "No torrents to remove"; exit 0; }
-  
-  echo "Removing $FINISHED_TORRENTS finished torrents"
-  remove_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "false"
+
+  if [[ "$DELETE_DATA" == "true" ]]; then
+    echo "Removing $FINISHED_TORRENTS finished torrents and deleting local data"
+  else
+    echo "Removing $FINISHED_TORRENTS finished torrents"
+  fi
+
+  remove_finished_torrents \
+    "$SESSION_ID" \
+    "$RPC_URL" \
+    "$TRANSMISSION_AUTH_STR" \
+    "$DELETE_DATA"
 fi
+
