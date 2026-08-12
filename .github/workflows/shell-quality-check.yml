@@ -30,7 +30,7 @@ on:
   workflow_dispatch:
     inputs:
       pipelinetemplates-ref:
-        description: PipelineTemplates branch, tag, or commit SHA to use
+        description: PipelineTemplates ref used for shared-script/config checkout
         required: false
         type: string
         default: feat/shellcheck-shellfmt-reports
@@ -51,8 +51,8 @@ on:
         type: string
         default: "."
 
-      shellcheck-mode:
-        description: ShellCheck finding policy
+      findings-policy:
+        description: Whether detected quality issues fail the workflow
         required: false
         type: choice
         default: enforce
@@ -69,15 +69,6 @@ on:
           - check
           - write
 
-      shellfmt-finding-policy:
-        description: shellfmt finding policy
-        required: false
-        type: choice
-        default: enforce
-        options:
-          - enforce
-          - report-only
-
 permissions:
   contents: write
 
@@ -86,35 +77,39 @@ jobs:
     name: ShellCheck and shellfmt
     uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shellcheck-shellfmt-reports
     with:
-      ## Automatic runs use this feature branch; manual dispatch may override it.
+      ## This controls PipelineTemplates content checked out inside the central
+      #  workflows, rather than the revision of the reusable workflow itself.
       pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'feat/shellcheck-shellfmt-reports' }}
+
 
       ## Automatic runs use both tools.
       tools: ${{ inputs.tools || 'both' }}
 
-      ## Automatic runs scan the entire repository.
+
+      ## Automatic runs scan the complete repository.
       scan-path: ${{ inputs.scan-path || '.' }}
+
 
       ## ShellCheck uses this repository's baseline configuration.
       shellcheck-config-path: ".shellcheckrc"
       use-default-shellcheck-config: false
 
-      ## ShellCheck is inherently check-only. Its selectable mode controls
-      #  whether lint findings fail the workflow or are reported as warnings.
-      shellcheck-fail-on-findings: ${{ inputs.shellcheck-mode != 'report-only' }}
 
       ## shellfmt uses PipelineTemplates config/shellfmt/options.
       use-default-shellfmt-config: true
 
-      ## Automatic runs always use check mode. A manual run may select write.
+
+      ## Default to non-mutating format verification.
       shellfmt-mode: ${{ inputs.shellfmt-mode || 'check' }}
 
-      ## This workflow never commits formatting changes.
+
+      ## Never create formatting commits from this workflow.
       shellfmt-commit-changes: false
 
-      ## shellfmt findings fail by default; report-only preserves the report,
-      #  annotations, and artifacts but does not fail the job.
-      shellfmt-fail-on-findings: ${{ inputs.shellfmt-finding-policy != 'report-only' }}
+
+      ## This common policy applies to every selected tool.
+      fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
+
 
       ## Use repository-specific artifact names.
       shellcheck-artifact-name: system-scripts-shellcheck-results
