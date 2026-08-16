@@ -1,0 +1,107 @@
+---
+#################################################################################
+# Run shellcheck & shellfmt using the PipelineTemplates shell-quality pipeline. #
+#                                                                               #
+# This pipeline runs in "check only" mode, it will not change any files.        #
+#################################################################################
+
+name: Shell Quality
+
+on:
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - ".github/workflows/shell-quality-check.yml"
+  #     - ".shellcheckrc"
+  #     - "linux/bash/**"
+  #     - "repo_scripts/**"
+
+  workflow_dispatch:
+    inputs:
+      pipelinetemplates-ref:
+        description: PipelineTemplates ref used for shared-script/config checkout
+        required: false
+        type: string
+        default: main
+
+      tools:
+        description: Quality tools to run
+        required: false
+        type: choice
+        default: both
+        options:
+          - both
+          - shellcheck
+          - shellfmt
+
+      scan-path:
+        description: Repository path to scan
+        required: false
+        type: string
+        default: "."
+
+      findings-policy:
+        description: Whether detected quality issues fail the workflow
+        required: false
+        type: choice
+        default: enforce
+        options:
+          - enforce
+          - report-only
+
+      shellfmt-mode:
+        description: shellfmt execution mode
+        required: false
+        type: choice
+        default: check
+        options:
+          - check
+          - write
+
+permissions:
+  contents: write
+
+jobs:
+  shell-quality:
+    name: ShellCheck and shellfmt
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    with:
+      ## This controls PipelineTemplates content checked out inside the central
+      #  workflows, rather than the revision of the reusable workflow itself.
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+
+
+      ## Automatic runs use both tools.
+      tools: ${{ inputs.tools || 'both' }}
+
+
+      ## Automatic runs scan the complete repository.
+      scan-path: ${{ inputs.scan-path || '.' }}
+
+
+      ## ShellCheck uses this repository's baseline configuration.
+      shellcheck-config-path: ".shellcheckrc"
+      use-default-shellcheck-config: false
+
+
+      ## shellfmt uses PipelineTemplates config/shellfmt/options.
+      use-default-shellfmt-config: true
+
+
+      ## Default to non-mutating format verification.
+      shellfmt-mode: ${{ inputs.shellfmt-mode || 'check' }}
+
+
+      ## Never create formatting commits from this workflow.
+      shellfmt-commit-changes: false
+
+
+      ## This common policy applies to every selected tool.
+      fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
+
+
+      ## Use repository-specific artifact names.
+      shellcheck-artifact-name: system-scripts-shellcheck-results
+      shellfmt-artifact-name: system-scripts-shellfmt-results
+      artifact-retention-days: 30
