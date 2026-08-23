@@ -1,0 +1,17 @@
+repos/*
+logs/*
+lock/*
+
+jobs
+*.jobs
+*.jobs.*
+
+*.log
+*.log.*
+
+*.conf
+*.yml
+*.yaml
+
+!*example*.*
+!*.*example*

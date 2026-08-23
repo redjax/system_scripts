@@ -17,7 +17,6 @@ source "${INIT_SCRIPT}"
 ## Set default script arguments
 DEFAULT_ARGS=(
   --default-branch "main"
-  --pull-rebase
   --prune-on-fetch
   --auto-setup-remote
   --reuse-conflict
@@ -40,3 +39,4 @@ fi
 
 ## Call git setup function
 do_git_setup
+
