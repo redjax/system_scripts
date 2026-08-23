@@ -26,7 +26,7 @@ echo "Installing Yazi packages"
 
 for package in "${PACKAGES[@]}"; do
     echo "  -> $package"
-    ya pkg add "$package"
+    ya pkg add "$package" || true
 done
 
 echo
