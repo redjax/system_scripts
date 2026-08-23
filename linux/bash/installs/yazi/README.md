@@ -6,6 +6,12 @@
 
 ### Linux
 
+These Bash scripts install Yazi, its dependencies, and my selection of themes and plugins. The `install-yazi.sh` script tries to install from a package manager (`apt`, `dnf`, `zypper`, etc) first, and falls back to downloading an executable from the [Github releases for Yazi](https://github.com/sxyazi/yazi/releases).
+
+- Run [`./install-yazi.sh`](./install-yazi.sh)
+- Run [`./scripts/install-yazi-dependencies.sh`](./install-yazi-dependencies.sh)
+- Run [`./scripts/install-yazi-extras.sh`](./install-yazi-extras.sh)
+
 ### Windows
 
 #### Scoop
