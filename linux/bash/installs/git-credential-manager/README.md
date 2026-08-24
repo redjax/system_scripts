@@ -52,7 +52,6 @@ Configure `GPG_TTY` so GPG knows which terminal to use for PIN entry:
 
 ```shell
 echo 'export GPG_TTY=$(tty)' >> ~/.bashrc
-export GPG_TTY=$(tty)
 ```
 
 Create a GPG key if you don't already have one:
