@@ -16,24 +16,59 @@ Clone repositories using the HTTPS URL, i.e.: `git clone https://dev.azure.com/c
 > - Debian-family:
 > 
 >   ```shell
->   sudo apt update -y && sudo apt install -y gnupg pass
+>   sudo apt update -y && sudo apt install -y gnupg pass pinentry-curses
 >   ```
 >
 > - RedHat-family (RHEL, Fedora, Alma, etc):
 >
 >   ```shell
->   sudo dnf install -y gnupg2 pass
+>   sudo dnf install -y gnupg2 pass pinentry-curses
 >   ```
 
 With this approach, the PAT is not stored in your shell profile or an environment variable. GCM stores the credential using a supported credential store.
 
 For a headless Linux machine, i.e. in WSL, GCM can use GPG/pass for persistent encrypted credential storage.
 
-First, create a GPG key if you don't already have one:
+If you are using a headless environment, configure GPG to use the terminal-based `pinentry` program:
+
+```shell
+mkdir -p ~/.gnupg
+chmod 700 ~/.gnupg
+```
+
+Create or update `~/.gnupg/gpg-agent.conf`:
+
+```shell
+echo "pinentry-program $(command -v pinentry-curses)" >> ~/.gnupg/gpg-agent.conf
+```
+
+Restart the GPG agent:
+
+```shell
+gpgconf --kill gpg-agent
+```
+
+Configure `GPG_TTY` so GPG knows which terminal to use for PIN entry:
+
+```shell
+echo 'export GPG_TTY=$(tty)' >> ~/.bashrc
+export GPG_TTY=$(tty)
+```
+
+Create a GPG key if you don't already have one:
 
 ```shell
 gpg --full-generate-key
 ```
+
+When prompted:
+
+    Select the default key type.
+    Select the default key size, or use 4096.
+    Choose an expiration period (0=no expiration).
+    Enter your real name.
+    Enter your email address.
+    Enter a passphrase when prompted.
 
 Find your GPG key ID:
 
@@ -41,7 +76,13 @@ Find your GPG key ID:
 gpg --list-secret-keys --keyid-format LONG
 ```
 
-For example:
+The key ID will look similar to:
+
+```shell
+sec   rsa3072/ABCDEF1234567890 2026-08-24 [SC]
+```
+
+Initialize password store using your GPG key ID:
 
 ```shell
 pass init ABCDEF1234567890
@@ -59,14 +100,6 @@ Configure GCM to use the GPG credential store:
 git config --global credential.credentialStore gpg
 ```
 
-Then clone the repository:
-
-```shell
-git clone https://dev.azure.com/companyName/projectName/_git/repo-name
-```
-
-GCM will prompt for authentication and securely store the credential for subsequent Git operations.
-
 Verify the configured credential store:
 
 ```shell
@@ -78,6 +111,14 @@ It should output:
 ```shell
 gpg
 ```
+
+Then clone the repository:
+
+```shell
+git clone https://dev.azure.com/companyName/projectName/_git/repo-name
+```
+
+GCM will prompt for Microsoft/Azure DevOps authentication. After authentication, GCM will securely store the resulting credential in the GPG-encrypted pass store. Subsequent git pull, git fetch, and git push operations should not require you to authenticate again.
 
 #### Option 2: PAT in ~/.bash_profile
 
