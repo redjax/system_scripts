@@ -93,12 +93,6 @@ Initialize password store using your GPG key ID:
 pass init ABCDEF1234567890
 ```
 
-Initialize the password store using the key ID:
-
-```shell
-pass init <gpg-id>
-```
-
 Configure GCM to use the GPG credential store:
 
 ```shell
