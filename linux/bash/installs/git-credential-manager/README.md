@@ -102,3 +102,27 @@ That can prevent GCM from working normally for other Git hosts. Instead, configu
 ```shell
 git config --global credential.https://dev.azure.com.helper ~/.git-credential-azure
 ```
+
+> [!NOTE]
+> Storing a PAT in a file and sourcing it for GCM like this is not very secure. You will see warnings when running git commands, like:
+>
+> ```shell
+> fatal: No credential store has been selected
+>
+> Set the GCM_CREDENTIAL_STORE environment variable or the credential.credentialStore Git configuration setting to one of the following options:
+> 
+>   secretservice  : freedesktop.org Secret Service (requires graphical interface)
+>   gpg            : GNU `pass` compatible credential storage (requires GPG and `pass`)
+>   cache          : Git's in-memory credential cache
+>   plaintext      : store credentials in plain-text files (UNSECURE)
+>   none           : disable internal credential storage
+>
+> See https://aka.ms/gcm/credstores for more information.
+> ```
+>
+> To resolve these errors, run these commands to tell Git not to invoke the global GCM helper for `dev.azure.com`:
+>
+> ```shell
+> git config --global credential.https://dev.azure.com.helper ""
+> git config --global credential.https://dev.azure.com.helper ~/.git-credential-azure
+> ```
