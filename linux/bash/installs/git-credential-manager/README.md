@@ -16,6 +16,10 @@ git config --global credential.https://dev.azure.com.useHttpPath true
 Clone repositories with `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`.
 
 #### Option 1: Secure credential storage (recommended)
+
+> [!NOTE]
+> This setup requires the `gpg` package. You can install it with `apt/dnf install -y gpg`.
+
 With this approach, the PAT is not stored in your shell profile or an environment variable. GCM stores the credential using a supported credential store.
 
 For a headless Linux machine, GCM can use GPG/pass for persistent encrypted credential storage.
