@@ -69,6 +69,12 @@ When prompted:
     Enter your email address.
     Enter a passphrase when prompted.
 
+You can generate a strong password with:
+
+```shell
+openssl rand -base64 32
+```
+
 Find your GPG key ID:
 
 ```shell
