@@ -16,10 +16,20 @@ git config --global credential.https://dev.azure.com.useHttpPath true
 
 Clone repositories with `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`.
 
-You can also store the PAT in an environment variable, although this is not recommended as it's essentially storing the plaintext password in your profile. To do this, edit a file sourced by `.bashrc`, i.e. `~/.bash_profile`, and add this environment variable:
+#### Using PAT from Environment Variable
+
+If you don't want to enter the PAT every time Git authenticates, you can store it in an environment variable. **Be aware that this means the PAT is stored as plaintext in your shell profile.**
+
+Add the following to a file sourced when your shell starts, such as `~/.bash_profile`:
 
 ```shell
 export AZURE_DEVOPS_PAT="your-ado-pat"
+```
+
+Protect the file (if you used something other than `~/.bash_profile`, enter that path instead):
+
+```shell
+chmod 600 ~/.bash_profile
 ```
 
 Then create a file like `~/.git-credential-azure`:
@@ -39,11 +49,24 @@ And tell GCM to use it:
 
 ```shell
 chmod 700 ~/.git-credential-azure
-git config --global credential.helper ~/.git-credential-azure
+git config --global credential.https://dev.azure.com.helper ~/.git-credential-azure
 ```
 
-Make sure the `.bash_profile` file has the correct permissions:
+Verify the configuration:
 
 ```shell
-chmod 600 ~/.bash_profile
+git config --global --get-regexp 'credential.*helper'
+```
+
+You should see something like:
+
+```shell
+credential.helper /usr/local/bin/git-credential-manager
+credential.https://dev.azure.com.helper ~/.git-credential-azure
+```
+
+You should then be able to clone without being prompted for the PAT:
+
+```shell
+git clone https://dev.azure.com/companyName/projectName/_git/repo-name
 ```
