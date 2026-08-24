@@ -6,23 +6,52 @@ Installs [Git Credential Manager](https://github.com/git-ecosystem/git-credentia
 
 ### Azure DevOps
 
-Create a Personal Access Token (PAT) in Azure DevOps. Configure GCM to use it with:
+Clone repositories using the HTTPS URL, i.e.: `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`.
 
-```shell
-git config --global credential.azreposCredentialType pat
-git config --global credential.https://dev.azure.com.useHttpPath true
-```
-
-Clone repositories with `git clone https://dev.azure.com/companyName/projectName/_git/repo-name`.
-
-#### Option 1: Secure credential storage (recommended)
+#### Option 1: GCM-managed authentication (recommended)
 
 > [!NOTE]
-> This setup requires the `gpg` package. You can install it with `apt/dnf install -y gpg`.
+> This setup requires `gpg` and `pass`. Install with:
+>
+> - Debian-family:
+> 
+>   ```shell
+>   sudo apt update -y && sudo apt install -y gnupg pass
+>   ```
+>
+> - RedHat-family (RHEL, Fedora, Alma, etc):
+>
+>   ```shell
+>   sudo dnf install -y gnupg2 pass
+>   ```
 
 With this approach, the PAT is not stored in your shell profile or an environment variable. GCM stores the credential using a supported credential store.
 
-For a headless Linux machine, GCM can use GPG/pass for persistent encrypted credential storage.
+For a headless Linux machine, i.e. in WSL, GCM can use GPG/pass for persistent encrypted credential storage.
+
+First, create a GPG key if you don't already have one:
+
+```shell
+gpg --full-generate-key
+```
+
+Find your GPG key ID:
+
+```shell
+gpg --list-secret-keys --keyid-format LONG
+```
+
+For example:
+
+```shell
+pass init ABCDEF1234567890
+```
+
+Initialize the password store using the key ID:
+
+```shell
+pass init <gpg-id>
+```
 
 Configure GCM to use the GPG credential store:
 
@@ -37,8 +66,6 @@ git clone https://dev.azure.com/companyName/projectName/_git/repo-name
 ```
 
 GCM will prompt for authentication and securely store the credential for subsequent Git operations.
-
-    Note: The gpg credential store requires GPG and pass to be installed and configured.
 
 Verify the configured credential store:
 
