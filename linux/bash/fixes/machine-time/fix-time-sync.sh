@@ -100,4 +100,3 @@ echo "Done"
 
 echo "Current time:"
 date
-
