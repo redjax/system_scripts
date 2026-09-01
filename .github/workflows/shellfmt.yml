@@ -12,6 +12,7 @@ on:
   push:
     branches:
       - main
+      - topic/linting-formatting
     paths:
       - "linux/bash/**/*.sh"
       - "repo_scripts/**/*.sh"

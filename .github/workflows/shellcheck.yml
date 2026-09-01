@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - topic/linting-formatting
     paths:
       - ".shellcheckrc"
       - "linux/bash/**/*.sh"
