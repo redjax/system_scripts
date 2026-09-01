@@ -1,0 +1,61 @@
+---
+#############################################################
+# Run ShellCheck on shell scripts changed by a pull request #
+#############################################################
+
+name: Shell Quality
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".shellcheckrc"
+      - "linux/bash/**/*.sh"
+      - "repo_scripts/**/*.sh"
+
+  workflow_dispatch:
+    inputs:
+      pipelinetemplates-ref:
+        description: PipelineTemplates ref used for shared-script/config checkout
+        required: false
+        type: string
+        default: main
+
+      scan-path:
+        description: Repository path to scan
+        required: false
+        type: string
+        default: "."
+
+      findings-policy:
+        description: Whether detected quality issues fail the workflow
+        required: false
+        type: choice
+        default: enforce
+        options:
+          - enforce
+          - report-only
+
+permissions:
+  contents: read
+
+jobs:
+  shell-quality:
+    name: ShellCheck
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
+    with:
+      # pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+      pipelinetemplates-ref: feat/shell-quality-checks
+
+      tools: shellcheck
+
+      scan-path: ${{ inputs.scan-path || '.' }}
+
+      shellcheck-config-path: ".shellcheckrc"
+      use-default-shellcheck-config: false
+
+      fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
+
+      shellcheck-artifact-name: system-scripts-shellcheck-results
+      artifact-retention-days: 30
