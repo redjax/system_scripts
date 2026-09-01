@@ -9,14 +9,15 @@ on:
   pull_request:
     branches:
       - main
+      - topic/linting-formatting
     types:
       - opened
       - synchronize
       - reopened
-    paths:
-      - ".shellcheckrc"
-      - "linux/bash/**/*.sh"
-      - "repo_scripts/**/*.sh"
+    # paths:
+    #   - ".shellcheckrc"
+    #   - "linux/bash/**/*.sh"
+    #   - "repo_scripts/**/*.sh"
 
   workflow_dispatch:
     inputs:
