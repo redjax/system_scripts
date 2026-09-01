@@ -22,39 +22,39 @@ device=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --allow)
-    if $deny; then
-      echo "Error: --allow and --deny cannot be used together." >&2
+    --allow)
+      if $deny; then
+        echo "Error: --allow and --deny cannot be used together." >&2
+        exit 2
+      fi
+      allow=true
+      shift
+      ;;
+    --deny)
+      if $allow; then
+        echo "Error: --allow and --deny cannot be used together." >&2
+        exit 2
+      fi
+      deny=true
+      shift
+      ;;
+    --device)
+      device="${2:-}"
+      [[ -n "$device" ]] || {
+        echo "Error: --device requires a value." >&2
+        exit 2
+      }
+      shift 2
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Error: unknown argument: $1" >&2
+      usage
       exit 2
-    fi
-    allow=true
-    shift
-    ;;
-  --deny)
-    if $allow; then
-      echo "Error: --allow and --deny cannot be used together." >&2
-      exit 2
-    fi
-    deny=true
-    shift
-    ;;
-  --device)
-    device="${2:-}"
-    [[ -n "$device" ]] || {
-      echo "Error: --device requires a value." >&2
-      exit 2
-    }
-    shift 2
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    echo "Error: unknown argument: $1" >&2
-    usage
-    exit 2
-    ;;
+      ;;
   esac
 done
 
@@ -93,4 +93,3 @@ else
   sudo chmod 600 "$device"
   echo "Denied access on $device"
 fi
-

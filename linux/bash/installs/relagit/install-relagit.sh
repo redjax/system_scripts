@@ -210,4 +210,3 @@ echo "  relagit"
 
 echo
 echo "Or launch from your desktop environment search."
-

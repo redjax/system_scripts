@@ -17,15 +17,15 @@ function usage() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -n|--container-name)
+    -n | --container-name)
       CONTAINER_NAME="$2"
       shift 2
       ;;
-    -t|--tail)
+    -t | --tail)
       LOG_TAIL="$2"
       shift 2
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
@@ -47,4 +47,3 @@ fi
 echo "Tailing logs for container '$CONTAINER_NAME' (tail=$LOG_TAIL)"
 
 docker logs -f --tail "$LOG_TAIL" "$CONTAINER_NAME" 2>&1 | lnav
-

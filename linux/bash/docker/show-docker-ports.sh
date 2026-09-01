@@ -23,10 +23,10 @@ docker_output=$(docker ps --format '{{.Names}}\t{{.Ports}}')
 while read -r line; do
   container=$(echo -e "$line" | awk '{print $1}')
   length=${#container}
-  if (( length > max_length )); then
+  if ((length > max_length)); then
     max_length=$length
   fi
-done <<< "$docker_output"
+done <<<"$docker_output"
 
 # Second pass to generate the output
 while read -r line; do
@@ -46,21 +46,20 @@ while read -r line; do
 
   # Check if ports are exposed
   if [[ "$line" == *"0.0.0.0:"* ]] || [[ "$line" == *":::"* ]]; then
-    if (( color_blind_mode )); then
+    if ((color_blind_mode)); then
       exposed_output+="Exposed: ${container}${padding} : ${ports}\n"
     else
       exposed_output+="${RED}${container}${padding} : ${ports}${NC}\n"
     fi
   else
-    if (( color_blind_mode )); then
+    if ((color_blind_mode)); then
       not_exposed_output+="Not Exposed: ${container}${padding} : ${ports}\n"
     else
       not_exposed_output+="${GREEN}${container}${padding} : ${ports}${NC}\n"
     fi
   fi
-done <<< "$docker_output"
+done <<<"$docker_output"
 
 # Sort and print output
 echo -e "$exposed_output"
 echo -e "$not_exposed_output"
-

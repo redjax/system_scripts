@@ -41,7 +41,7 @@ while [[ $# -gt 0 ]]; do
       LINT_PATH="$(realpath -m "${LINT_PATH}")"
       shift 2
       ;;
-    -l|--sev-level)
+    -l | --sev-level)
       LINT_SEV="$2"
       shift 2
       ;;
@@ -62,8 +62,8 @@ fi
 LINT_SEV="${LINT_SEV,,}"
 
 if [[ "$LINT_SEV" != "info" &&
-      "$LINT_SEV" != "warning" &&
-      "$LINT_SEV" != "error" ]]; then
+  "$LINT_SEV" != "warning" &&
+  "$LINT_SEV" != "error" ]]; then
   echo "[ERROR] Invalid severity level: $LINT_SEV" >&2
   echo "        Must be one of: info, warning, error" >&2
   usage
@@ -88,4 +88,4 @@ find "$LINT_PATH" \
   -type f \
   -name "*.sh" \
   -print0 |
-xargs -0 -r "${shellcheck_cmd[@]}"
+  xargs -0 -r "${shellcheck_cmd[@]}"

@@ -10,17 +10,17 @@ tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 
 outfile="$tmpdir/security.log"
-: > "$outfile"
+: >"$outfile"
 
 append_file() {
   local f="$1"
-  [[ -f "$f" ]] && cat "$f" >> "$outfile"
+  [[ -f "$f" ]] && cat "$f" >>"$outfile"
 }
 
 append_journal() {
   local pattern="$1"
   if command -v journalctl >/dev/null 2>&1; then
-    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >> "$outfile" || true
+    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >>"$outfile" || true
   fi
 }
 
@@ -31,7 +31,7 @@ if [[ -r /etc/os-release ]]; then
 fi
 
 case "$os_id" in
-  debian|ubuntu)
+  debian | ubuntu)
     append_file /var/log/auth.log
     append_file /var/log/ufw.log
     append_file /var/log/audit/audit.log
@@ -39,21 +39,21 @@ case "$os_id" in
       append_journal 'ssh|sudo|pam|auth|ufw|audit|fail|denied|invalid user'
     fi
     ;;
-  fedora|rhel|centos|rocky|almalinux|ol)
+  fedora | rhel | centos | rocky | almalinux | ol)
     append_file /var/log/secure
     append_file /var/log/audit/audit.log
     if [[ ! -s "$outfile" ]]; then
       append_journal 'ssh|sudo|pam|auth|audit|fail|denied|invalid user'
     fi
     ;;
-  arch|manjaro|endeavouros)
+  arch | manjaro | endeavouros)
     append_file /var/log/auth.log
     append_file /var/log/audit/audit.log
     if [[ ! -s "$outfile" ]]; then
       append_journal 'ssh|sudo|pam|auth|audit|fail|denied|invalid user'
     fi
     ;;
-  opensuse*|suse|sles)
+  opensuse* | suse | sles)
     append_file /var/log/messages
     append_file /var/log/audit/audit.log
     if [[ ! -s "$outfile" ]]; then
@@ -71,4 +71,3 @@ if [[ ! -s "$outfile" ]]; then
 fi
 
 lnav "$outfile"
-

@@ -17,4 +17,3 @@ else
   echo "Helm installed."
   exit 0
 fi
-

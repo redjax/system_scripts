@@ -38,23 +38,23 @@ function require_var() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -e|--env-file)
+    -e | --env-file)
       ENV_FILE="$2"
       shift 2
       ;;
-    -c|--config)
+    -c | --config)
       CONFIG_FILE_PATH="$2"
       shift 2
       ;;
-    -d|--dry-run)
+    -d | --dry-run)
       export RENOVATE_DRY_RUN=true
       shift
       ;;
-    -r|--repository)
+    -r | --repository)
       export RENOVATE_REPOSITORIES="$2"
       shift 2
       ;;
-    -p|--platform)
+    -p | --platform)
       export RENOVATE_PLATFORM="$2"
       shift 2
       ;;
@@ -66,7 +66,7 @@ while [[ $# -gt 0 ]]; do
       shift
       break
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;

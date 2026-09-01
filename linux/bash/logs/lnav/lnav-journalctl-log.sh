@@ -9,4 +9,3 @@ fi
 echo "Starting lnav, watching journalctl"
 
 journalctl -f | lnav
-

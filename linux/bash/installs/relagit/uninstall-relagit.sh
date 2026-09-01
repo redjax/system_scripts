@@ -50,4 +50,3 @@ refresh_desktop
 
 echo
 echo "RelaGit has been removed."
-

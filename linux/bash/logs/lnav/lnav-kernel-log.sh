@@ -10,4 +10,3 @@ echo "Starting lnav, watching kernel logs"
 echo "[WARNING] Kernel logs require sudo permissions"
 
 sudo lnav /var/log/kern.log
-

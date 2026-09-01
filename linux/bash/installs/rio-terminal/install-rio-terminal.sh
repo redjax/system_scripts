@@ -70,30 +70,30 @@ echo "Installing Rio terminal v${RIO_VERSION}"
 ## Select asset based on OS, Arch, Distro
 if [ "$OS" = "Linux" ]; then
   case "$ARCH" in
-  x86_64 | amd64)
-    if [[ "$DISTRO_ID" == "debian" || "$DISTRO_ID" == "ubuntu" ]]; then
-      FILE="rioterm_${RIO_VERSION}_amd64_${SESSION_MANAGER}.deb"
-    elif [[ "$DISTRO_ID" == "fedora" || "$DISTRO_ID" == "rhel" || "$DISTRO_ID" == "centos" ]]; then
-      FILE="rioterm-${RIO_VERSION}-1.x86_64_${SESSION_MANAGER}.rpm"
-    else
-      echo "Unsupported Linux distribution: $DISTRO_ID"
+    x86_64 | amd64)
+      if [[ "$DISTRO_ID" == "debian" || "$DISTRO_ID" == "ubuntu" ]]; then
+        FILE="rioterm_${RIO_VERSION}_amd64_${SESSION_MANAGER}.deb"
+      elif [[ "$DISTRO_ID" == "fedora" || "$DISTRO_ID" == "rhel" || "$DISTRO_ID" == "centos" ]]; then
+        FILE="rioterm-${RIO_VERSION}-1.x86_64_${SESSION_MANAGER}.rpm"
+      else
+        echo "Unsupported Linux distribution: $DISTRO_ID"
+        exit 1
+      fi
+      ;;
+    aarch64 | arm64)
+      if [[ "$DISTRO_ID" == "debian" || "$DISTRO_ID" == "ubuntu" ]]; then
+        FILE="rioterm_${RIO_VERSION}_arm64_${SESSION_MANAGER}.deb"
+      elif [[ "$DISTRO_ID" == "fedora" || "$DISTRO_ID" == "rhel" || "$DISTRO_ID" == "centos" ]]; then
+        FILE="rioterm-${RIO_VERSION}-1.aarch64_${SESSION_MANAGER}.rpm"
+      else
+        echo "Unsupported Linux distribution: $DISTRO_ID"
+        exit 1
+      fi
+      ;;
+    *)
+      echo "Unsupported Linux architecture: $ARCH"
       exit 1
-    fi
-    ;;
-  aarch64 | arm64)
-    if [[ "$DISTRO_ID" == "debian" || "$DISTRO_ID" == "ubuntu" ]]; then
-      FILE="rioterm_${RIO_VERSION}_arm64_${SESSION_MANAGER}.deb"
-    elif [[ "$DISTRO_ID" == "fedora" || "$DISTRO_ID" == "rhel" || "$DISTRO_ID" == "centos" ]]; then
-      FILE="rioterm-${RIO_VERSION}-1.aarch64_${SESSION_MANAGER}.rpm"
-    else
-      echo "Unsupported Linux distribution: $DISTRO_ID"
-      exit 1
-    fi
-    ;;
-  *)
-    echo "Unsupported Linux architecture: $ARCH"
-    exit 1
-    ;;
+      ;;
   esac
 elif [ "$OS" = "Darwin" ]; then
   FILE="rio.dmg"
@@ -151,18 +151,18 @@ while true; do
   echo ""
 
   case $REPLY in
-  [Yy]*)
-    install_rio_themes
+    [Yy]*)
+      install_rio_themes
 
-    if [[ $? -ne 0 ]]; then
+      if [[ $? -ne 0 ]]; then
         echo "[ERROR] Failed to install rio themes."
         exit 1
-    fi
+      fi
 
-    ;;
-  *)
-    echo "Skipping themes download."
-    break
-    ;;
+      ;;
+    *)
+      echo "Skipping themes download."
+      break
+      ;;
   esac
 done

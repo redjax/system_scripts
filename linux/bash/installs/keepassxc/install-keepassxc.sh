@@ -87,11 +87,11 @@ function install_via_github_release() {
 
   APPIMAGE_URL=$(
     echo "$RELEASE_JSON" |
-    grep browser_download_url |
-    grep AppImage |
-    grep x86_64 |
-    head -n1 |
-    cut -d '"' -f4
+      grep browser_download_url |
+      grep AppImage |
+      grep x86_64 |
+      head -n1 |
+      cut -d '"' -f4
   )
 
   if [[ -z "$APPIMAGE_URL" ]]; then
@@ -105,7 +105,7 @@ function install_via_github_release() {
 
   chmod +x "$DEST"
 
-  cat > "$HOME/.local/share/applications/keepassxc.desktop" <<EOF
+  cat >"$HOME/.local/share/applications/keepassxc.desktop" <<EOF
 [Desktop Entry]
 Type=Application
 Name=KeePassXC

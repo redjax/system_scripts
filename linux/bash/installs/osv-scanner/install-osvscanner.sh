@@ -25,21 +25,24 @@ OS_TYPE="$(uname | tr '[:upper:]' '[:lower:]')"
 ## Detect CPU architecture
 ARCH="$(uname -m)"
 case "$ARCH" in
-    x86_64) ARCH="amd64" ;;
-    aarch64|arm64) ARCH="arm64" ;;
-    *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+  x86_64) ARCH="amd64" ;;
+  aarch64 | arm64) ARCH="arm64" ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
 esac
 
 ## Map OS and Arch to release asset name format
 if [[ "$OS_TYPE" == "darwin" ]]; then
-    TARGET="${BINARY_NAME}_darwin_${ARCH}"
+  TARGET="${BINARY_NAME}_darwin_${ARCH}"
 elif [[ "$OS_TYPE" == "linux" ]]; then
-    TARGET="${BINARY_NAME}_linux_${ARCH}"
+  TARGET="${BINARY_NAME}_linux_${ARCH}"
 elif [[ "$OS_TYPE" == "windowsnt" ]] || [[ "$OS_TYPE" == "mingw"* ]] || [[ "$OS_TYPE" == "msys"* ]]; then
-    TARGET="${BINARY_NAME}_windows_${ARCH}.exe"
+  TARGET="${BINARY_NAME}_windows_${ARCH}.exe"
 else
-    echo "Unsupported OS: $OS_TYPE"
-    exit 1
+  echo "Unsupported OS: $OS_TYPE"
+  exit 1
 fi
 
 ## Fetch latest release info from GitHub API
@@ -49,16 +52,16 @@ release_json=$(curl -s $API_URL)
 VERSION=$(echo "$release_json" | grep -Po '"tag_name": "\K.*?(?=")')
 
 if [[ -z "$VERSION" ]]; then
-    echo "Could not retrieve the latest version."
-    exit 1
+  echo "Could not retrieve the latest version."
+  exit 1
 fi
 
 echo "Latest version detected: $VERSION"
 DOWNLOAD_URL=$(echo "$release_json" | grep -Po '"browser_download_url": "\K.*?(?=")' | grep "$TARGET")
 
 if [[ -z "$DOWNLOAD_URL" ]]; then
-    echo "Could not find a download URL for target $TARGET"
-    exit 1
+  echo "Could not find a download URL for target $TARGET"
+  exit 1
 fi
 
 ## Download the binary
@@ -76,4 +79,3 @@ sudo mv "$TMP_DIR/$BINARY_NAME" "$INSTALL_DIR/"
 rm -rf "$TMP_DIR"
 
 echo "Installation complete. Verify by running: $BINARY_NAME --version"
-

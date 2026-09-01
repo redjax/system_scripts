@@ -14,4 +14,3 @@ if ! command -v git bug >&/dev/null; then
 fi
 
 git bug bridge new
-

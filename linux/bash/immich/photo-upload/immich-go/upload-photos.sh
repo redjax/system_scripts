@@ -33,39 +33,39 @@ EOF
 ## Parse CLI arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  -u | --server-url)
-    IMMICH_URL="${2}"
-    shift 2
-    ;;
-  -e | --email)
-    IMMICH_EMAIL="${2}"
-    shift 2
-    ;;
-  -k | --api-key)
-    IMMICH_KEY="${2}"
-    shift 2
-    ;;
-  -K | --admin-key)
-    IMMICH_ADMIN_KEY="${2}"
-    shift 2
-    ;;
-  -p | --local-path)
-    PHOTO_DIR="${2}"
-    shift 2
-    ;;
-  --dry-run)
-    DRY_RUN="true"
-    shift
-    ;;
-  *)
-    echo "[ERROR] Invalid arg: $1" >&2
-    usage
-    exit 1
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -u | --server-url)
+      IMMICH_URL="${2}"
+      shift 2
+      ;;
+    -e | --email)
+      IMMICH_EMAIL="${2}"
+      shift 2
+      ;;
+    -k | --api-key)
+      IMMICH_KEY="${2}"
+      shift 2
+      ;;
+    -K | --admin-key)
+      IMMICH_ADMIN_KEY="${2}"
+      shift 2
+      ;;
+    -p | --local-path)
+      PHOTO_DIR="${2}"
+      shift 2
+      ;;
+    --dry-run)
+      DRY_RUN="true"
+      shift
+      ;;
+    *)
+      echo "[ERROR] Invalid arg: $1" >&2
+      usage
+      exit 1
+      ;;
   esac
 done
 

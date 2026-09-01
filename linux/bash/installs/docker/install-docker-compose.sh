@@ -8,9 +8,9 @@ install_docker_compose_latest() {
   sudo chmod +x /usr/local/bin/docker-compose
 }
 
-if command -v docker compose --version &> /dev/null; then
-    echo "Docker Compose is already installed."
-    exit 0
+if command -v docker compose --version &>/dev/null; then
+  echo "Docker Compose is already installed."
+  exit 0
 fi
 
 install_docker_compose_latest
@@ -20,7 +20,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 ## Check if docker-compose plugin is installed; if not, install the latest binary
-if ! docker compose version &> /dev/null; then
+if ! docker compose version &>/dev/null; then
   echo "Docker Compose plugin not found, installing latest binary..."
   install_docker_compose_latest
 fi

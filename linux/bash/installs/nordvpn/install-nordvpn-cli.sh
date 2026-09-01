@@ -3,13 +3,13 @@
 set -euo pipefail
 
 if command -v nordvpn >/dev/null 2>&1; then
-    echo "NordVPN is already installed."
-    exit 0
+  echo "NordVPN is already installed."
+  exit 0
 fi
 
 if ! command -v curl >/dev/null 2>&1; then
-    echo "curl is not installed."
-    exit 1
+  echo "curl is not installed."
+  exit 1
 fi
 
 echo "Installing NordVPN (CLI)"

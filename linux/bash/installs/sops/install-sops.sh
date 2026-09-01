@@ -17,8 +17,8 @@ lowercase() {
 }
 
 get_latest_release() {
-  curl --silent "https://api.github.com/repos/getsops/sops/releases/latest" | 
-    grep '"tag_name":' | 
+  curl --silent "https://api.github.com/repos/getsops/sops/releases/latest" |
+    grep '"tag_name":' |
     sed -E 's/.*"([^"]+)".*/\1/'
 }
 
@@ -70,14 +70,14 @@ install_sops() {
 }
 
 if ! command -v curl &>/dev/null; then
-    echo "[ERROR] curl is not installed."
-    exit 1
+  echo "[ERROR] curl is not installed."
+  exit 1
 fi
 
 ## Parse argss
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -f|--force)
+    -f | --force)
       FORCE_INSTALL="true"
       shift
       ;;
@@ -89,28 +89,33 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! -z $FORCE_INSTALL ]] && [[ ! "$FORCE_INSTALL" == "" ]]; then
-    install_sops
+  install_sops
 elif ! command -v sops --help &>/dev/null; then
-    install_sops
+  install_sops
 else
-    echo "sops is already installed."
-  
-    while true; do
-        read -p "Force a reinstall? If a newer version is available, it will be installed (y/n): " reinstall_choice
+  echo "sops is already installed."
 
-        case $reinstall_choice in
-            [Yy]* ) install_sops; break ;;
-            [Nn]* ) echo "Skipping SOPS install."; exit ;;
-            *) echo "Please answer y/n";;
-        esac
-    done
+  while true; do
+    read -p "Force a reinstall? If a newer version is available, it will be installed (y/n): " reinstall_choice
+
+    case $reinstall_choice in
+      [Yy]*)
+        install_sops
+        break
+        ;;
+      [Nn]*)
+        echo "Skipping SOPS install."
+        exit
+        ;;
+      *) echo "Please answer y/n" ;;
+    esac
+  done
 fi
 
 if [[ $? -ne 0 ]]; then
-    echo "[ERROR] Failed to install SOPS"
-    exit $?
+  echo "[ERROR] Failed to install SOPS"
+  exit $?
 else
-    echo "SOPS installed"
-    exit 0
+  echo "SOPS installed"
+  exit 0
 fi
-

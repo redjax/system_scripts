@@ -8,24 +8,24 @@ TMPDIR=$(mktemp -d)
 
 ## Determine OS/ARCH for filename
 case "$OS" in
-Darwin)
-  if [[ "$ARCH" == "arm64" ]]; then
-    FILE_OS="Darwin_arm64"
-  else
-    FILE_OS="Darwin_x86_64"
-  fi
-  ;;
-Linux)
-  if [[ "$ARCH" == "x86_64" ]]; then
-    FILE_OS="Linux_x86_64"
-  else
-    FILE_OS="Linux_arm64"
-  fi
-  ;;
-*)
-  echo "Unsupported OS: $OS"
-  exit 1
-  ;;
+  Darwin)
+    if [[ "$ARCH" == "arm64" ]]; then
+      FILE_OS="Darwin_arm64"
+    else
+      FILE_OS="Darwin_x86_64"
+    fi
+    ;;
+  Linux)
+    if [[ "$ARCH" == "x86_64" ]]; then
+      FILE_OS="Linux_x86_64"
+    else
+      FILE_OS="Linux_arm64"
+    fi
+    ;;
+  *)
+    echo "Unsupported OS: $OS"
+    exit 1
+    ;;
 esac
 
 ## Get latest release tag from GitHub

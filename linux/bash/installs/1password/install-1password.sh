@@ -42,7 +42,7 @@ install_fedora_redhat() {
 
   sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
 
-  sudo tee /etc/yum.repos.d/1password.repo > /dev/null <<EOF
+  sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<EOF
 [1password]
 name=1Password Stable Channel
 baseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch
@@ -52,7 +52,7 @@ repo_gpgcheck=1
 gpgkey=https://downloads.1password.com/linux/keys/1password.asc
 EOF
 
-  if command -v dnf &> /dev/null; then
+  if command -v dnf &>/dev/null; then
     sudo dnf install -y 1password
   else
     sudo yum install -y 1password
@@ -90,10 +90,10 @@ install_tarball() {
   echo "Installing 1Password from tarball for unsupported distro or ARM arch..."
 
   case "$ARCH" in
-    x86_64|amd64)
+    x86_64 | amd64)
       TARURL="https://downloads.1password.com/linux/tar/stable/x86_64/1password-latest.tar.gz"
       ;;
-    aarch64|arm64)
+    aarch64 | arm64)
       TARURL="https://downloads.1password.com/linux/tar/stable/aarch64/1password-latest.tar.gz"
       ;;
     *)
@@ -111,13 +111,13 @@ install_tarball() {
 }
 
 case "$DISTRO_ID" in
-  ubuntu|debian)
+  ubuntu | debian)
     install_debian_ubuntu
     ;;
-  fedora|rhel|centos)
+  fedora | rhel | centos)
     install_fedora_redhat
     ;;
-  opensuse*|sles)
+  opensuse* | sles)
     install_suse_opensuse
     ;;
   arch)

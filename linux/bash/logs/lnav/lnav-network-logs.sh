@@ -20,7 +20,7 @@ add_if_exists() {
 journal_network_fallback() {
   local pattern="$1"
   if command -v journalctl >/dev/null 2>&1; then
-    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" > "$tmpdir/journal-network.log" || true
+    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >"$tmpdir/journal-network.log" || true
     [[ -s "$tmpdir/journal-network.log" ]] && logs+=("$tmpdir/journal-network.log")
   fi
 }
@@ -28,26 +28,26 @@ journal_network_fallback() {
 . /etc/os-release 2>/dev/null || true
 
 case "${ID:-}" in
-  debian|ubuntu)
+  debian | ubuntu)
     add_if_exists /var/log/auth.log /var/log/ufw.log /var/log/kern.log /var/log/syslog
     ;;
-  fedora|rhel|centos|rocky|almalinux|ol)
+  fedora | rhel | centos | rocky | almalinux | ol)
     add_if_exists /var/log/secure /var/log/messages /var/log/firewalld /var/log/audit/audit.log
     ;;
-  arch|manjaro|endeavouros)
+  arch | manjaro | endeavouros)
     add_if_exists /var/log/pacman.log
     ;;
-  opensuse*|suse|sles)
+  opensuse* | suse | sles)
     add_if_exists /var/log/messages /var/log/zypp/history
     ;;
 esac
 
 if ((${#logs[@]} == 0)); then
   case "${ID:-}" in
-    debian|ubuntu) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|ufw|conn|port|firewall|drop|deny' ;;
-    fedora|rhel|centos|rocky|almalinux|ol) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|firewalld|conn|port|drop|deny' ;;
-    arch|manjaro|endeavouros) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|conn|port|drop|deny' ;;
-    opensuse*|suse|sles) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|conn|port|drop|deny|zypper' ;;
+    debian | ubuntu) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|ufw|conn|port|firewall|drop|deny' ;;
+    fedora | rhel | centos | rocky | almalinux | ol) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|firewalld|conn|port|drop|deny' ;;
+    arch | manjaro | endeavouros) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|conn|port|drop|deny' ;;
+    opensuse* | suse | sles) journal_network_fallback 'ssh|sshd|login|failed password|invalid user|conn|port|drop|deny|zypper' ;;
   esac
 fi
 
@@ -57,4 +57,3 @@ if ((${#logs[@]} == 0)); then
 fi
 
 sudo lnav "${logs[@]}"
-

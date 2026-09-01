@@ -34,9 +34,9 @@ function list_timezones() {
     find /usr/share/zoneinfo -type f \
       ! -path "*/posix/*" \
       ! -path "*/right/*" \
-      ! -name ".*" \
-      | sed "s|/usr/share/zoneinfo/||" \
-      | sort
+      ! -name ".*" |
+      sed "s|/usr/share/zoneinfo/||" |
+      sort
     return 0
   fi
 
@@ -56,7 +56,7 @@ function set_timezone() {
     echo "[ERROR] Missing --timezone value" >&2
     echo "  Print timezones with ${0} --list-timezones" >&2
     echo "  Run again like: ${0} --timezone Region/City_Name" >&2
-    
+
     return 1
   fi
 
@@ -87,7 +87,7 @@ function set_timezone() {
 
     ## Some systems also use /etc/timezone
     if [[ -f /etc/timezone ]]; then
-      echo "$tz" > /etc/timezone
+      echo "$tz" >/etc/timezone
     fi
 
     echo "Timezone updated via /etc/localtime"
@@ -102,15 +102,15 @@ function set_timezone() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
-    -l|--list-timezones)
+    -l | --list-timezones)
       list_timezones
       exit 0
       ;;
-    -t|--timezone)
+    -t | --timezone)
       TZ="$2"
       shift 2
       ;;
@@ -122,4 +122,3 @@ while [[ $# -gt 0 ]]; do
 done
 
 set_timezone "${TZ}"
-

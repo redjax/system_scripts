@@ -40,55 +40,55 @@ EndSection
 EOF
 
     if [[ $? -ne 0 ]]; then
-        echo "[ERROR] Failed to write monitor config for $monitor to /etc/X11/xorg.conf.d/10-monitor.conf"
-        return 1
+      echo "[ERROR] Failed to write monitor config for $monitor to /etc/X11/xorg.conf.d/10-monitor.conf"
+      return 1
     fi
   done
 }
 
 function main {
-    if [[ ! -f /etc/X11/xorg.conf.d/10-monitor.conf ]]; then
-      echo "Creating monitor configuration at /etc/X11/xorg.conf.d/10-monitor.conf"
-    
+  if [[ ! -f /etc/X11/xorg.conf.d/10-monitor.conf ]]; then
+    echo "Creating monitor configuration at /etc/X11/xorg.conf.d/10-monitor.conf"
+
+    create_monitor_config
+    if [[ $? -ne 0 ]]; then
+      echo "[ERROR] Failed to create monitor configuration"
+      return 1
+    else
+      echo "Configuration file created successfully."
+      return 0
+    fi
+
+  else
+    echo "Monitor configuration already exists at /etc/X11/xorg.conf.d/10-monitor.conf"
+    read -p "Do you want to overwrite the existing configuration? (y/n): " overwrite
+
+    if [[ $overwrite == "y" || $overwrite == "Y" || $overwrite == "yes" || $overwrite == "Yes" ]]; then
+      sudo cp /etc/X11/xorg.conf.d/10-monitor.conf /etc/X11/xorg.conf.d/10-monitor.conf.bak
+
       create_monitor_config
       if [[ $? -ne 0 ]]; then
-          echo "[ERROR] Failed to create monitor configuration"
-          return 1
+        echo "[ERROR] Failed to create monitor configuration"
+        return 1
       else
-          echo "Configuration file created successfully."
-          return 0
+        echo "Configuration file overwritten successfully."
+        return 0
       fi
 
     else
-      echo "Monitor configuration already exists at /etc/X11/xorg.conf.d/10-monitor.conf"
-      read -p "Do you want to overwrite the existing configuration? (y/n): " overwrite
-
-      if [[ $overwrite == "y" || $overwrite == "Y" || $overwrite == "yes" || $overwrite == "Yes" ]]; then
-        sudo cp /etc/X11/xorg.conf.d/10-monitor.conf /etc/X11/xorg.conf.d/10-monitor.conf.bak
-
-        create_monitor_config
-        if [[ $? -ne 0 ]]; then
-            echo "[ERROR] Failed to create monitor configuration"
-            return 1
-        else
-            echo "Configuration file overwritten successfully."
-            return 0
-        fi
-
-      else
-        echo "Configuration file was not overwritten."
-        return 0
-      fi
+      echo "Configuration file was not overwritten."
+      return 0
     fi
+  fi
 }
 
 if [[ $BASH_SOURCE = "$0" ]]; then
-    main "$@"
-    if [[ $? -ne 0 ]]; then
-        echo "[ERROR] Failed to configure monitor(s)"
-        exit 1
-    else
-        echo "Successfully configured monitor(s)"
-        exit 0
-    fi
+  main "$@"
+  if [[ $? -ne 0 ]]; then
+    echo "[ERROR] Failed to configure monitor(s)"
+    exit 1
+  else
+    echo "Successfully configured monitor(s)"
+    exit 0
+  fi
 fi

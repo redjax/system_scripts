@@ -12,14 +12,14 @@ FORCE=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -f | --force)
-    FORCE=1
-    shift
-    ;;
-  *)
-    echo "Unknown option: $1"
-    exit 1
-    ;;
+    -f | --force)
+      FORCE=1
+      shift
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
   esac
 done
 
@@ -55,26 +55,26 @@ function detect_pkg_manager() {
 
 function install_build_deps() {
   case "$PKG_MANAGER" in
-  apt)
-    sudo apt update
-    sudo apt install -y git cmake ninja-build pkg-config libgtk-4-dev
-    ;;
-  dnf)
-    sudo dnf install -y git cmake ninja-build gtk4-devel
-    ;;
-  pacman)
-    sudo pacman -Sy --noconfirm git cmake ninja base-devel
-    ;;
-  zypper)
-    sudo zypper install -y git cmake ninja gtk4-devel
-    ;;
-  apk)
-    sudo apk add git cmake ninja build-base gtk4-dev
-    ;;
-  *)
-    echo "Unsupported package manager. Please install dependencies manually." >&2
-    exit 1
-    ;;
+    apt)
+      sudo apt update
+      sudo apt install -y git cmake ninja-build pkg-config libgtk-4-dev
+      ;;
+    dnf)
+      sudo dnf install -y git cmake ninja-build gtk4-devel
+      ;;
+    pacman)
+      sudo pacman -Sy --noconfirm git cmake ninja base-devel
+      ;;
+    zypper)
+      sudo zypper install -y git cmake ninja gtk4-devel
+      ;;
+    apk)
+      sudo apk add git cmake ninja build-base gtk4-dev
+      ;;
+    *)
+      echo "Unsupported package manager. Please install dependencies manually." >&2
+      exit 1
+      ;;
   esac
 }
 
@@ -185,35 +185,35 @@ function prompt_install_themes() {
   read -rp "Install Ghostty themes (iTerm2 color schemes)? [Y/n] " choice
 
   case "$choice" in
-  n | N)
-    echo "Skipping theme installation."
-    ;;
-  *)
-    install_ghostty_themes
-    ;;
+    n | N)
+      echo "Skipping theme installation."
+      ;;
+    *)
+      install_ghostty_themes
+      ;;
   esac
 }
 
 case "$DISTRO" in
-ubuntu | debian)
-  install_ghostty_debian
-  ;;
-fedora | rhel | centos | rocky)
-  install_ghostty_fedora
-  ;;
-arch)
-  install_ghostty_arch
-  ;;
-alpine)
-  install_ghostty_alpine
-  ;;
-opensuse* | suse)
-  install_ghostty_opensuse
-  ;;
-*)
-  echo "Unknown or unsupported distro: $DISTRO"
-  build_from_source
-  ;;
+  ubuntu | debian)
+    install_ghostty_debian
+    ;;
+  fedora | rhel | centos | rocky)
+    install_ghostty_fedora
+    ;;
+  arch)
+    install_ghostty_arch
+    ;;
+  alpine)
+    install_ghostty_alpine
+    ;;
+  opensuse* | suse)
+    install_ghostty_opensuse
+    ;;
+  *)
+    echo "Unknown or unsupported distro: $DISTRO"
+    build_from_source
+    ;;
 esac
 
 if [[ "$FORCE" == 0 ]]; then
@@ -223,4 +223,3 @@ else
 fi
 
 echo "Done."
-

@@ -33,8 +33,8 @@ cleanup_backups() {
     # shellcheck disable=SC2207
     mapfile -t files < <(find "$dir" -maxdepth 1 -type f -name "$pattern" -printf '%T@ %p\n' 2>/dev/null | sort -r -n | awk '{print $2}')
 
-    if (( ${#files[@]} > retain )); then
-      to_delete=( "${files[@]:$retain}" )
+    if ((${#files[@]} > retain)); then
+      to_delete=("${files[@]:$retain}")
       for f in "${to_delete[@]}"; do
         echo "  Removing: $f"
         rm -f "$f"
@@ -55,13 +55,13 @@ backup_extensions() {
   echo "+ Backing up extensions for profile '$profile' -> $outfile"
 
   if [[ "$profile" == "default" ]]; then
-    code --list-extensions > "$outfile"
+    code --list-extensions >"$outfile"
   else
     if [[ -n "$friendly_profile" ]]; then
-      code --list-extensions --profile="$friendly_profile" > "$outfile"
+      code --list-extensions --profile="$friendly_profile" >"$outfile"
     else
       # Fallback: might be empty if friendly name missing
-      code --list-extensions --profile="$profile" > "$outfile"
+      code --list-extensions --profile="$profile" >"$outfile"
     fi
   fi
 }
@@ -133,19 +133,19 @@ backup_profile() {
 ## Parse CLI args
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -p|--backup-path)
+    -p | --backup-path)
       BACKUP_DIR="$2"
       shift 2
       ;;
-    -r|--retain)
+    -r | --retain)
       RETAIN="$2"
       shift 2
       ;;
-    -t|--trim)
+    -t | --trim)
       TRIM=true
       shift
       ;;
-    -h|--help)
+    -h | --help)
       echo "Usage: $0 [-p PATH] [-r RETAIN] [-t]"
       echo "  -p, --backup-path   Backup directory (default: $HOME/VSCodeBackup)"
       echo "  -r, --retain        Number of backups to retain (default: 3)"

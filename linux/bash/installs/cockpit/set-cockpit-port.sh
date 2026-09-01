@@ -26,7 +26,7 @@ echo "Setting port for cockpit web UI to: $PORT"
 sudo mkdir -p /etc/systemd/system/cockpit.socket.d/
 
 ## Write the listen.conf file with the new port configuration
-sudo tee /etc/systemd/system/cockpit.socket.d/listen.conf > /dev/null <<EOF
+sudo tee /etc/systemd/system/cockpit.socket.d/listen.conf >/dev/null <<EOF
 [Socket]
 ListenStream=
 ListenStream=$PORT
@@ -60,4 +60,3 @@ fi
 
 echo "Cockpit is now configured to run on port $PORT."
 sudo systemctl status cockpit.socket --no-pager
-

@@ -20,24 +20,24 @@ install_guake_via_package_manager() {
   fi
 
   case "$ID" in
-  ubuntu | debian | raspbian)
-    $SUDO apt update
-    $SUDO apt install -y guake
-    ;;
-  fedora)
-    $SUDO dnf install -y guake
-    ;;
-  arch | manjaro)
-    $SUDO pacman -Sy --noconfirm guake
-    ;;
-  opensuse* | suse)
-    $SUDO zypper install -y guake
-    ;;
-  *)
-    echo "Unsupported or unknown distribution: $ID"
-    echo "Please install Guake manually."
-    exit 1
-    ;;
+    ubuntu | debian | raspbian)
+      $SUDO apt update
+      $SUDO apt install -y guake
+      ;;
+    fedora)
+      $SUDO dnf install -y guake
+      ;;
+    arch | manjaro)
+      $SUDO pacman -Sy --noconfirm guake
+      ;;
+    opensuse* | suse)
+      $SUDO zypper install -y guake
+      ;;
+    *)
+      echo "Unsupported or unknown distribution: $ID"
+      echo "Please install Guake manually."
+      exit 1
+      ;;
   esac
 
   echo "Guake installed successfully via package manager."

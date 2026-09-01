@@ -39,22 +39,22 @@ OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH="$(uname -m)"
 
 case "$ARCH" in
-x86_64) ARCH="amd64" ;;
-aarch64 | arm64) ARCH="arm64" ;;
-armv7l) ARCH="arm" ;;
-i386 | i686) ARCH="386" ;;
-*)
-  echo "Unsupported architecture: $ARCH" >&2
-  exit 1
-  ;;
+  x86_64) ARCH="amd64" ;;
+  aarch64 | arm64) ARCH="arm64" ;;
+  armv7l) ARCH="arm" ;;
+  i386 | i686) ARCH="386" ;;
+  *)
+    echo "Unsupported architecture: $ARCH" >&2
+    exit 1
+    ;;
 esac
 
 case "$OS" in
-linux | darwin | freebsd | openbsd | netbsd) ;;
-*)
-  echo "Unsupported OS: $OS" >&2
-  exit 1
-  ;;
+  linux | darwin | freebsd | openbsd | netbsd) ;;
+  *)
+    echo "Unsupported OS: $OS" >&2
+    exit 1
+    ;;
 esac
 
 ## Build asset name
@@ -96,19 +96,19 @@ else
     read -r -p "Install to /usr/local/bin with sudo? (y/n): " ans
 
     case "$ans" in
-    [Yy])
-      INSTALL_DIR="$SYSTEM_DIR"
-      USE_SUDO="true"
-      break
-      ;;
-    [Nn])
-      INSTALL_DIR="$USER_DIR"
-      mkdir -p "$INSTALL_DIR"
-      break
-      ;;
-    *)
-      echo "Enter 'y' or 'n'"
-      ;;
+      [Yy])
+        INSTALL_DIR="$SYSTEM_DIR"
+        USE_SUDO="true"
+        break
+        ;;
+      [Nn])
+        INSTALL_DIR="$USER_DIR"
+        mkdir -p "$INSTALL_DIR"
+        break
+        ;;
+      *)
+        echo "Enter 'y' or 'n'"
+        ;;
     esac
   done
 fi
