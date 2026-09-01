@@ -25,9 +25,9 @@ permissions:
 jobs:
   shell-quality:
     name: Shellfmt
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
     with:
-      pipelinetemplates-ref: feat/shell-quality-checks
+      pipelinetemplates-ref: main
 
       tools: shellfmt
 

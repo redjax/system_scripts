@@ -14,10 +14,10 @@ on:
       - opened
       - synchronize
       - reopened
-    # paths:
-    #   - ".shellcheckrc"
-    #   - "linux/bash/**/*.sh"
-    #   - "repo_scripts/**/*.sh"
+    paths:
+      - ".shellcheckrc"
+      - "linux/bash/**/*.sh"
+      - "repo_scripts/**/*.sh"
 
   workflow_dispatch:
     inputs:
@@ -55,10 +55,9 @@ permissions:
 jobs:
   shellcheck:
     name: ShellCheck
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
     with:
-      # pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
-      pipelinetemplates-ref: feat/shell-quality-checks
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
 
       tools: shellcheck
 
@@ -76,10 +75,9 @@ jobs:
 
   shellfmt:
     name: Shellfmt (dry run)
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
     with:
-      # pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
-      pipelinetemplates-ref: feat/shell-quality-checks
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
 
       tools: shellfmt
 
