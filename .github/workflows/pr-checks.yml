@@ -1,9 +1,9 @@
 ---
-#############################################################
-# Run ShellCheck on shell scripts changed by a pull request #
-#############################################################
+######################################################
+# Run shellcheck & shellfmt (in dry run mode) on PRs #
+######################################################
 
-name: Shell Quality
+name: PR Checks
 
 on:
   pull_request:
@@ -53,12 +53,12 @@ permissions:
 
 jobs:
   shell-quality:
-    name: ShellCheck
+    name: Shell quality checks (shellcheck, shellfmt dry run)
     uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
     with:
       pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
 
-      tools: shellcheck
+      tools: both
 
       scan-path: ${{ inputs.scan-path || '.' }}
 
@@ -70,4 +70,9 @@ jobs:
       fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
 
       shellcheck-artifact-name: system-scripts-shellcheck-results
+      shellfmt-artifact-name: system-scripts-shellfmt-results
       artifact-retention-days: 30
+
+      shellfmt-mode: check
+      shellfmt-commit-changes: false
+
