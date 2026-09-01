@@ -35,13 +35,14 @@ else
 fi
 
 # Extract matching asset name from JSON
-ASSET=$(printf "%s" "$RELEASE_JSON" | grep -oE "\"name\": \"$PATTERN[^\"]+\"" | sed -E 's/"name": "//; s/"$//')
+ASSET=$(printf "%s" "$RELEASE_JSON" | grep -oE "\"name\": \"${PATTERN}[^\"]+\"" | sed -E 's/"name": "//; s/"$//')
+
 
 # Linux fallback to gnu if musl not found
 if [ -z "$ASSET" ] && [ "$OS" != "Darwin" ]; then
     echo "[!] musl asset not found, trying gnu"
     PATTERN="bandwhich-v$VERSION-$ARCH-unknown-linux-gnu"
-    ASSET=$(printf "%s" "$RELEASE_JSON" | grep -oE "\"name\": \"$PATTERN[^\"]+\"" | sed -E 's/"name": "//; s/"$//')
+    ASSET=$(printf "%s" "$RELEASE_JSON" | grep -oE "\"name\": \"${PATTERN}[^\"]+\"" | sed -E 's/"name": "//; s/"$//')
 fi
 
 if [ -z "$ASSET" ]; then
