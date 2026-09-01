@@ -1,0 +1,67 @@
+---
+###############################################################
+# Manual shellfmt pipeline                                    #
+#                                                             #
+# Runs shellfmt on the main branch. This is essentially the   #
+# same pipeline that runs on PR merge to main.                #
+###############################################################
+
+name: Shell Format
+
+on:
+  workflow_dispatch:
+    inputs:
+      pipelinetemplates-ref:
+        description: PipelineTemplates ref used for shared-script/config checkout
+        required: false
+        type: string
+        default: main
+
+      scan-path:
+        description: Repository path to scan
+        required: false
+        type: string
+        default: "."
+
+      shellfmt-mode:
+        description: Run shellfmt in dry-run (check) or write mode
+        required: false
+        type: choice
+        default: write
+        options:
+          - check
+          - write
+
+      findings-policy:
+        description: Whether shellfmt formatting differences fail the workflow
+        required: false
+        type: choice
+        default: enforce
+        options:
+          - enforce
+          - report-only
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  shellfmt:
+    name: Shellfmt
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    with:
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref }}
+
+      tools: shellfmt
+
+      scan-path: ${{ inputs.scan-path }}
+
+      shellfmt-mode: ${{ inputs.shellfmt-mode }}
+      
+      shellfmt-commit-changes: ${{ inputs.shellfmt-mode == 'write' }}
+      shellfmt-commit-message: "chore(shell): format shell scripts"
+
+      use-default-shellfmt-config: true
+      fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
+
+      artifact-retention-days: 30
