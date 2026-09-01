@@ -11,7 +11,7 @@ name: Shell Format
 on:
   pull_request:
     branches:
-      - feat/shell-codeql-pipelines
+      - topic/linting-formatting
     types:
       - opened
       - synchronize
