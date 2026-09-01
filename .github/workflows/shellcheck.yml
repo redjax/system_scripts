@@ -54,7 +54,7 @@ permissions:
 jobs:
   shell-quality:
     name: ShellCheck
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
     with:
       pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
 
