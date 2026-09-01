@@ -55,9 +55,10 @@ permissions:
 jobs:
   shell-quality:
     name: Shell quality checks (shellcheck, shellfmt dry run)
-    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
     with:
-      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+      # pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+      pipelinetemplates-ref: feat/shell-quality-checks
 
       tools: both
 
