@@ -2,13 +2,13 @@
 set -euo pipefail
 
 detect_os() {
-  if command -v apt-get &>/dev/null; then
+  if command -v apt-get &> /dev/null; then
     echo "debian"
-  elif command -v dnf &>/dev/null; then
+  elif command -v dnf &> /dev/null; then
     echo "fedora"
-  elif command -v yum &>/dev/null; then
+  elif command -v yum &> /dev/null; then
     echo "rhel"
-  elif command -v pacman &>/dev/null; then
+  elif command -v pacman &> /dev/null; then
     echo "arch"
   else
     echo "unknown"
@@ -46,7 +46,7 @@ configure_clamd() {
   sudo sed -i 's/^#LocalSocket/LocalSocket/' "$CONF"
 
   if ! grep -q "^LocalSocket" "$CONF"; then
-    echo "LocalSocket /run/clamd.socket" | sudo tee -a "$CONF" >/dev/null
+    echo "LocalSocket /run/clamd.socket" | sudo tee -a "$CONF" > /dev/null
   fi
 }
 
@@ -56,7 +56,7 @@ enable_updates() {
       sudo systemctl enable --now clamav-freshclam || true
       ;;
     fedora | rhel)
-      sudo tee /etc/cron.daily/freshclam >/dev/null <<'EOF'
+      sudo tee /etc/cron.daily/freshclam > /dev/null << 'EOF'
 #!/bin/sh
 /usr/bin/freshclam --quiet
 EOF
@@ -91,7 +91,7 @@ enable_realtime() {
     return
   fi
 
-  sudo tee /etc/systemd/system/clamonacc.service >/dev/null <<'EOF'
+  sudo tee /etc/systemd/system/clamonacc.service > /dev/null << 'EOF'
 [Unit]
 Description=ClamAV On-Access Scanner
 After=network.target

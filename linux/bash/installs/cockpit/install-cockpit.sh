@@ -30,7 +30,7 @@ install_cockpit() {
       sudo apt install -y cockpit
       sudo systemctl enable --now cockpit.socket
       # Check if ufw is installed and enable rule
-      if command -v ufw >/dev/null 2>&1; then
+      if command -v ufw > /dev/null 2>&1; then
         sudo ufw allow 9090/tcp
       fi
       ;;

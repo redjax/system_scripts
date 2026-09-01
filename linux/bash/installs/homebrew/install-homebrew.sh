@@ -15,7 +15,7 @@ function echo_bashrc_lines() {
   echo ""
 }
 
-if command -v brew &>/dev/null || [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+if command -v brew &> /dev/null || [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   echo "Brew is already installed."
   echo "If the command is not working, make sure to add the following to your ~/.bashrc: "
 
@@ -24,7 +24,7 @@ if command -v brew &>/dev/null || [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; 
   exit 1
 fi
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed."
   exit 1
 fi

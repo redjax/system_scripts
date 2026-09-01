@@ -16,7 +16,7 @@ PHOTO_DIR="${PHOTO_DIR%/}"
 DRY_RUN="false"
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: ${0} [OPTIONS]
 
 Options:

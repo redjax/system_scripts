@@ -24,7 +24,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [OPTIONS]
 
 Options:

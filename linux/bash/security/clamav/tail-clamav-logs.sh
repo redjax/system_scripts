@@ -36,13 +36,13 @@ while [[ $# -gt 0 ]]; do
 done
 
 function detect_os() {
-  if command -v apt-get &>/dev/null; then
+  if command -v apt-get &> /dev/null; then
     echo "debian"
-  elif command -v dnf &>/dev/null; then
+  elif command -v dnf &> /dev/null; then
     echo "fedora"
-  elif command -v yum &>/dev/null; then
+  elif command -v yum &> /dev/null; then
     echo "rhel"
-  elif command -v pacman &>/dev/null; then
+  elif command -v pacman &> /dev/null; then
     echo "arch"
   else
     echo "unknown"

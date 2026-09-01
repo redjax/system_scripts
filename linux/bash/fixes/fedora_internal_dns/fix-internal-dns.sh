@@ -4,7 +4,7 @@ set -euo pipefail
 DEFAULT_CONNECTION="Wired connection 1"
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [-c|--connection-name NAME] -d|--dns IPv4
 
 Options:
@@ -29,10 +29,10 @@ function info() {
 }
 
 ## Basic dependency checks
-command -v nmcli >/dev/null 2>&1 ||
+command -v nmcli > /dev/null 2>&1 ||
   error "nmcli is not installed"
 
-command -v sudo >/dev/null 2>&1 ||
+command -v sudo > /dev/null 2>&1 ||
   error "sudo is not installed"
 
 ## Parse args
@@ -97,7 +97,7 @@ if [[ ! "$dns" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 ## Validate each octet numerically.
-IFS='.' read -r octet1 octet2 octet3 octet4 <<<"$dns"
+IFS='.' read -r octet1 octet2 octet3 octet4 <<< "$dns"
 
 for octet in "$octet1" "$octet2" "$octet3" "$octet4"; do
   ## Avoid weird values such as 001foo.
@@ -109,12 +109,12 @@ for octet in "$octet1" "$octet2" "$octet3" "$octet4"; do
 done
 
 ## Make sure NetworkManager is running
-if ! nmcli general status >/dev/null 2>&1; then
+if ! nmcli general status > /dev/null 2>&1; then
   error "NetworkManager does not appear to be running"
 fi
 
 ## Find the connection
-if ! nmcli connection show id "$connection" >/dev/null 2>&1; then
+if ! nmcli connection show id "$connection" > /dev/null 2>&1; then
   error "NetworkManager connection '$connection' does not exist"
 fi
 
@@ -159,7 +159,7 @@ if ! sudo nmcli connection up id "$connection"; then
     ipv4.dns "$old_dns" \
     ipv4.ignore-auto-dns "$old_ignore_auto_dns"; then
 
-    sudo nmcli connection up id "$connection" >/dev/null 2>&1 || true
+    sudo nmcli connection up id "$connection" > /dev/null 2>&1 || true
     echo "[INFO] Previous DNS configuration restored." >&2
   else
     echo "[ERROR] WARNING: Failed to restore previous DNS configuration!" >&2

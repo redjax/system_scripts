@@ -3,13 +3,13 @@ set -euo pipefail
 
 OS="$(uname -s)"
 case "$OS" in
-  Linux*) DISTRO="$(grep '^ID=' /etc/os-release 2>/dev/null || echo unknown | cut -d'=' -f2 | tr -d '\"')" ;;
+  Linux*) DISTRO="$(grep '^ID=' /etc/os-release 2> /dev/null || echo unknown | cut -d'=' -f2 | tr -d '\"')" ;;
   Darwin*) DISTRO="macos" ;;
   *) DISTRO="unknown" ;;
 esac
 
 install_via_flatpak() {
-  if ! command -v flatpak >/dev/null 2>&1; then
+  if ! command -v flatpak > /dev/null 2>&1; then
     return 1
   fi
 
@@ -37,7 +37,7 @@ install_via_pkg_manager() {
       sudo pacman -S --noconfirm filezilla
       ;;
     macos)
-      if command -v brew >/dev/null 2>&1; then
+      if command -v brew > /dev/null 2>&1; then
         brew install --cask filezilla
       else
         return 1
@@ -49,7 +49,7 @@ install_via_pkg_manager() {
   esac
 }
 
-if install_via_flatpak 2>/dev/null; then
+if install_via_flatpak 2> /dev/null; then
   exit 0
 fi
 

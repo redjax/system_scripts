@@ -11,9 +11,9 @@ DRY_RUN="false"
 
 RUFF_CMD=""
 
-if command -v ruff &>/dev/null; then
+if command -v ruff &> /dev/null; then
   RUFF_CMD="ruff"
-elif command -v uvx &>/dev/null; then
+elif command -v uvx &> /dev/null; then
   RUFF_CMD="uvx ruff"
 else
   echo "[ERROR] Ruff is not installed." >&2
@@ -26,7 +26,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [OPTIONS]
 
 Options:

@@ -5,7 +5,7 @@ SOURCE_URL=""
 DEST_URL=""
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   mirror-remote-to-remote.sh <source-url> <destination-url>
 
@@ -16,7 +16,7 @@ EOF
 }
 
 function require_git() {
-  if ! command -v git >/dev/null 2>&1; then
+  if ! command -v git > /dev/null 2>&1; then
     echo "[ERROR] git is required" >&2
     exit 1
   fi

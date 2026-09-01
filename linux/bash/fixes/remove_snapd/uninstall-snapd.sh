@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! command -v snap &>/dev/null; then
+if ! command -v snap &> /dev/null; then
   echo "Snap is not installed."
   exit 0
 fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed."
   exit 1
 fi
@@ -32,7 +32,7 @@ DRY_VERSION="${DRY_VERSION#v}"
 
 echo "DRY_VERSION: $DRY_VERSION"
 
-if command -v dry &>/dev/null; then
+if command -v dry &> /dev/null; then
   echo "dry is already installed."
   exit 0
 fi

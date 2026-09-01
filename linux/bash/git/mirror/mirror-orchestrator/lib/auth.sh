@@ -54,7 +54,7 @@ function setup_auth() {
 
         AUTH_TMP_DIR="$(mktemp -d)"
         local f="${AUTH_TMP_DIR}/key"
-        printf '%s\n' "$key" >"$f"
+        printf '%s\n' "$key" > "$f"
         chmod 600 "$f"
         export GIT_SSH_COMMAND="ssh -i ${f} -o IdentitiesOnly=yes"
       else

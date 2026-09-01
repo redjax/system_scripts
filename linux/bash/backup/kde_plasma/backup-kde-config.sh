@@ -74,7 +74,7 @@ KDE_CONFIG_ITEMS=(
 )
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [--backup | --restore] [--archive-file PATH] [--help]
 
 Options:

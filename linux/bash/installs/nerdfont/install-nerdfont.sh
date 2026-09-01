@@ -17,7 +17,7 @@ function install_nerdfont_old {
   FONT_NAME=$1
   REPO_PATH=$2
 
-  if ! command -v git --version >/dev/null 2>&1; then
+  if ! command -v git --version > /dev/null 2>&1; then
     echo "[ERROR] git is not installed."
     return 1
   fi
@@ -56,12 +56,12 @@ function install_nerdfont {
   INSTALL_FONT_URLS=("$@")
   START_PATH=$(pwd)
 
-  if ! command -v git --version >/dev/null 2>&1; then
+  if ! command -v git --version > /dev/null 2>&1; then
     echo "[ERROR] git is not installed."
     return 1
   fi
 
-  if ! command -v curl --version >/dev/null 2>&1; then
+  if ! command -v curl --version > /dev/null 2>&1; then
     echo "[ERROR] curl is not installed."
     return 1
   fi

@@ -5,7 +5,7 @@ THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${THIS_DIR}/_common.sh"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: run-section.sh SECTION [options]
 
 Options:
@@ -67,7 +67,7 @@ done
 survey_require_az
 
 if [[ -n "${OUTPUT}" ]]; then
-  : >"$OUTPUT"
+  : > "$OUTPUT"
   LOG_PIPE="survey_strip_colors | tee -a \"$OUTPUT\""
 else
   LOG_PIPE="cat"
@@ -80,18 +80,18 @@ if [[ -z "${SURVEY_SECTIONS_AVAILABLE[$SECTION]:-}" ]]; then
 fi
 
 if [[ -n "$SUBSCRIPTION" ]]; then
-  if ! az account set --subscription "$SUBSCRIPTION" 2>/dev/null; then
+  if ! az account set --subscription "$SUBSCRIPTION" 2> /dev/null; then
     echo -e "${RED}Cannot access or set subscription: $SUBSCRIPTION${NC}" | eval "$LOG_PIPE"
     exit 1
   fi
 fi
 
-CURRENT_SUB="$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv 2>/dev/null || true)"
+CURRENT_SUB="$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv 2> /dev/null || true)"
 if [[ -z "$CURRENT_SUB" ]]; then
   echo -e "${RED}Failed to query current subscription details${NC}" | eval "$LOG_PIPE"
   exit 1
 fi
 
-IFS=$'\t' read -r SUB_ID SUB_NAME TENANT_ID <<<"$CURRENT_SUB"
+IFS=$'\t' read -r SUB_ID SUB_NAME TENANT_ID <<< "$CURRENT_SUB"
 survey_emit_subscription_header "$SUB_ID" "$SUB_NAME" "$TENANT_ID" | eval "$LOG_PIPE"
 survey_run_section "$SECTION" | eval "$LOG_PIPE"

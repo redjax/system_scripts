@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v ya >/dev/null 2>&1; then
+if ! command -v ya > /dev/null 2>&1; then
   echo "ERROR: 'ya' is not installed."
   exit 1
 fi

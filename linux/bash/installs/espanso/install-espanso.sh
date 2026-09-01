@@ -12,7 +12,7 @@ echo "XDG_SESSION_TYPE: $XDG_SESSION_TYPE"
 
 install_espanso_mac() {
   echo "Installing Espanso on macOS"
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     echo "Using Homebrew to install"
     brew tap federico-terzi/espanso
     brew install espanso
@@ -68,7 +68,7 @@ install_espanso_fedora() {
   echo "Installing Espanso on Fedora-based system using Terra RPM repo..."
 
   # Check for existing Terra repo files to avoid duplicates
-  if ls /etc/yum.repos.d/terra*.repo >/dev/null 2>&1; then
+  if ls /etc/yum.repos.d/terra*.repo > /dev/null 2>&1; then
     echo "Terra repository already configured, skipping add."
   else
     echo "Adding Terra repo and installing terra-release package..."
@@ -76,7 +76,7 @@ install_espanso_fedora() {
   fi
 
   # Check if espanso package is installed; install if missing
-  if ! rpm -q espanso-wayland &>/dev/null && ! rpm -q espanso-x11 &>/dev/null; then
+  if ! rpm -q espanso-wayland &> /dev/null && ! rpm -q espanso-x11 &> /dev/null; then
     echo "Installing Espanso package..."
     if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
       sudo dnf install -y espanso-wayland
@@ -126,7 +126,7 @@ install_espanso_appimage() {
   mkdir -p "$DESKTOP_DIR"
   ICON_PATH="/usr/share/icons/hicolor/256x256/apps/espanso.png"
 
-  cat >"$DESKTOP_DIR/espanso.desktop" <<EOF
+  cat > "$DESKTOP_DIR/espanso.desktop" << EOF
 [Desktop Entry]
 Name=Espanso
 Comment=Text expander tool
@@ -146,9 +146,9 @@ case "$OS_TYPE" in
     install_espanso_mac
     ;;
   Linux)
-    if command -v apt >/dev/null 2>&1; then
+    if command -v apt > /dev/null 2>&1; then
       install_espanso_debian
-    elif command -v dnf >/dev/null 2>&1; then
+    elif command -v dnf > /dev/null 2>&1; then
       install_espanso_fedora
     else
       install_espanso_appimage

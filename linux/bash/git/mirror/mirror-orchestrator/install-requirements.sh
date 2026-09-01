@@ -22,7 +22,7 @@ function err() {
 }
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   install-requirements.sh [options]
 
@@ -37,7 +37,7 @@ EOF
 }
 
 function has_cmd() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 function need_cmd() {
@@ -210,7 +210,7 @@ function is_compatible_yq_installed() {
   fi
 
   # Mike Farah yq v4 supports `eval` and `--null-input`.
-  if yq eval --null-input '.ok = true' >/dev/null 2>&1; then
+  if yq eval --null-input '.ok = true' > /dev/null 2>&1; then
     return 0
   fi
 
@@ -302,7 +302,7 @@ function main() {
   ensure_downloader
 
   if [[ "$FORCE_INSTALL" -eq 0 ]] && is_compatible_yq_installed; then
-    log "Compatible yq already installed: $(yq --version 2>/dev/null || echo 'unknown version')"
+    log "Compatible yq already installed: $(yq --version 2> /dev/null || echo 'unknown version')"
     exit 0
   fi
 
@@ -334,9 +334,9 @@ function main() {
   ## If INSTALL_DIR is not on PATH, still verify by direct path.
   local installed_path="${INSTALL_DIR}/yq"
   if [[ -x "$installed_path" ]]; then
-    if "$installed_path" eval --null-input '.ok = true' >/dev/null 2>&1; then
+    if "$installed_path" eval --null-input '.ok = true' > /dev/null 2>&1; then
       log "Installed compatible yq at ${installed_path}"
-      log "Version: $($installed_path --version 2>/dev/null || echo 'unknown')"
+      log "Version: $($installed_path --version 2> /dev/null || echo 'unknown')"
     else
       err "Installed yq but compatibility check failed at ${installed_path}"
       exit 1
@@ -346,7 +346,7 @@ function main() {
     exit 1
   fi
 
-  if ! has_cmd yq || ! yq eval --null-input '.ok = true' >/dev/null 2>&1; then
+  if ! has_cmd yq || ! yq eval --null-input '.ok = true' > /dev/null 2>&1; then
     warn "Your current PATH may prioritize another yq binary."
     warn "Use this path explicitly or adjust PATH: ${installed_path}"
   fi
