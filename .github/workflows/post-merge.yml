@@ -9,18 +9,6 @@
 name: PR Merge
 
 on:
-  pull_request:
-    branches:
-      - topic/linting-formatting
-    types:
-      - opened
-      - synchronize
-      - reopened
-    # paths:
-    #   - ".shellcheckrc"
-    #   - "linux/bash/**/*.sh"
-    #   - "repo_scripts/**/*.sh"
-
   push:
     branches:
       - main
@@ -45,12 +33,8 @@ jobs:
 
       scan-path: "."
 
-      ## Uncomment for dry-run mode
-      shellfmt-mode: check
-      shellfmt-commit-changes: false
-
-      # shellfmt-mode: write
-      # shellfmt-commit-changes: true
+      shellfmt-mode: write
+      shellfmt-commit-changes: true
       shellfmt-commit-message: "chore(shell): format shell scripts"
 
       use-default-shellfmt-config: true
