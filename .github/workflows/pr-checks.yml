@@ -53,14 +53,14 @@ permissions:
   contents: read
 
 jobs:
-  shell-quality:
-    name: Shell quality checks (shellcheck, shellfmt dry run)
+  shellcheck:
+    name: ShellCheck
     uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
     with:
       # pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
       pipelinetemplates-ref: feat/shell-quality-checks
 
-      tools: both
+      tools: shellcheck
 
       scan-path: ${{ inputs.scan-path || '.' }}
 
@@ -72,9 +72,26 @@ jobs:
       fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
 
       shellcheck-artifact-name: system-scripts-shellcheck-results
-      shellfmt-artifact-name: system-scripts-shellfmt-results
       artifact-retention-days: 30
+
+  shellfmt:
+    name: Shellfmt (dry run)
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@feat/shell-quality-checks
+    with:
+      # pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+      pipelinetemplates-ref: feat/shell-quality-checks
+
+      tools: shellfmt
+
+      scan-path: ${{ inputs.scan-path || '.' }}
 
       shellfmt-mode: check
       shellfmt-commit-changes: false
 
+      use-default-shellfmt-config: true
+
+      # Formatting differences are informational on PRs.
+      fail-on-findings: false
+
+      shellfmt-artifact-name: system-scripts-shellfmt-results
+      artifact-retention-days: 30
