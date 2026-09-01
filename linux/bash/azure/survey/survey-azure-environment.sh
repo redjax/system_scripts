@@ -7,7 +7,7 @@ source "${THIS_DIR}/_common.sh"
 ## Show help message
 function usage() {
   echo "Usage: $0 [options]"
-  cat <<EOF
+  cat << EOF
 
 Options:
   -h, --help                       This help text
@@ -45,11 +45,11 @@ while [[ "$#" -gt 0 ]]; do
       shift 2
       ;;
     -c | --section)
-      IFS=',' read -ra USER_SECTIONS <<<"$2"
+      IFS=',' read -ra USER_SECTIONS <<< "$2"
       shift 2
       ;;
     -s | --subscription)
-      IFS=', ' read -ra USER_SUBS <<<"$2"
+      IFS=', ' read -ra USER_SUBS <<< "$2"
       shift 2
       ;;
     *)
@@ -80,7 +80,7 @@ fi
 
 ## Set up output file, if desired
 if [[ -n "$OUTPUT" ]]; then
-  : >"$OUTPUT" # truncate file now
+  : > "$OUTPUT" # truncate file now
   LOG_PIPE="survey_strip_colors | tee -a \"$OUTPUT\""
 else
   LOG_PIPE="cat"
@@ -100,24 +100,24 @@ CUR_SUB_ID=""
 # Determine which subscriptions to query
 if [[ ${#USER_SUBS[@]} -eq 0 ]]; then
   CUR_INFO="$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv)"
-  IFS=$'\t' read -r CUR_SUB_ID CUR_SUB_NAME CUR_TENANT_ID <<<"$CUR_INFO"
+  IFS=$'\t' read -r CUR_SUB_ID CUR_SUB_NAME CUR_TENANT_ID <<< "$CUR_INFO"
   USER_SUBS=("$CUR_SUB_ID")
 fi
 
 for sub in "${USER_SUBS[@]}"; do
   # Set subscription context (only if -s was given), skip if that isn't possible
   if [[ ${#USER_SUBS[@]} -gt 1 || ("${USER_SUBS[0]}" != "$CUR_SUB_ID") ]]; then
-    if ! az account set --subscription "$sub" 2>/dev/null; then
+    if ! az account set --subscription "$sub" 2> /dev/null; then
       echo -e "${RED}Cannot access or set subscription: $sub${NC}" | eval "$LOG_PIPE"
       continue
     fi
   fi
-  CUR_SUB=$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv 2>/dev/null || echo "")
+  CUR_SUB=$(az account show --query '{id:id,name:name,tenantId:tenantId}' -o tsv 2> /dev/null || echo "")
   if [[ -z "$CUR_SUB" ]]; then
     echo -e "${RED}Failed to query details for subscription: $sub${NC}" | eval "$LOG_PIPE"
     continue
   fi
-  IFS=$'\t' read -r SUB_ID SUB_NAME TENANT_ID <<<"$CUR_SUB"
+  IFS=$'\t' read -r SUB_ID SUB_NAME TENANT_ID <<< "$CUR_SUB"
   survey_emit_subscription_header "$SUB_ID" "$SUB_NAME" "$TENANT_ID" | eval "$LOG_PIPE"
 
   for sect in "${SECTIONS[@]}"; do

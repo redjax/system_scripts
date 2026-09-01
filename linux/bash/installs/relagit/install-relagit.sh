@@ -15,7 +15,7 @@ mkdir -p "$INSTALL_DIR"
 mkdir -p "$BIN_DIR"
 
 function require_cmd() {
-  command -v "$1" >/dev/null 2>&1 || {
+  command -v "$1" > /dev/null 2>&1 || {
     echo "Missing dependency: $1"
     exit 1
   }
@@ -46,17 +46,17 @@ function find_icon() {
 }
 
 function refresh_desktop() {
-  if command -v update-desktop-database >/dev/null 2>&1; then
-    update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
+  if command -v update-desktop-database > /dev/null 2>&1; then
+    update-desktop-database "$HOME/.local/share/applications" > /dev/null 2>&1 || true
   fi
 
-  if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+  if command -v gtk-update-icon-cache > /dev/null 2>&1; then
     gtk-update-icon-cache \
-      "$HOME/.local/share/icons/hicolor" >/dev/null 2>&1 || true
+      "$HOME/.local/share/icons/hicolor" > /dev/null 2>&1 || true
   fi
 
-  if command -v gio >/dev/null 2>&1; then
-    gio set "$DESKTOP_FILE" metadata::trusted true >/dev/null 2>&1 || true
+  if command -v gio > /dev/null 2>&1; then
+    gio set "$DESKTOP_FILE" metadata::trusted true > /dev/null 2>&1 || true
   fi
 }
 
@@ -133,7 +133,7 @@ echo "  $EXECUTABLE"
 ## Create CLI launcher
 LAUNCHER="${BIN_DIR}/relagit"
 
-cat >"$LAUNCHER" <<EOF
+cat > "$LAUNCHER" << EOF
 #!/usr/bin/env bash
 exec "$EXECUTABLE" "\$@"
 EOF
@@ -167,7 +167,7 @@ mkdir -p "$DESKTOP_DIR"
 
 DESKTOP_FILE="${DESKTOP_DIR}/relagit.desktop"
 
-cat >"$DESKTOP_FILE" <<EOF
+cat > "$DESKTOP_FILE" << EOF
 [Desktop Entry]
 Version=1.0
 Type=Application

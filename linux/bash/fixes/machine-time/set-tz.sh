@@ -10,7 +10,7 @@ TZ="Etc/UTC"
 LIST_TZ="false"
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: ${0} [OPTIONS]
 
 Options:
@@ -24,7 +24,7 @@ function list_timezones() {
   echo "Available timezones:"
 
   ## systemd-based systems
-  if command -v timedatectl >/dev/null 2>&1; then
+  if command -v timedatectl > /dev/null 2>&1; then
     timedatectl list-timezones
     return 0
   fi
@@ -41,8 +41,8 @@ function list_timezones() {
   fi
 
   ## Alpine / minimal systems fallback
-  if command -v ls >/dev/null 2>&1; then
-    ls /usr/share/zoneinfo 2>/dev/null || {
+  if command -v ls > /dev/null 2>&1; then
+    ls /usr/share/zoneinfo 2> /dev/null || {
       echo "No timezone database found."
       return 1
     }
@@ -63,7 +63,7 @@ function set_timezone() {
   echo "Setting timezone to: $tz"
 
   # systemd systems (Debian, RHEL, Arch, openSUSE, etc.)
-  if command -v timedatectl >/dev/null 2>&1; then
+  if command -v timedatectl > /dev/null 2>&1; then
     if ! timedatectl list-timezones | grep -qx "$tz"; then
       echo "Invalid timezone: $tz"
       return 1
@@ -87,7 +87,7 @@ function set_timezone() {
 
     ## Some systems also use /etc/timezone
     if [[ -f /etc/timezone ]]; then
-      echo "$tz" >/etc/timezone
+      echo "$tz" > /etc/timezone
     fi
 
     echo "Timezone updated via /etc/localtime"

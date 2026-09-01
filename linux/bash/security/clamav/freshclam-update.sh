@@ -6,7 +6,7 @@ set -uo pipefail
 ##
 
 function update_clamav_definitions() {
-  if ! command -v freshclam >/dev/null 2>&1; then
+  if ! command -v freshclam > /dev/null 2>&1; then
     echo "[ERROR] freshclam not found. Install ClamAV first." >&2
     return 1
   fi

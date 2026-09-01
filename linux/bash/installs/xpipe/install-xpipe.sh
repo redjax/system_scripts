@@ -18,15 +18,15 @@ detect_arch() {
 
 ## Detect package manager
 detect_pkgmgr() {
-  if command -v apt >/dev/null 2>&1; then
+  if command -v apt > /dev/null 2>&1; then
     echo "apt"
-  elif command -v dnf >/dev/null 2>&1; then
+  elif command -v dnf > /dev/null 2>&1; then
     echo "dnf"
-  elif command -v yum >/dev/null 2>&1; then
+  elif command -v yum > /dev/null 2>&1; then
     echo "yum"
-  elif command -v zypper >/dev/null 2>&1; then
+  elif command -v zypper > /dev/null 2>&1; then
     echo "zypper"
-  elif command -v pacman >/dev/null 2>&1; then
+  elif command -v pacman > /dev/null 2>&1; then
     echo "pacman"
   else
     echo "No supported package manager found" >&2
@@ -146,7 +146,7 @@ main() {
   echo "Official script failed, trying manual package install"
   if install_manual "$ARCH" "$PKGMGR"; then
     echo "Manual package installation completed!"
-    if command -v xpipe >/dev/null 2>&1 && xpipe --version; then
+    if command -v xpipe > /dev/null 2>&1 && xpipe --version; then
       echo "XPipe verified working!"
     else
       echo "XPipe installed but verification failed"

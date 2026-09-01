@@ -14,38 +14,38 @@ function error() {
 
 function install_via_package_manager() {
 
-  if command -v apt-get >/dev/null 2>&1; then
+  if command -v apt-get > /dev/null 2>&1; then
     log "Installing via apt"
     sudo apt-get update
     sudo apt-get install -y keepassxc
     return 0
   fi
 
-  if command -v dnf >/dev/null 2>&1; then
+  if command -v dnf > /dev/null 2>&1; then
     log "Installing via dnf"
     sudo dnf install -y keepassxc
     return 0
   fi
 
-  if command -v yum >/dev/null 2>&1; then
+  if command -v yum > /dev/null 2>&1; then
     log "Installing via yum"
     sudo yum install -y keepassxc
     return 0
   fi
 
-  if command -v pacman >/dev/null 2>&1; then
+  if command -v pacman > /dev/null 2>&1; then
     log "Installing via pacman"
     sudo pacman -Sy --noconfirm keepassxc
     return 0
   fi
 
-  if command -v zypper >/dev/null 2>&1; then
+  if command -v zypper > /dev/null 2>&1; then
     log "Installing via zypper"
     sudo zypper --non-interactive install keepassxc
     return 0
   fi
 
-  if command -v apk >/dev/null 2>&1; then
+  if command -v apk > /dev/null 2>&1; then
     log "Installing via apk"
     sudo apk add keepassxc
     return 0
@@ -57,7 +57,7 @@ function install_via_package_manager() {
 
 function install_via_flatpak() {
 
-  command -v flatpak >/dev/null 2>&1 || return 1
+  command -v flatpak > /dev/null 2>&1 || return 1
 
   log "Installing via Flatpak"
 
@@ -75,7 +75,7 @@ function install_via_github_release() {
 
   log "Attempting GitHub AppImage installation"
 
-  command -v curl >/dev/null 2>&1 || {
+  command -v curl > /dev/null 2>&1 || {
     error "curl is required"
     return 1
   }
@@ -105,7 +105,7 @@ function install_via_github_release() {
 
   chmod +x "$DEST"
 
-  cat >"$HOME/.local/share/applications/keepassxc.desktop" <<EOF
+  cat > "$HOME/.local/share/applications/keepassxc.desktop" << EOF
 [Desktop Entry]
 Type=Application
 Name=KeePassXC

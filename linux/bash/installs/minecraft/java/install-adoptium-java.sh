@@ -17,11 +17,11 @@ if [[ "$OS" =~ (debian|ubuntu|linuxmint) ]]; then
   sudo apt install -y wget apt-transport-https gnupg
 
   ## Import GPG key
-  wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/adoptium.gpg >/dev/null
+  wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/adoptium.gpg > /dev/null
 
   ## Add repo
   REPO_CODENAME="$VERSION_CODENAME"
-  echo "deb https://packages.adoptium.net/artifactory/deb $REPO_CODENAME main" | sudo tee /etc/apt/sources.list.d/adoptium.list >/dev/null
+  echo "deb https://packages.adoptium.net/artifactory/deb $REPO_CODENAME main" | sudo tee /etc/apt/sources.list.d/adoptium.list > /dev/null
 
   ## Install
   sudo apt update
@@ -30,7 +30,7 @@ if [[ "$OS" =~ (debian|ubuntu|linuxmint) ]]; then
 ## RHEL / CentOS / Fedora
 elif [[ "$OS" =~ (rhel|centos|fedora) ]]; then
   DISTRIBUTION_NAME="${OS}"
-  sudo tee /etc/yum.repos.d/adoptium.repo >/dev/null <<EOF
+  sudo tee /etc/yum.repos.d/adoptium.repo > /dev/null << EOF
 [Adoptium]
 name=Adoptium
 baseurl=https://packages.adoptium.net/artifactory/rpm/$DISTRIBUTION_NAME/\$releasever/\$basearch
@@ -39,7 +39,7 @@ gpgcheck=1
 gpgkey=https://packages.adoptium.net/artifactory/api/gpg/key/public
 EOF
 
-  if command -v dnf >/dev/null; then
+  if command -v dnf > /dev/null; then
     sudo dnf install -y "temurin-$TEMURIN_VERSION-jre"
   else
     sudo yum install -y "temurin-$TEMURIN_VERSION-jre"

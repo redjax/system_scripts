@@ -10,7 +10,7 @@ FORMAT_PATH="${_FORMAT_BASH_REPO_ROOT}"
 DRY_RUN="false"
 LIST_FILES="false"
 
-if ! command -v shfmt &>/dev/null; then
+if ! command -v shfmt &> /dev/null; then
   echo "[ERROR] shfmt is not installed."
   exit 1
 fi
@@ -21,7 +21,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [OPTIONS]
 
 Options:

@@ -2,7 +2,7 @@
 
 set -uo pipefail
 
-if ! command -v docker &>/dev/null; then
+if ! command -v docker &> /dev/null; then
   echo "docker could not be found"
   exit
 fi

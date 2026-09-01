@@ -11,7 +11,7 @@ if command -v resticprofile; then
   exit 0
 fi
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed. Please install curl & try again."
   exit 1
 fi

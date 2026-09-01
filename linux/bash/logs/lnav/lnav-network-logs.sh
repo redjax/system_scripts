@@ -19,13 +19,13 @@ add_if_exists() {
 
 journal_network_fallback() {
   local pattern="$1"
-  if command -v journalctl >/dev/null 2>&1; then
-    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >"$tmpdir/journal-network.log" || true
+  if command -v journalctl > /dev/null 2>&1; then
+    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" > "$tmpdir/journal-network.log" || true
     [[ -s "$tmpdir/journal-network.log" ]] && logs+=("$tmpdir/journal-network.log")
   fi
 }
 
-. /etc/os-release 2>/dev/null || true
+. /etc/os-release 2> /dev/null || true
 
 case "${ID:-}" in
   debian | ubuntu)

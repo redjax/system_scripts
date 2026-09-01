@@ -8,7 +8,7 @@ IDS=()
 ALL="false"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: verify.sh [OPTIONS]
 
   -h, --help                   Print this help menu

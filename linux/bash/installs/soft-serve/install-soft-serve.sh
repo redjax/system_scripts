@@ -4,12 +4,12 @@ set -uo pipefail
 # -------------------------------
 # Requirements
 # -------------------------------
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi
 
-if ! command -v jq &>/dev/null; then
+if ! command -v jq &> /dev/null; then
   echo "[ERROR] jq is not installed."
   exit 1
 fi

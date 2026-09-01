@@ -4,22 +4,22 @@ SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SO
 PARENT_DIR="$(dirname "$SCRIPT_PATH")"
 
 function install_lazygit {
-  if command -v lazygit --version 2>&1 >/dev/null; then
+  if command -v lazygit --version 2>&1 > /dev/null; then
     echo "Lazygit is already installed."
     return 0
   fi
 
-  if ! command -v git --version >/dev/null 2>&1; then
+  if ! command -v git --version > /dev/null 2>&1; then
     echo "[ERROR] git is not installed."
     return 1
   fi
 
-  if ! command -v curl --version >/dev/null 2>&1; then
+  if ! command -v curl --version > /dev/null 2>&1; then
     echo "[ERROR] curl is not installed."
     return 1
   fi
 
-  if ! command -v tar --version >/dev/null 2>&1; then
+  if ! command -v tar --version > /dev/null 2>&1; then
     echo "[ERROR] tar is not installed."
     return 1
   fi

@@ -18,13 +18,13 @@ add_if_exists() {
 }
 
 journal_error_fallback() {
-  if command -v journalctl >/dev/null 2>&1; then
-    journalctl -b -p err --no-pager -o short-iso >"$tmpdir/journal-errors.log" || true
+  if command -v journalctl > /dev/null 2>&1; then
+    journalctl -b -p err --no-pager -o short-iso > "$tmpdir/journal-errors.log" || true
     [[ -s "$tmpdir/journal-errors.log" ]] && logs+=("$tmpdir/journal-errors.log")
   fi
 }
 
-. /etc/os-release 2>/dev/null || true
+. /etc/os-release 2> /dev/null || true
 
 case "${ID:-}" in
   debian | ubuntu)

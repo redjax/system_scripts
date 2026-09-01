@@ -16,7 +16,7 @@ set -uo pipefail
 #
 ##
 
-if ! command -v clamscan >/dev/null 2>&1; then
+if ! command -v clamscan > /dev/null 2>&1; then
   echo "[ERROR] clamscan not found. Install ClamAV first." >&2
   exit 1
 fi

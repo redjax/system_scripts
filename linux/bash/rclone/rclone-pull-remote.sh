@@ -18,7 +18,7 @@ set -euo pipefail
 #     --local-path /backup/some/path                                         #
 ##############################################################################
 
-if ! command -v rclone >/dev/null 2>&1; then
+if ! command -v rclone > /dev/null 2>&1; then
   echo "[ERROR] rclone is not installed" >&2
   exit 1
 fi
@@ -45,7 +45,7 @@ RCLONE_STATS_INTERVAL="${RCLONE_STATS_INTERVAL:-30s}"
 RCLONE_CREATE_EMPTY_SRC_DIRS="${RCLONE_CREATE_EMPTY_SRC_DIRS:-true}"
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: ${0} [OPTIONS]
 
 Pull a remote rclone path to a local directory using:
@@ -334,7 +334,7 @@ fi
 
 LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/rclone-pull-remote.lock"
 
-exec 200>"${LOCK_FILE}"
+exec 200> "${LOCK_FILE}"
 
 if ! flock -n 200; then
   error "Another pull is already running (lock: ${LOCK_FILE})"

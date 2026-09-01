@@ -31,7 +31,7 @@ cleanup_backups() {
 
   for pattern in "*_settings.json" "*_keybinds.json" "*_extensions.txt"; do
     # shellcheck disable=SC2207
-    mapfile -t files < <(find "$dir" -maxdepth 1 -type f -name "$pattern" -printf '%T@ %p\n' 2>/dev/null | sort -r -n | awk '{print $2}')
+    mapfile -t files < <(find "$dir" -maxdepth 1 -type f -name "$pattern" -printf '%T@ %p\n' 2> /dev/null | sort -r -n | awk '{print $2}')
 
     if ((${#files[@]} > retain)); then
       to_delete=("${files[@]:$retain}")
@@ -55,13 +55,13 @@ backup_extensions() {
   echo "+ Backing up extensions for profile '$profile' -> $outfile"
 
   if [[ "$profile" == "default" ]]; then
-    code --list-extensions >"$outfile"
+    code --list-extensions > "$outfile"
   else
     if [[ -n "$friendly_profile" ]]; then
-      code --list-extensions --profile="$friendly_profile" >"$outfile"
+      code --list-extensions --profile="$friendly_profile" > "$outfile"
     else
       # Fallback: might be empty if friendly name missing
-      code --list-extensions --profile="$profile" >"$outfile"
+      code --list-extensions --profile="$profile" > "$outfile"
     fi
   fi
 }
@@ -160,13 +160,13 @@ while [[ $# -gt 0 ]]; do
 done
 
 ## Check VSCode CLI
-if ! command -v code &>/dev/null; then
+if ! command -v code &> /dev/null; then
   echo "Error: VS Code CLI (code) not found. Please install VS Code and ensure 'code' is in PATH."
   exit 1
 fi
 
 ## Check jq presence
-if ! command -v jq &>/dev/null; then
+if ! command -v jq &> /dev/null; then
   echo "Error: jq not found. Please install jq."
   exit 1
 fi

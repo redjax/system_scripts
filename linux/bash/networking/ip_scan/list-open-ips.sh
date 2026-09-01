@@ -4,7 +4,7 @@ set -e
 
 RANGE="192.168.1.1-100"
 
-if ! command -v nmap >/dev/null 2>&1; then
+if ! command -v nmap > /dev/null 2>&1; then
   echo "nmap is not installed."
   exit 1
 fi
@@ -85,6 +85,6 @@ if [[ -n $OUTPUT_FILE ]]; then
     exit $?
   fi
 
-  echo "$RESULTS" >"$OUTPUT_FILE"
+  echo "$RESULTS" > "$OUTPUT_FILE"
   echo "Results written to $OUTPUT_FILE"
 fi

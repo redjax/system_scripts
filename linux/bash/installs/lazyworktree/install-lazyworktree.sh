@@ -6,7 +6,7 @@ REPO="chmouel/lazyworktree"
 INSTALL_DIR="${HOME}/.local/bin"
 BINARY_NAME="lazyworktree"
 
-if command -v lazyworktree &>/dev/null || [[ -f "$INSTALL_DIR/$BINARY_NAME" ]]; then
+if command -v lazyworktree &> /dev/null || [[ -f "$INSTALL_DIR/$BINARY_NAME" ]]; then
   echo "[WARNING] LazyWorktree is already installed."
 
   while true; do
@@ -72,7 +72,7 @@ for EXT in .tar.gz .zip; do
   BINARY="lazyworktree_${OS}_${ARCH}${EXT}"
   DOWNLOAD_URL="${RELEASE_URL}/${BINARY}"
 
-  if curl -L -f -o /dev/null "$DOWNLOAD_URL" 2>/dev/null; then
+  if curl -L -f -o /dev/null "$DOWNLOAD_URL" 2> /dev/null; then
     echo "Found binary: $BINARY"
 
     # Download

@@ -5,7 +5,7 @@ REPO="Zarestia-Dev/rclone-manager"
 FLATPAK_ID="io.github.zarestia_dev.rclone-manager"
 
 function exists() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 function detect_distro() {
@@ -18,7 +18,7 @@ function detect_distro() {
 }
 
 function install_flatpak() {
-  if ! command -v flatpak >/dev/null 2>&1; then
+  if ! command -v flatpak > /dev/null 2>&1; then
     return 1
   fi
 
