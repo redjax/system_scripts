@@ -40,9 +40,7 @@ case "$(uname -s)" in
 esac
 
 ## Check if gickup is already installed
-GICKUP_INSTALLED=$(command -v gickup)
-
-if [ -n "GICKUP_INSTALLED" ]; then
+if command -v gickup >&/dev/null; then
   echo "gickup is already installed. Update will be applied if a new version is available."
 fi
 
