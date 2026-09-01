@@ -6,7 +6,7 @@
 # PR and auto-merge it.                                   #
 ###########################################################
 
-name: Shell Format
+name: PR Merge
 
 on:
   pull_request:
