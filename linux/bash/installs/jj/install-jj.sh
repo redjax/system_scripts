@@ -20,29 +20,29 @@ OS="$(uname -s)"
 ARCH="$(uname -m)"
 
 case "$OS" in
-Darwin)
-  PLATFORM="apple-darwin"
-  ;;
-Linux)
-  PLATFORM="unknown-linux-musl"
-  ;;
-*)
-  echo "Unsupported OS: $OS"
-  exit 1
-  ;;
+  Darwin)
+    PLATFORM="apple-darwin"
+    ;;
+  Linux)
+    PLATFORM="unknown-linux-musl"
+    ;;
+  *)
+    echo "Unsupported OS: $OS"
+    exit 1
+    ;;
 esac
 
 case "$ARCH" in
-x86_64 | amd64)
-  ARCH="x86_64"
-  ;;
-arm64 | aarch64)
-  ARCH="aarch64"
-  ;;
-*)
-  echo "Unsupported architecture: $ARCH"
-  exit 1
-  ;;
+  x86_64 | amd64)
+    ARCH="x86_64"
+    ;;
+  arm64 | aarch64)
+    ARCH="aarch64"
+    ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
 esac
 
 echo "Detected platform: ${ARCH}-${PLATFORM}"

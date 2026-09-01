@@ -19,16 +19,16 @@ require uname
 ARCH="$(uname -m)"
 
 case "$ARCH" in
-x86_64)
-  ARCH="x86_64"
-  ;;
-aarch64 | arm64)
-  ARCH="aarch64"
-  ;;
-*)
-  echo "Unsupported architecture: $ARCH"
-  exit 1
-  ;;
+  x86_64)
+    ARCH="x86_64"
+    ;;
+  aarch64 | arm64)
+    ARCH="aarch64"
+    ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
 esac
 
 ## Detect libc (glibc vs musl)
@@ -88,15 +88,13 @@ echo "  $INSTALL_DIR/gitpane"
 
 # Ensure ~/.local/bin is on PATH
 case ":$PATH:" in
-*":$INSTALL_DIR:"*)
-  ;;
-*)
-  echo
-  echo "WARNING: $INSTALL_DIR is not in your PATH."
-  echo
-  echo "Add this to your shell config:"
-  echo
-  echo 'export PATH="$HOME/.local/bin:$PATH"'
-  ;;
+  *":$INSTALL_DIR:"*) ;;
+  *)
+    echo
+    echo "WARNING: $INSTALL_DIR is not in your PATH."
+    echo
+    echo "Add this to your shell config:"
+    echo
+    echo 'export PATH="$HOME/.local/bin:$PATH"'
+    ;;
 esac
-

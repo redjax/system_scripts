@@ -9,4 +9,3 @@ fi
 echo "Starting lnav, watching syslog"
 
 lnav /var/log/syslog*
-

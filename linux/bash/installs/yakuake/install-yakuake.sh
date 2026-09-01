@@ -20,24 +20,24 @@ install_yakuake_via_package_manager() {
   fi
 
   case "$ID" in
-  ubuntu | debian | raspbian)
-    $SUDO apt update
-    $SUDO apt install -y yakuake
-    ;;
-  fedora)
-    $SUDO dnf install -y yakuake
-    ;;
-  arch | manjaro)
-    $SUDO pacman -Sy --noconfirm yakuake
-    ;;
-  opensuse* | suse)
-    $SUDO zypper install -y yakuake
-    ;;
-  *)
-    echo "Unsupported or unknown distribution: $ID"
-    echo "Please install Yakuake manually."
-    exit 1
-    ;;
+    ubuntu | debian | raspbian)
+      $SUDO apt update
+      $SUDO apt install -y yakuake
+      ;;
+    fedora)
+      $SUDO dnf install -y yakuake
+      ;;
+    arch | manjaro)
+      $SUDO pacman -Sy --noconfirm yakuake
+      ;;
+    opensuse* | suse)
+      $SUDO zypper install -y yakuake
+      ;;
+    *)
+      echo "Unsupported or unknown distribution: $ID"
+      echo "Please install Yakuake manually."
+      exit 1
+      ;;
   esac
 
   echo "Yakuake installed successfully via package manager."

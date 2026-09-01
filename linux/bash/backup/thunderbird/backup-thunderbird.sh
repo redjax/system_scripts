@@ -19,25 +19,25 @@ function usage() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-  -o | --output-dir)
-    if [[ -z "$2" ]]; then
-      echo "[ERROR] --output-dir provided, but no directory path given" >&2
+    -o | --output-dir)
+      if [[ -z "$2" ]]; then
+        echo "[ERROR] --output-dir provided, but no directory path given" >&2
+        usage
+        exit 1
+      fi
+
+      BACKUP_DIR="$2"
+      shift 2
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "[ERROR] Invalid arg: $1" >&2
       usage
       exit 1
-    fi
-
-    BACKUP_DIR="$2"
-    shift 2
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    echo "[ERROR] Invalid arg: $1" >&2
-    usage
-    exit 1
-    ;;
+      ;;
   esac
 done
 

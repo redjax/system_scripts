@@ -18,7 +18,7 @@ install_docker_debian_ubuntu() {
 
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/$ID \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 
   sudo apt-get update
   sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -64,7 +64,7 @@ echo "  Platform: $NAME ($ID)"
 echo ""
 
 case "$ID" in
-  ubuntu|debian)
+  ubuntu | debian)
     install_docker_debian_ubuntu
     ;;
 
@@ -72,11 +72,11 @@ case "$ID" in
     install_docker_fedora
     ;;
 
-  centos|rhel|rocky)
+  centos | rhel | rocky)
     install_docker_centos_rocky_redhat
     ;;
 
-  opensuse*|sles)
+  opensuse* | sles)
     install_docker_opensuse
     ;;
 
@@ -91,7 +91,7 @@ case "$ID" in
   *)
     echo "Unsupported or unrecognized distribution: $ID"
     echo "Please install Docker manually for your distribution."
-    
+
     exit 1
     ;;
 esac
@@ -109,10 +109,10 @@ if [[ "$add_to_docker_group" =~ ^[Yy]$ ]]; then
   echo "User $USER added to docker group. You may need to log out and back in for this to take effect. You can also try running: newgrp docker"
 
 else
-    echo "To add your user to the docker group without sudo, run the following command:"
-    echo "  sudo usermod -aG docker \$USER"
-    echo "  To reload your shell without logging out after adding to the docker group, run:"
-    echo "  newgrp docker"
+  echo "To add your user to the docker group without sudo, run the following command:"
+  echo "  sudo usermod -aG docker \$USER"
+  echo "  To reload your shell without logging out after adding to the docker group, run:"
+  echo "  newgrp docker"
 fi
 
 echo "Docker installed. If you get permission errors when trying to run Devpods, try restarting your computer to finish applying changes. The newgrp command does not always fix this."

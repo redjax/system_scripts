@@ -51,10 +51,10 @@ install_via_download() {
   distro="$(get_distro)"
 
   case "$platform" in
-    x86_64|amd64)
+    x86_64 | amd64)
       arch="x86_64"
       ;;
-    aarch64|arm64)
+    aarch64 | arm64)
       arch="aarch64"
       ;;
     *)
@@ -92,7 +92,7 @@ install_via_download() {
 create_desktop_entry() {
   local desktop_file=~/.local/share/applications/zed.desktop
   mkdir -p ~/.local/share/applications
-  cat > "$desktop_file" <<EOF
+  cat >"$desktop_file" <<EOF
 [Desktop Entry]
 Name=Zed
 Comment=Zed code editor

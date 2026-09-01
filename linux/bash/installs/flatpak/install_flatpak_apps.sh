@@ -4,8 +4,8 @@ DEFAULT_FLATPAK_APPS=()
 
 function install_flatpak_apps {
   FLATPAK_APPS=("$@")
-  
-  if ! command -v flatpak > /dev/null 2>&1; then
+
+  if ! command -v flatpak >/dev/null 2>&1; then
     echo "[ERROR] Flatpak is not installed."
     return 1
   fi
@@ -22,7 +22,7 @@ function install_flatpak_apps {
   done
 }
 
-if [[ "${BASH_SOURCE[0]}" ==  "${0}" ]]; then
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   install_flatpak_apps
   if [[ $? -ne 0 ]]; then
     echo "[ERROR] Error installing Flatpak apps."

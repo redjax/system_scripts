@@ -13,7 +13,7 @@ fi
 if ! flatpak remotes --columns=name | grep -q '^flathub$'; then
   echo "Flathub remote not found. Adding Flathub..."
   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-  
+
   if [[ $? -ne 0 ]]; then
     echo "Added flathub remote to flatpak"
   fi

@@ -22,11 +22,11 @@ install_via_flatpak() {
 
 install_via_pkg_manager() {
   case "$DISTRO" in
-    ubuntu|debian|linuxmint|pop|raspbian)
+    ubuntu | debian | linuxmint | pop | raspbian)
       sudo apt update
       sudo apt install -y filezilla
       ;;
-    fedora|rhel|centos|almalinux|rocky)
+    fedora | rhel | centos | almalinux | rocky)
       sudo dnf install -y filezilla
       ;;
     opensuse)

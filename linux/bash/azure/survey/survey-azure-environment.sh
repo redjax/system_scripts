@@ -35,27 +35,27 @@ USER_SECTIONS=()
 USER_SUBS=()
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
-  -h | --help) usage ;;
-  -q | --quick)
-    QUICK=1
-    shift
-    ;;
-  -o | --output)
-    OUTPUT="$2"
-    shift 2
-    ;;
-  -c | --section)
-    IFS=',' read -ra USER_SECTIONS <<<"$2"
-    shift 2
-    ;;
-  -s | --subscription)
-    IFS=', ' read -ra USER_SUBS <<<"$2"
-    shift 2
-    ;;
-  *)
-    echo -e "${RED}Unknown argument: $1${NC}" >&2
-    usage
-    ;;
+    -h | --help) usage ;;
+    -q | --quick)
+      QUICK=1
+      shift
+      ;;
+    -o | --output)
+      OUTPUT="$2"
+      shift 2
+      ;;
+    -c | --section)
+      IFS=',' read -ra USER_SECTIONS <<<"$2"
+      shift 2
+      ;;
+    -s | --subscription)
+      IFS=', ' read -ra USER_SUBS <<<"$2"
+      shift 2
+      ;;
+    *)
+      echo -e "${RED}Unknown argument: $1${NC}" >&2
+      usage
+      ;;
   esac
 done
 
@@ -127,4 +127,3 @@ done
 
 end_time=$(date)
 echo -e "\n${GREEN}Survey complete.${NC} Started: $start_time | Ended: $end_time" | eval "$LOG_PIPE"
-

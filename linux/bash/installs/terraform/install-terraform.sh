@@ -7,7 +7,7 @@ ARCH="$(uname -m)"
 ## Standardize architecture names for Terraform downloads, if needed
 case "$ARCH" in
   x86_64) ARCH="amd64" ;;
-  arm64|aarch64) ARCH="arm64" ;;
+  arm64 | aarch64) ARCH="arm64" ;;
   *) echo "Unsupported architecture: $ARCH" && exit 1 ;;
 esac
 
@@ -41,7 +41,7 @@ if [ "$OS" = "Darwin" ]; then
     VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | grep -o '"current_version":"[^"]*' | head -1 | cut -d'"' -f4)
     URL="https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_darwin_${ARCH}.zip"
     TMP_DIR=$(mktemp -d)
-    
+
     ## Download terraform archive
     echo "Downloading Terraform from $URL"
     curl -Lo "$TMP_DIR/terraform.zip" "$URL"
@@ -49,7 +49,7 @@ if [ "$OS" = "Darwin" ]; then
       echo "Failed to download Terraform from $URL"
       exit 1
     fi
-    
+
     ## Extract terraform archive
     echo "Extracting $TMP_DIR/terraform.zip"
     unzip "$TMP_DIR/terraform.zip" -d "$TMP_DIR"
@@ -57,7 +57,7 @@ if [ "$OS" = "Darwin" ]; then
       echo "Failed to extract Terraform from $TMP_DIR/terraform.zip"
       exit 1
     fi
-    
+
     ## Move terraform to /usr/local/bin
     echo "Moving Terraform to /usr/local/bin/"
     sudo mv "$TMP_DIR/terraform" /usr/local/bin/
@@ -69,7 +69,7 @@ if [ "$OS" = "Darwin" ]; then
     fi
 
     rm -rf "$TMP_DIR"
-    
+
     echo "Terraform $VERSION installed in /usr/local/bin/"
   fi
 
@@ -87,16 +87,16 @@ elif [ "$OS" = "Linux" ]; then
   echo "Detected Linux distribution: $NAME ($ID)"
 
   case "$DISTRO_ID" in
-    ubuntu|debian)
+    ubuntu | debian)
       echo "Installing Terraform via apt-get"
 
       ## Install prerequisites
       sudo apt-get update
       sudo apt-get install -y software-properties-common gnupg2 curl
-      
+
       ## Add HashiCorp GPG key
       curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-      
+
       ## Add HashiCorp repo
       echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $VERSION_CODENAME main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 
@@ -115,7 +115,7 @@ elif [ "$OS" = "Linux" ]; then
       ## Install
       sudo dnf -y install terraform
       ;;
-    centos|rhel)
+    centos | rhel)
       echo "Installing Terraform via yum"
 
       ## Add HashiCorp repo
@@ -127,7 +127,7 @@ elif [ "$OS" = "Linux" ]; then
       ## Install
       sudo yum -y install terraform
       ;;
-    opensuse*|suse)
+    opensuse* | suse)
       echo "Installing Terraform via manual archive extract"
 
       ## Get latest terraform version
@@ -136,7 +136,7 @@ elif [ "$OS" = "Linux" ]; then
       URL="https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_${ARCH}.zip"
 
       TMP_DIR=$(mktemp -d)
-      
+
       ## Download terraform archive
       curl -Lo "$TMP_DIR/terraform.zip" "$URL"
       if [ $? -ne 0 ]; then
@@ -148,7 +148,7 @@ elif [ "$OS" = "Linux" ]; then
       unzip "$TMP_DIR/terraform.zip" -d "$TMP_DIR"
       if [ $? -ne 0 ]; then
         echo "Failed to extract Terraform from $TMP_DIR/terraform.zip"
-        exit 1  
+        exit 1
       fi
 
       ## Move terraform to /usr/local/bin
@@ -158,7 +158,7 @@ elif [ "$OS" = "Linux" ]; then
       ;;
     arch)
       echo "Installing Terraform via pacman"
-      
+
       ## On Arch Linux, use pacman or AUR
       if command -v pacman >/dev/null 2>&1; then
         sudo pacman -Sy --noconfirm terraform

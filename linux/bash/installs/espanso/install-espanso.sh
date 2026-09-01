@@ -126,7 +126,7 @@ install_espanso_appimage() {
   mkdir -p "$DESKTOP_DIR"
   ICON_PATH="/usr/share/icons/hicolor/256x256/apps/espanso.png"
 
-  cat > "$DESKTOP_DIR/espanso.desktop" <<EOF
+  cat >"$DESKTOP_DIR/espanso.desktop" <<EOF
 [Desktop Entry]
 Name=Espanso
 Comment=Text expander tool
@@ -140,7 +140,6 @@ EOF
   echo "Created desktop entry at $DESKTOP_DIR/espanso.desktop"
   echo "Run 'espanso start' to begin"
 }
-
 
 case "$OS_TYPE" in
   Darwin)

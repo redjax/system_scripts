@@ -14,4 +14,3 @@ else
   echo "Chezmoi installed successfully. You might need to add \$HOME/.local/bin to your \$PATH."
   exit 0
 fi
-

@@ -4,9 +4,9 @@ set -uo pipefail
 VERSION=""
 
 # Parse args
-while (( "$#" )); do
+while (("$#")); do
   case "$1" in
-    -v|--version)
+    -v | --version)
       if [ -n "$2" ] && [[ "${2:0:1}" != "-" ]]; then
         VERSION=$2
         shift 2
@@ -47,12 +47,12 @@ rm -f "$TARBALL"
 
 # Ensure PATH
 if ! grep -q '/usr/local/go/bin' "$HOME/.bashrc"; then
-  echo 'export PATH="/usr/local/go/bin:$PATH"' >> "$HOME/.bashrc"
+  echo 'export PATH="/usr/local/go/bin:$PATH"' >>"$HOME/.bashrc"
 fi
 
 # Disable Go toolchain auto-downloads
 if ! grep -q 'GOTOOLCHAIN=local' "$HOME/.bashrc"; then
-  echo 'export GOTOOLCHAIN=local' >> "$HOME/.bashrc"
+  echo 'export GOTOOLCHAIN=local' >>"$HOME/.bashrc"
 fi
 
 export PATH="/usr/local/go/bin:$PATH"

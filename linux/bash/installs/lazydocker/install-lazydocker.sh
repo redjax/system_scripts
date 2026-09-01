@@ -3,12 +3,12 @@
 if command -v lazydocker &>/dev/null; then
   echo "Lazydocker is already installed."
   read -p "Run anyway (this will update the app if there is an available update)? (y/n): " update
-  
+
   case $update in
-    [Yy]* )
+    [Yy]*)
       echo "Continuing with Lazydocker install."
       ;;
-    [Nn]* )
+    [Nn]*)
       echo "Exiting."
       exit 0
       ;;
@@ -35,4 +35,3 @@ else
   echo "Installed Lazydocker"
   exit 0
 fi
-

@@ -21,26 +21,26 @@ function git_error_hint() {
   local target="$2"
 
   case "$kind" in
-  repo_not_found)
-    error "Destination repository was not found or is not accessible: $target"
-    error "Check the remote URL, repository path, and write permissions."
-    ;;
-  auth)
-    error "Authentication failed while accessing: $target"
-    error "Check SSH key, token, account permissions, or remote ACLs."
-    ;;
-  network)
-    error "Network error while reaching: $target"
-    error "Check connectivity and host availability."
-    ;;
-  ssh)
-    error "SSH error while reaching: $target"
-    error "Check SSH connectivity, host key verification, and agent/key setup."
-    ;;
-  *)
-    error "Git operation failed for: $target"
-    error "See raw error output below."
-    ;;
+    repo_not_found)
+      error "Destination repository was not found or is not accessible: $target"
+      error "Check the remote URL, repository path, and write permissions."
+      ;;
+    auth)
+      error "Authentication failed while accessing: $target"
+      error "Check SSH key, token, account permissions, or remote ACLs."
+      ;;
+    network)
+      error "Network error while reaching: $target"
+      error "Check connectivity and host availability."
+      ;;
+    ssh)
+      error "SSH error while reaching: $target"
+      error "Check SSH connectivity, host key verification, and agent/key setup."
+      ;;
+    *)
+      error "Git operation failed for: $target"
+      error "See raw error output below."
+      ;;
   esac
 }
 

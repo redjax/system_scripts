@@ -5,12 +5,12 @@ set -uo pipefail
 ## Detect CPU architecture
 CPU_ARCH=$(uname -m)
 case "$CPU_ARCH" in
-x86_64) CPU_ARCH="x64" ;;
-aarch64 | arm64) CPU_ARCH="arm64" ;;
-*)
-  echo "ERROR: Unsupported architecture: $CPU_ARCH" >&2
-  exit 1
-  ;;
+  x86_64) CPU_ARCH="x64" ;;
+  aarch64 | arm64) CPU_ARCH="arm64" ;;
+  *)
+    echo "ERROR: Unsupported architecture: $CPU_ARCH" >&2
+    exit 1
+    ;;
 esac
 
 APPIMAGE_NAME="LM-Studio.AppImage"

@@ -68,9 +68,9 @@ function install_appimage() {
   arch=$(uname -m)
 
   case "$arch" in
-  x86_64) arch="x86_64" ;;
-  aarch64 | arm64) arch="arm64" ;;
-  *) return 1 ;;
+    x86_64) arch="x86_64" ;;
+    aarch64 | arm64) arch="arm64" ;;
+    *) return 1 ;;
   esac
 
   tmp=$(mktemp -d)

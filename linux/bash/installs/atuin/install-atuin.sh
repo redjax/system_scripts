@@ -24,21 +24,21 @@ while true; do
   echo ""
 
   case $yn in
-  [Yy])
-    read -n 1 -r -p "Atuin username (new or existing): " atuinUser
-    echo ""
-    read -n 1 -r -p "Email address: " atuinEmail
-    echo ""
+    [Yy])
+      read -n 1 -r -p "Atuin username (new or existing): " atuinUser
+      echo ""
+      read -n 1 -r -p "Email address: " atuinEmail
+      echo ""
 
-    atuin register -u $atuinUser -e atuinEmail
-    echo ""
+      atuin register -u $atuinUser -e atuinEmail
+      echo ""
 
-    echo "See your encryption key with 'atuin key'. Make a backup of this!"
+      echo "See your encryption key with 'atuin key'. Make a backup of this!"
 
-    break
-    ;;
-  [Nn])
-    break
-    ;;
+      break
+      ;;
+    [Nn])
+      break
+      ;;
   esac
 done

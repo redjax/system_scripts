@@ -28,4 +28,3 @@ echo "Making kitty the xdg-terminal (if supported)"
 echo 'kitty.desktop' >"${CONFIG_DIR}/xdg-terminals.list"
 
 echo "All done. You may need to run 'update-desktop-database' or re-log for menus to refresh."
-

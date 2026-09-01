@@ -32,16 +32,16 @@ function install_appimage() {
     sed -n 's/.*"tag_name": *"v\([^"]*\)".*/\1/p')"
 
   case "$ARCH" in
-  x86_64)
-    FILE="sourcegit_${VERSION}.linux-x64.AppImage"
-    ;;
-  aarch64 | arm64)
-    FILE="sourcegit_${VERSION}.linux-arm64.AppImage"
-    ;;
-  *)
-    echo "Unsupported architecture: $ARCH"
-    exit 1
-    ;;
+    x86_64)
+      FILE="sourcegit_${VERSION}.linux-x64.AppImage"
+      ;;
+    aarch64 | arm64)
+      FILE="sourcegit_${VERSION}.linux-arm64.AppImage"
+      ;;
+    *)
+      echo "Unsupported architecture: $ARCH"
+      exit 1
+      ;;
   esac
 
   sudo mkdir -p /opt/sourcegit

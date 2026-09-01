@@ -17,8 +17,8 @@ set -uo pipefail
 ##
 
 if ! command -v clamscan >/dev/null 2>&1; then
-    echo "[ERROR] clamscan not found. Install ClamAV first." >&2
-    exit 1
+  echo "[ERROR] clamscan not found. Install ClamAV first." >&2
+  exit 1
 fi
 
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -46,25 +46,25 @@ function greeting() {
 }
 
 function freshclam_update() {
-    . "${THIS_DIR}/freshclam-update.sh"
+  . "${THIS_DIR}/freshclam-update.sh"
 
-    update_clamav_definitions
+  update_clamav_definitions
 }
 
 function main() {
-    greeting
+  greeting
 
-    freshclam_update
-    if [[ $? -ne 0 ]]; then
-        echo "[ERROR] Failed to update ClamAV definitions." >&2
-        exit 1
-    fi
+  freshclam_update
+  if [[ $? -ne 0 ]]; then
+    echo "[ERROR] Failed to update ClamAV definitions." >&2
+    exit 1
+  fi
 
-    clamscan -r --stdout --log="$LOG_FILE" "$TARGET"
-    if [[ $? -ne 0 ]]; then
-        echo "[ERROR] ClamAV scan failed." >&2
-        exit 1
-    fi
+  clamscan -r --stdout --log="$LOG_FILE" "$TARGET"
+  if [[ $? -ne 0 ]]; then
+    echo "[ERROR] ClamAV scan failed." >&2
+    exit 1
+  fi
 }
 
 if ! main "$@"; then

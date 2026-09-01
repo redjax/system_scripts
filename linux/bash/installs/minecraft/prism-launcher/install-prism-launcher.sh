@@ -18,7 +18,7 @@ ARCH="$(uname -m)"
 if [[ "$OS" == "Linux" ]] && command -v flatpak >/dev/null 2>&1; then
   flatpak remote-add --if-not-exists flathub \
     https://dl.flathub.org/repo/flathub.flatpakrepo
-  
+
   flatpak install -y flathub org.prismlauncher.PrismLauncher
 
   if [[ $? -ne 0 ]]; then
@@ -31,8 +31,8 @@ if [[ "$OS" == "Linux" ]] && command -v flatpak >/dev/null 2>&1; then
 fi
 
 case "$ARCH" in
-  x86_64|amd64) ARCH="x86_64" ;;
-  arm64|aarch64) ARCH="arm64" ;;
+  x86_64 | amd64) ARCH="x86_64" ;;
+  arm64 | aarch64) ARCH="arm64" ;;
   *) exit 1 ;;
 esac
 
@@ -43,29 +43,29 @@ echo "Getting latest release for $OS/$ARCH"
 if [[ "$OS" == "Linux" ]]; then
   DOWNLOAD_URL="$(
     echo "$RELEASE_JSON" |
-    grep -Eo '"browser_download_url":[^"]+' |
-    cut -d'"' -f4 |
-    grep 'PrismLauncher-Linux-Qt6-Portable-.*\.tar\.gz' |
-    head -n1
+      grep -Eo '"browser_download_url":[^"]+' |
+      cut -d'"' -f4 |
+      grep 'PrismLauncher-Linux-Qt6-Portable-.*\.tar\.gz' |
+      head -n1
   )"
 
   if [[ -z "$DOWNLOAD_URL" && "$ARCH" == "x86_64" ]]; then
     DOWNLOAD_URL="$(
       echo "$RELEASE_JSON" |
-      grep -Eo '"browser_download_url":[^"]+' |
-      cut -d'"' -f4 |
-      grep 'PrismLauncher-Linux-x86_64\.AppImage$' |
-      head -n1
+        grep -Eo '"browser_download_url":[^"]+' |
+        cut -d'"' -f4 |
+        grep 'PrismLauncher-Linux-x86_64\.AppImage$' |
+        head -n1
     )"
   fi
 elif [[ "$OS" == "Darwin" ]]; then
   DOWNLOAD_URL="$(
     echo "$RELEASE_JSON" |
-    grep -Eo '"browser_download_url":[^"]+' |
-    cut -d'"' -f4 |
-    grep 'PrismLauncher-macOS-.*\.zip' |
-    grep -v Legacy |
-    head -n1
+      grep -Eo '"browser_download_url":[^"]+' |
+      cut -d'"' -f4 |
+      grep 'PrismLauncher-macOS-.*\.zip' |
+      grep -v Legacy |
+      head -n1
   )"
 else
   exit 1

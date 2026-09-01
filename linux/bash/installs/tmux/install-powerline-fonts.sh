@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if ! command -v git > /dev/null 2>&1; then
+if ! command -v git >/dev/null 2>&1; then
   echo "[ERROR] git is not installed"
   exit 1
 fi
 
-if ! command -v curl > /dev/null 2>&1; then
+if ! command -v curl >/dev/null 2>&1; then
   echo "[ERROR] curl is not installed"
   exit 1
 fi
@@ -13,12 +13,12 @@ fi
 if [[ -d /tmp/pl-fonts ]]; then
   echo "Powerline fonts were already downloaded. Attempting to install."
 else
-    echo "Cloning powerline fonts"
-    git clone --depth 1 https://github.com/powerline/fonts /tmp/pl-fonts
-    if [[ $? -ne 0 ]]; then
+  echo "Cloning powerline fonts"
+  git clone --depth 1 https://github.com/powerline/fonts /tmp/pl-fonts
+  if [[ $? -ne 0 ]]; then
     echo "[ERROR] Failed cloning powerline fonts"
     exit 1
-    fi
+  fi
 fi
 
 cd /tmp/pl-fonts

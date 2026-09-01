@@ -34,7 +34,7 @@ EOF
 function require_var() {
   local var_name="$1"
   local value="${!var_name:-}"
-  
+
   if [[ -z "$value" ]]; then
     echo "Missing required env var: $var_name" >&2
     exit 1
@@ -43,27 +43,27 @@ function require_var() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -e|--env-file)
+    -e | --env-file)
       ENV_FILE="$2"
       shift 2
       ;;
-    -i|--image)
+    -i | --image)
       IMAGE="$2"
       shift 2
       ;;
-    -c|--config)
+    -c | --config)
       CONFIG_FILE_PATH="$2"
       shift 2
       ;;
-    -d|--dry-run)
+    -d | --dry-run)
       EXTRA_ARGS+=(-e RENOVATE_DRY_RUN=true)
       shift
       ;;
-    -r|--repository)
+    -r | --repository)
       EXTRA_ARGS+=(-e "RENOVATE_REPOSITORIES=$2")
       shift 2
       ;;
-    -p|--platform)
+    -p | --platform)
       EXTRA_ARGS+=(-e "RENOVATE_PLATFORM=$2")
       shift 2
       ;;
@@ -72,7 +72,7 @@ while [[ $# -gt 0 ]]; do
       EXTRA_ARGS+=("$@")
       break
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;

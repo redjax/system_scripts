@@ -136,7 +136,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
 
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
@@ -243,4 +243,3 @@ END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
 info "Sync completed in ${DURATION}s"
-

@@ -6,12 +6,12 @@ if ! command -v curl &>/dev/null; then
 fi
 
 detect_distro() {
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        echo "$ID"
-    else
-        echo "unknown"
-    fi
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    echo "$ID"
+  else
+    echo "unknown"
+  fi
 }
 
 ## Detect OS
@@ -41,38 +41,38 @@ echo "Installing dry (Terminal UI for Docker) v${DRY_VERSION}"
 
 ## Map to Github asset names
 case "$OS" in
-Linux)
-  case "$ARCH" in
-  x86_64)
-    FILE="dry-linux-amd64"
+  Linux)
+    case "$ARCH" in
+      x86_64)
+        FILE="dry-linux-amd64"
+        ;;
+      aarch64 | arm64)
+        FILE="dry-linux-arm64"
+        ;;
+      *)
+        echo "Unsupported Linux architecture: $ARCH"
+        exit 1
+        ;;
+    esac
     ;;
-  aarch64 | arm64)
-    FILE="dry-linux-arm64"
+  Darwin)
+    case "$ARCH" in
+      x86_64)
+        FILE="dry-darwin-amd64"
+        ;;
+      arm64)
+        FILE="dry-darwin-arm64"
+        ;;
+      *)
+        echo "Unsupported macOS architecture: $ARCH"
+        exit 1
+        ;;
+    esac
     ;;
   *)
-    echo "Unsupported Linux architecture: $ARCH"
+    echo "Unsupported OS: $OS"
     exit 1
     ;;
-  esac
-  ;;
-Darwin)
-  case "$ARCH" in
-  x86_64)
-    FILE="dry-darwin-amd64"
-    ;;
-  arm64)
-    FILE="dry-darwin-arm64"
-    ;;
-  *)
-    echo "Unsupported macOS architecture: $ARCH"
-    exit 1
-    ;;
-  esac
-  ;;
-*)
-  echo "Unsupported OS: $OS"
-  exit 1
-  ;;
 esac
 
 ## Create a temporary directory
