@@ -9,10 +9,21 @@
 name: Shell Format
 
 on:
+  pull_request:
+    branches:
+      - feat/shell-quality-checks
+    types:
+      - opened
+      - synchronize
+      - reopened
+    # paths:
+    #   - ".shellcheckrc"
+    #   - "linux/bash/**/*.sh"
+    #   - "repo_scripts/**/*.sh"
+
   push:
     branches:
       - main
-      - topic/linting-formatting
     paths:
       - "linux/bash/**/*.sh"
       - "repo_scripts/**/*.sh"
@@ -34,8 +45,12 @@ jobs:
 
       scan-path: "."
 
-      shellfmt-mode: write
-      shellfmt-commit-changes: true
+      ## Uncomment for dry-run mode
+      shellfmt-mode: check
+      shellfmt-commit-changes: false
+
+      # shellfmt-mode: write
+      # shellfmt-commit-changes: true
       shellfmt-commit-message: "chore(shell): format shell scripts"
 
       use-default-shellfmt-config: true
