@@ -38,6 +38,13 @@ on:
           - enforce
           - report-only
 
+      shellcheck-severity:
+        description: Minimum ShellCheck severity to report.
+        required: false
+        type: string
+        default: error
+
+
 permissions:
   contents: read
 
@@ -52,6 +59,8 @@ jobs:
       tools: shellcheck
 
       scan-path: ${{ inputs.scan-path || '.' }}
+
+      shellcheck-severity: ${{ inputs.shellcheck-severity || 'error' }}
 
       shellcheck-config-path: ".shellcheckrc"
       use-default-shellcheck-config: false
