@@ -19,8 +19,8 @@ echo '  export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquap
 
 ## Verify installation
 if command -v aqua >/dev/null 2>&1; then
-    echo "Success: $(aqua version)"
+  echo "Success: $(aqua version)"
 else
-    echo "[ERROR] Failed installing aqua."
-    exit 1
+  echo "[ERROR] Failed installing aqua."
+  exit 1
 fi

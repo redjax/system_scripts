@@ -1,0 +1,45 @@
+---
+###########################################################
+# Format shell scripts after changes are merged to main.  #
+#                                                         #
+# If shellfmt changes files, create/update the formatting #
+# PR and auto-merge it.                                   #
+###########################################################
+
+name: PR Merge
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "linux/bash/**/*.sh"
+      - "repo_scripts/**/*.sh"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  shell-quality:
+    name: Shellfmt
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    with:
+      pipelinetemplates-ref: main
+
+      tools: shellfmt
+
+      scan-path: "."
+
+      shellfmt-mode: write
+      shellfmt-commit-changes: true
+      shellfmt-commit-message: "chore(shell): format shell scripts"
+
+      use-default-shellfmt-config: true
+
+      fail-on-findings: false
+
+      shellfmt-artifact-name: system-scripts-shellfmt-results
+      artifact-retention-days: 30

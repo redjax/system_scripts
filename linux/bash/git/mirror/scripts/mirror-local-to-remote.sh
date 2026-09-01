@@ -54,32 +54,32 @@ function parse_args() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    --local-root)
-      require_arg "--local-root" "${2:-}"
-      LOCAL_ROOT="$2"
-      shift 2
-      ;;
-    --*)
-      echo "[ERROR] unknown flag: $1" >&2
-      usage
-      exit 2
-      ;;
-    *)
-      if [[ -z "$SOURCE_URL" ]]; then
-        SOURCE_URL="$1"
-      elif [[ -z "$DEST_URL" ]]; then
-        DEST_URL="$1"
-      else
-        echo "[ERROR] unexpected argument: $1" >&2
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      --local-root)
+        require_arg "--local-root" "${2:-}"
+        LOCAL_ROOT="$2"
+        shift 2
+        ;;
+      --*)
+        echo "[ERROR] unknown flag: $1" >&2
         usage
         exit 2
-      fi
-      shift
-      ;;
+        ;;
+      *)
+        if [[ -z "$SOURCE_URL" ]]; then
+          SOURCE_URL="$1"
+        elif [[ -z "$DEST_URL" ]]; then
+          DEST_URL="$1"
+        else
+          echo "[ERROR] unexpected argument: $1" >&2
+          usage
+          exit 2
+        fi
+        shift
+        ;;
     esac
   done
 

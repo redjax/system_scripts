@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if command -v uv >/dev/null 2>&1; then
-    echo "uv is already installed."
-    exit 0
+  echo "uv is already installed."
+  exit 0
 fi
 
 if command -v curl >/dev/null 2>&1; then

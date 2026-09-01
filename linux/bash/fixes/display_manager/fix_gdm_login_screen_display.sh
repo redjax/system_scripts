@@ -17,5 +17,3 @@ else
   echo "Successfully updated login windows settings"
   exit 0
 fi
-
-

@@ -193,10 +193,10 @@ function detect_arch() {
   raw="$(uname -m | tr '[:upper:]' '[:lower:]')"
 
   case "$raw" in
-    x86_64|amd64) echo "amd64" ;;
-    aarch64|arm64) echo "arm64" ;;
-    armv7l|armv7|armhf|armv6l|armv6) echo "arm" ;;
-    i386|i686) echo "386" ;;
+    x86_64 | amd64) echo "amd64" ;;
+    aarch64 | arm64) echo "arm64" ;;
+    armv7l | armv7 | armhf | armv6l | armv6) echo "arm" ;;
+    i386 | i686) echo "386" ;;
     *)
       err "Unsupported architecture: ${raw}"
       exit 1
@@ -272,7 +272,7 @@ function main() {
         FORCE_INSTALL=1
         shift
         ;;
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
@@ -285,7 +285,7 @@ function main() {
   done
 
   need_cmd bash "Install bash from your system package manager"
-  
+
   ensure_tool_installed git git || {
     err "Install manually: apt install git | dnf install git | pacman -S git | brew install git"
     exit 1

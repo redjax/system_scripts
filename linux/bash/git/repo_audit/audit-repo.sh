@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-
 if ! command -v git >/dev/null 2>&1; then
   echo "[ERROR] git is not installed" >&2
   exit 1
 fi
-
 
 ## Default args
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -16,13 +14,11 @@ OUTPUT_FILE=""
 RUN_ALL=true
 SELECTED_SECTIONS=()
 
-
 ## Function to run on exit
 function cleanup() {
   cd "${CWD}"
 }
 trap cleanup EXIT
-
 
 ## Print help menu
 function usage() {
@@ -71,29 +67,33 @@ Examples:
 EOF
 }
 
-
 ## Add a section to the list based on args
 function add_section() {
   RUN_ALL=false
   SELECTED_SECTIONS+=("$1")
 }
 
-
 ## Parse CLI args
 function parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
-      -t|--target)
-        [[ $# -ge 2 ]] || { echo "[ERROR] Missing value for $1" >&2; exit 1; }
+      -t | --target)
+        [[ $# -ge 2 ]] || {
+          echo "[ERROR] Missing value for $1" >&2
+          exit 1
+        }
         TARGET_REPO="$2"
         shift 2
         ;;
-      -o|--output)
-        [[ $# -ge 2 ]] || { echo "[ERROR] Missing value for $1" >&2; exit 1; }
+      -o | --output)
+        [[ $# -ge 2 ]] || {
+          echo "[ERROR] Missing value for $1" >&2
+          exit 1
+        }
         OUTPUT_FILE="$2"
         shift 2
         ;;
@@ -102,22 +102,70 @@ function parse_args() {
         SELECTED_SECTIONS=()
         shift
         ;;
-      --repo-summary)         add_section "repo_summary"; shift ;;
-      --commit-count)         add_section "commit_count"; shift ;;
-      --contributors)         add_section "contributors"; shift ;;
-      --top-contributors)     add_section "contributors"; shift ;;
-      --author-churn)         add_section "author_churn"; shift ;;
-      --top-churn-paths)      add_section "top_churn_paths"; shift ;;
-      --largest-blobs)        add_section "largest_blobs"; shift ;;
-      --biggest-commits)      add_section "biggest_commits_by_changes"; shift ;;
-      --branches)             add_section "branches"; shift ;;
-      --remotes)              add_section "remotes"; shift ;;
-      --commit-graph)         add_section "commit_graph"; shift ;;
-      --tags)                 add_section "tags"; shift ;;
-      --tracked-files)        add_section "tracked_files"; shift ;;
-      --extension-breakdown)  add_section "extension_breakdown"; shift ;;
-      --submodules)           add_section "submodules"; shift ;;
-      --lfs)                  add_section "lfs"; shift ;;
+      --repo-summary)
+        add_section "repo_summary"
+        shift
+        ;;
+      --commit-count)
+        add_section "commit_count"
+        shift
+        ;;
+      --contributors)
+        add_section "contributors"
+        shift
+        ;;
+      --top-contributors)
+        add_section "contributors"
+        shift
+        ;;
+      --author-churn)
+        add_section "author_churn"
+        shift
+        ;;
+      --top-churn-paths)
+        add_section "top_churn_paths"
+        shift
+        ;;
+      --largest-blobs)
+        add_section "largest_blobs"
+        shift
+        ;;
+      --biggest-commits)
+        add_section "biggest_commits_by_changes"
+        shift
+        ;;
+      --branches)
+        add_section "branches"
+        shift
+        ;;
+      --remotes)
+        add_section "remotes"
+        shift
+        ;;
+      --commit-graph)
+        add_section "commit_graph"
+        shift
+        ;;
+      --tags)
+        add_section "tags"
+        shift
+        ;;
+      --tracked-files)
+        add_section "tracked_files"
+        shift
+        ;;
+      --extension-breakdown)
+        add_section "extension_breakdown"
+        shift
+        ;;
+      --submodules)
+        add_section "submodules"
+        shift
+        ;;
+      --lfs)
+        add_section "lfs"
+        shift
+        ;;
       *)
         echo "[ERROR] Unknown option: $1" >&2
         usage
@@ -127,7 +175,6 @@ function parse_args() {
   done
 }
 
-
 ## Ensure target repo is a git repo
 function ensure_repo() {
   if ! git -C "$TARGET_REPO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -135,7 +182,6 @@ function ensure_repo() {
     exit 1
   fi
 }
-
 
 ## Get an overview/summary of the repository
 function repo_summary() {
@@ -145,7 +191,6 @@ function repo_summary() {
   echo
 }
 
-
 ## Count the number of commits
 function commit_count() {
   echo "[ Commit count ]"
@@ -153,7 +198,6 @@ function commit_count() {
   git rev-list --count --all
   echo
 }
-
 
 ## List contributors
 function contributors() {
@@ -163,15 +207,14 @@ function contributors() {
   echo
 }
 
-
 ## List author churn, which is a measure of
 #  how many lines have been added and removed
 #  per author
 function author_churn() {
   echo "[ Author churn ]"
   echo
-  git log --all --numstat --format='%aN <%aE>' \
-    | awk '
+  git log --all --numstat --format='%aN <%aE>' |
+    awk '
         /^.+ <.+>$/ { author=$0; next }
         NF==3 {
           if ($1 ~ /^[0-9]+$/) add[author]+=$1
@@ -180,42 +223,39 @@ function author_churn() {
         END {
           for (a in add) print add[a]+del[a], add[a], del[a], a
         }
-      ' \
-    | sort -n | tail -30
+      ' |
+    sort -n | tail -30
   echo
 }
-
 
 ## List the top 30 most churned paths
 function top_churn_paths() {
   echo "[ Top churn paths ]"
   echo
-  git log --all --numstat --format='' \
-    | awk 'NF==3 { add[$3]+=$1; del[$3]+=$2 }
-           END { for (f in add) print add[f]+del[f], add[f], del[f], f }' \
-    | sort -n | tail -30
+  git log --all --numstat --format='' |
+    awk 'NF==3 { add[$3]+=$1; del[$3]+=$2 }
+           END { for (f in add) print add[f]+del[f], add[f], del[f], f }' |
+    sort -n | tail -30
   echo
 }
-
 
 ## List the largest blobs
 function largest_blobs() {
   echo "[ Largest blobs ]"
   echo
-  git rev-list --objects --all \
-    | git cat-file --batch-check='%(objectname) %(objecttype) %(objectsize) %(rest)' \
-    | awk '$2=="blob" { print }' \
-    | sort -k3 -n | tail -30
+  git rev-list --objects --all |
+    git cat-file --batch-check='%(objectname) %(objecttype) %(objectsize) %(rest)' |
+    awk '$2=="blob" { print }' |
+    sort -k3 -n | tail -30
   echo
 }
-
 
 ## List the biggest commits by number of changes
 function biggest_commits_by_changes() {
   echo "[ Biggest commits by line churn ]"
   echo
-  git log --all --numstat --format='%H %s' \
-    | awk '
+  git log --all --numstat --format='%H %s' |
+    awk '
         /^[0-9a-f]{7,40} / {
           if (commit != "") print total, commit
           commit=$0
@@ -229,11 +269,10 @@ function biggest_commits_by_changes() {
         END {
           if (commit != "") print total, commit
         }
-      ' \
-    | sort -n | tail -30
+      ' |
+    sort -n | tail -30
   echo
 }
-
 
 ## Show local branches with tracking info
 function branches() {
@@ -243,7 +282,6 @@ function branches() {
   echo
 }
 
-
 ## Show remotes
 function remotes() {
   echo "[ Remotes ]"
@@ -251,7 +289,6 @@ function remotes() {
   git remote -v
   echo
 }
-
 
 ## Show a compact commit graph
 function commit_graph() {
@@ -261,7 +298,6 @@ function commit_graph() {
   echo
 }
 
-
 ## Show tags
 function tags() {
   echo "[ Tags ]"
@@ -269,7 +305,6 @@ function tags() {
   git tag --sort=-creatordate | head -50
   echo
 }
-
 
 ## Count tracked files
 function tracked_files() {
@@ -279,13 +314,12 @@ function tracked_files() {
   echo
 }
 
-
 ## Show tracked files by extension
 function extension_breakdown() {
   echo "[ Extension breakdown ]"
   echo
-  git ls-files \
-    | awk '
+  git ls-files |
+    awk '
         {
           n=split($0, parts, "/")
           file=parts[n]
@@ -297,11 +331,10 @@ function extension_breakdown() {
         END {
           for (e in count) print count[e], e
         }
-      ' \
-    | sort -n
+      ' |
+    sort -n
   echo
 }
-
 
 ## Show submodules
 function submodules() {
@@ -315,7 +348,6 @@ function submodules() {
   echo
 }
 
-
 ## Show Git LFS files
 function lfs() {
   echo "[ Git LFS ]"
@@ -327,7 +359,6 @@ function lfs() {
   fi
   echo
 }
-
 
 ## Run a section
 function run_section() {
@@ -350,15 +381,12 @@ function run_section() {
   esac
 }
 
-
 ## --------------------------------------------------------------------------
-
 
 function main() {
   parse_args "$@"
   ensure_repo
   cd "$TARGET_REPO"
-
 
   if [[ "$RUN_ALL" == true ]]; then
     SECTIONS=(
@@ -382,7 +410,6 @@ function main() {
     SECTIONS=("${SELECTED_SECTIONS[@]}")
   fi
 
-
   if [[ -n "$OUTPUT_FILE" ]]; then
     mkdir -p "$(dirname "$OUTPUT_FILE")"
     {
@@ -396,7 +423,6 @@ function main() {
     done
   fi
 }
-
 
 if ! main "$@" >&2; then
   echo "[ERROR] Failed analyzing git repository" >&2

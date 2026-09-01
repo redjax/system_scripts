@@ -8,7 +8,7 @@ RM_FINISHED="false"
 DELETE_DATA="false"
 
 function usage() {
-  cat << 'EOF'
+  cat <<'EOF'
 Usage: finished.sh [OPTIONS]
 
   -h, --help                   Print this help menu
@@ -25,43 +25,43 @@ EOF
 function parse_arguments() {
   while [[ $# -gt 0 ]]; do
     case $1 in
-      -H|--host)
+      -H | --host)
         if [[ -z "$2" ]]; then
           echo "[ERROR] --host requires argument" >&2
           usage
           exit 1
         fi
-        
+
         TRANSMISSION_HOST="$2"
         shift 2
         ;;
-      -p|--port)
+      -p | --port)
         if [[ -z "$2" ]]; then
           echo "[ERROR] --port requires argument" >&2
           usage
           exit 1
         fi
-        
+
         TRANSMISSION_PORT="$2"
         shift 2
         ;;
-      -u|--username)
+      -u | --username)
         if [[ -z "$2" ]]; then
           echo "[ERROR] --username requires argument" >&2
           usage
           exit 1
         fi
-        
+
         TRANSMISSION_USERNAME="$2"
         shift 2
         ;;
-      -P|--password)
+      -P | --password)
         if [[ -z "$2" ]]; then
           echo "[ERROR] --password requires argument" >&2
           usage
           exit 1
         fi
-        
+
         TRANSMISSION_PASSWORD="$2"
         shift 2
         ;;
@@ -77,7 +77,7 @@ function parse_arguments() {
         DEBUG="true"
         shift
         ;;
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
@@ -128,7 +128,10 @@ fi
 
 if [[ "$RM_FINISHED" == "true" ]]; then
   FINISHED_TORRENTS=$(count_finished_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
-  [[ $FINISHED_TORRENTS -eq 0 ]] && { echo "No torrents to remove"; exit 0; }
+  [[ $FINISHED_TORRENTS -eq 0 ]] && {
+    echo "No torrents to remove"
+    exit 0
+  }
 
   if [[ "$DELETE_DATA" == "true" ]]; then
     echo "Removing $FINISHED_TORRENTS finished torrents and deleting local data"
@@ -142,4 +145,3 @@ if [[ "$RM_FINISHED" == "true" ]]; then
     "$TRANSMISSION_AUTH_STR" \
     "$DELETE_DATA"
 fi
-

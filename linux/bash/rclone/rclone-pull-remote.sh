@@ -282,7 +282,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
 
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;

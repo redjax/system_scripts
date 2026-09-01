@@ -9,14 +9,14 @@ OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 
 case "$ARCH" in
-x86_64) ARCH="x86_64" ;;
-aarch64 | arm64) ARCH="arm64" ;;
-armv6l | armv7l) ARCH="armv6" ;;
-i386 | i686) ARCH="i386" ;;
-*)
-  echo "Unsupported architecture: $ARCH" >&2
-  exit 1
-  ;;
+  x86_64) ARCH="x86_64" ;;
+  aarch64 | arm64) ARCH="arm64" ;;
+  armv6l | armv7l) ARCH="armv6" ;;
+  i386 | i686) ARCH="i386" ;;
+  *)
+    echo "Unsupported architecture: $ARCH" >&2
+    exit 1
+    ;;
 esac
 
 EXT="tar.gz"

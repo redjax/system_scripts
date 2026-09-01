@@ -17,20 +17,26 @@ case "$(uname -s)" in
   Linux)
     ASSET_OS="linux"
     case "$(uname -m)" in
-      x86_64)   ASSET_ARCH="amd64" ;;
-      aarch64|arm64) ASSET_ARCH="arm64" ;;
-      armv6l)   ASSET_ARCH="armv6" ;;
-      armv7l)   ASSET_ARCH="armv7" ;;
-      i386|i686) ASSET_ARCH="386" ;;
-      *) echo "Unsupported Linux architecture: $(uname -m)"; exit 1 ;;
+      x86_64) ASSET_ARCH="amd64" ;;
+      aarch64 | arm64) ASSET_ARCH="arm64" ;;
+      armv6l) ASSET_ARCH="armv6" ;;
+      armv7l) ASSET_ARCH="armv7" ;;
+      i386 | i686) ASSET_ARCH="386" ;;
+      *)
+        echo "Unsupported Linux architecture: $(uname -m)"
+        exit 1
+        ;;
     esac
     ;;
   Darwin)
     ASSET_OS="darwin"
     case "$(uname -m)" in
       x86_64) ASSET_ARCH="amd64" ;;
-      arm64)  ASSET_ARCH="arm64" ;;
-      *) echo "Unsupported macOS architecture: $(uname -m)"; exit 1 ;;
+      arm64) ASSET_ARCH="arm64" ;;
+      *)
+        echo "Unsupported macOS architecture: $(uname -m)"
+        exit 1
+        ;;
     esac
     ;;
   *)
@@ -40,9 +46,7 @@ case "$(uname -s)" in
 esac
 
 ## Check if gickup is already installed
-GICKUP_INSTALLED=$(command -v gickup)
-
-if [ -n "GICKUP_INSTALLED" ]; then
+if command -v gickup >&/dev/null; then
   echo "gickup is already installed. Update will be applied if a new version is available."
 fi
 

@@ -5,18 +5,24 @@ ARCH="$(uname -m)"
 
 # Map architecture names for OpenTofu releases
 case "$ARCH" in
-  x86_64|amd64) ARCH="amd64" ;;
-  arm64|aarch64) ARCH="arm64" ;;
-  i386|i686) ARCH="386" ;;
-  *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+  x86_64 | amd64) ARCH="amd64" ;;
+  arm64 | aarch64) ARCH="arm64" ;;
+  i386 | i686) ARCH="386" ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
 esac
 
 # Map OS for OpenTofu releases
 case "$OS" in
   linux) OS="linux" ;;
   darwin) OS="darwin" ;;
-  windows|mingw*) OS="windows" ;;
-  *) echo "Unsupported OS: $OS"; exit 1 ;;
+  windows | mingw*) OS="windows" ;;
+  *)
+    echo "Unsupported OS: $OS"
+    exit 1
+    ;;
 esac
 
 # Set version or fetch latest dynamically (hardcoded here for example)

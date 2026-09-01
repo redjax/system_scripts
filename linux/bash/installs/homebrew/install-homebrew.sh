@@ -3,22 +3,22 @@
 set -e
 
 function echo_bashrc_lines() {
-    echo ""
-    echo "To source Homebrew on shell startup (making the 'brew' command available), add the following to your ~/.bashrc:"
-    echo ""
-    echo "echo 'eval \"export HOMEBREW_PREFIX=\"/home/linuxbrew/.linuxbrew\";"
-    echo "export HOMEBREW_CELLAR=\"/home/linuxbrew/.linuxbrew/Cellar\";"
-    echo "export HOMEBREW_REPOSITORY=\"/home/linuxbrew/.linuxbrew/Homebrew\";"
-    echo "export PATH=\"/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin\${PATH+:\$PATH}\";"
-    echo "[ -z \"\${MANPATH-}\" ] || export MANPATH=\":\${MANPATH#:}\";"
-    echo "export INFOPATH=\"/home/linuxbrew/.linuxbrew/share/info:\${INFOPATH:-}\";\"' >> \$HOME/.bashrc"
-    echo ""
+  echo ""
+  echo "To source Homebrew on shell startup (making the 'brew' command available), add the following to your ~/.bashrc:"
+  echo ""
+  echo "echo 'eval \"export HOMEBREW_PREFIX=\"/home/linuxbrew/.linuxbrew\";"
+  echo "export HOMEBREW_CELLAR=\"/home/linuxbrew/.linuxbrew/Cellar\";"
+  echo "export HOMEBREW_REPOSITORY=\"/home/linuxbrew/.linuxbrew/Homebrew\";"
+  echo "export PATH=\"/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin\${PATH+:\$PATH}\";"
+  echo "[ -z \"\${MANPATH-}\" ] || export MANPATH=\":\${MANPATH#:}\";"
+  echo "export INFOPATH=\"/home/linuxbrew/.linuxbrew/share/info:\${INFOPATH:-}\";\"' >> \$HOME/.bashrc"
+  echo ""
 }
 
 if command -v brew &>/dev/null || [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   echo "Brew is already installed."
   echo "If the command is not working, make sure to add the following to your ~/.bashrc: "
-  
+
   echo_bashrc_lines
 
   exit 1
@@ -51,7 +51,7 @@ fi
 
 read -p "Install homebrew gcc? (Y/n)" install_homebrew_gcc
 case $install_homebrew_gcc in
-  [Yy]|[Yy][Ee][Ss])
+  [Yy] | [Yy][Ee][Ss])
     /home/linuxbrew/.linuxbrew/bin/brew install gcc
     if [[ $? -ne 0 ]]; then
       echo "Failed installing gcc with homebrew."
@@ -60,7 +60,7 @@ case $install_homebrew_gcc in
       echo "gcc installed with homebrew."
     fi
     ;;
-  [Nn]|[Nn][Oo])
+  [Nn] | [Nn][Oo])
     echo "Skipping gcc install."
     exit 0
     ;;
@@ -73,4 +73,3 @@ echo ""
 echo_bashrc_lines
 
 exit 0
-

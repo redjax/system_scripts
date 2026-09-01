@@ -1,0 +1,94 @@
+---
+######################################################
+# Run shellcheck & shellfmt (in dry run mode) on PRs #
+######################################################
+
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - topic/linting-formatting
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - ".shellcheckrc"
+      - "linux/bash/**/*.sh"
+      - "repo_scripts/**/*.sh"
+
+  workflow_dispatch:
+    inputs:
+      pipelinetemplates-ref:
+        description: PipelineTemplates ref used for shared-script/config checkout
+        required: false
+        type: string
+        default: main
+
+      scan-path:
+        description: Repository path to scan
+        required: false
+        type: string
+        default: "."
+
+      findings-policy:
+        description: Whether detected quality issues fail the workflow
+        required: false
+        type: choice
+        default: enforce
+        options:
+          - enforce
+          - report-only
+
+      shellcheck-severity:
+        description: Minimum ShellCheck severity to report.
+        required: false
+        type: string
+        default: error
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    with:
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+
+      tools: shellcheck
+
+      scan-path: ${{ inputs.scan-path || '.' }}
+
+      shellcheck-severity: ${{ inputs.shellcheck-severity || 'error' }}
+
+      shellcheck-config-path: ".shellcheckrc"
+      use-default-shellcheck-config: false
+
+      fail-on-findings: ${{ inputs.findings-policy != 'report-only' }}
+
+      shellcheck-artifact-name: system-scripts-shellcheck-results
+      artifact-retention-days: 30
+
+  shellfmt:
+    name: Shellfmt (dry run)
+    uses: redjax/PipelineTemplates/.github/workflows/shell-quality.yml@main
+    with:
+      pipelinetemplates-ref: ${{ inputs.pipelinetemplates-ref || 'main' }}
+
+      tools: shellfmt
+
+      scan-path: ${{ inputs.scan-path || '.' }}
+
+      shellfmt-mode: check
+      shellfmt-commit-changes: false
+
+      use-default-shellfmt-config: true
+
+      # Formatting differences are informational on PRs.
+      fail-on-findings: false
+
+      shellfmt-artifact-name: system-scripts-shellfmt-results
+      artifact-retention-days: 30

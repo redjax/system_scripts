@@ -6,29 +6,29 @@ INSTALL_DIR="/usr/local/bin"
 
 # Detect architecture
 case "$(uname -m)" in
-    x86_64|amd64)
-        ARCH="x64"
-        ;;
-    aarch64|arm64)
-        ARCH="arm64"
-        ;;
-    *)
-        echo "Unsupported architecture: $(uname -m)"
-        exit 1
-        ;;
+  x86_64 | amd64)
+    ARCH="x64"
+    ;;
+  aarch64 | arm64)
+    ARCH="arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $(uname -m)"
+    exit 1
+    ;;
 esac
 
 # Get latest release version
 VERSION="$(
-    curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" |
+  curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" |
     grep '"tag_name":' |
     head -1 |
     sed -E 's/.*"v([^"]+)".*/\1/'
 )"
 
 if [[ -z "$VERSION" ]]; then
-    echo "Could not determine latest GCM version."
-    exit 1
+  echo "Could not determine latest GCM version."
+  exit 1
 fi
 
 FILE="gcm-linux-${ARCH}-${VERSION}.tar.gz"

@@ -96,8 +96,7 @@ echo "Installing openntpd fallback"
 install_pkg openntpd
 start_service openntpd || true
 
-echo "Done
+echo "Done"
 
 echo "Current time:"
 date
-

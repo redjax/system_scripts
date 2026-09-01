@@ -30,15 +30,15 @@ case $OS in
   debian)
     echo "[*] Adding ntop APT repo"
     curl -fsSL https://packages.ntop.org/apt/ntop.key | sudo gpg --dearmor -o /usr/share/keyrings/ntop.gpg
-    echo "deb [signed-by=/usr/share/keyrings/ntop.gpg] https://packages.ntop.org/apt/stable/$(lsb_release -is | tr 'A-Z' 'a-z') $(lsb_release -cs) main" \
-      | sudo tee /etc/apt/sources.list.d/ntop.list >/dev/null
+    echo "deb [signed-by=/usr/share/keyrings/ntop.gpg] https://packages.ntop.org/apt/stable/$(lsb_release -is | tr 'A-Z' 'a-z') $(lsb_release -cs) main" |
+      sudo tee /etc/apt/sources.list.d/ntop.list >/dev/null
 
     sudo apt update
     sudo apt install -y ntopng redis-server
     sudo systemctl enable redis-server ntopng
     sudo systemctl start redis-server ntopng
     ;;
-  fedora|centos)
+  fedora | centos)
     echo "[*] Adding ntop yum repo"
     sudo rpm -Uvh https://packages.ntop.org/rpm/ntop.repo
     sudo $OS install -y ntopng redis

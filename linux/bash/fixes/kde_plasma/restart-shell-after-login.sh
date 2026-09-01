@@ -19,14 +19,14 @@ while true; do
   echo ""
 
   case $yn in
-  [Yy])
-    echo ""
-    echo "Exiting script."
-    exit 0
-    ;;
-  [Nn])
-    break
-    ;;
+    [Yy])
+      echo ""
+      echo "Exiting script."
+      exit 0
+      ;;
+    [Nn])
+      break
+      ;;
   esac
 done
 
@@ -43,33 +43,33 @@ if [[ "$XDG_CURRENT_DESKTOP" != *KDE* ]] && [[ "$DESKTOP_SESSION" != *plasma* ]]
   read -p "Do you want to start Plasma? (yes/no): " yn
 
   case $yn in
-  [Yy]*)
-    echo "Starting plasma server with 'kstart plasma shell'"
-    kstart plasmashell
-
-    sleep 3
-
-    read -n 1 -r -p "Did Plasma start? (yes/no): " yn
-    case $yn in
     [Yy]*)
+      echo "Starting plasma server with 'kstart plasma shell'"
+      kstart plasmashell
+
+      sleep 3
+
+      read -n 1 -r -p "Did Plasma start? (yes/no): " yn
+      case $yn in
+        [Yy]*)
+          exit 0
+          ;;
+        [Nn]*)
+          echo "You may need to log out/back in, or restart your machine."
+          exit 1
+          ;;
+        *)
+          echo "Please answer 'yes' or 'no'"
+          ;;
+      esac
+      ;;
+
+    [Nn]*)
       exit 0
       ;;
-    [Nn]*)
-      echo "You may need to log out/back in, or restart your machine."
-      exit 1
-      ;;
     *)
-      echo "Please answer 'yes' or 'no'"
+      echo "Please answer yes or no."
       ;;
-    esac
-    ;;
-
-  [Nn]*)
-    exit 0
-    ;;
-  *)
-    echo "Please answer yes or no."
-    ;;
   esac
 
   exit 1
@@ -85,13 +85,13 @@ sleep 5
 while true; do
   read -n 1 -r -p "Did running 'kstart plasmashell' fix the panel issue? (yes/no): " yn
   case $yn in
-  [Yy]*)
-    echo ""
-    echo "Exiting script."
-    exit 0
-    ;;
-  [Nn]*) break ;;
-  *) echo "Please answer yes or no." ;;
+    [Yy]*)
+      echo ""
+      echo "Exiting script."
+      exit 0
+      ;;
+    [Nn]*) break ;;
+    *) echo "Please answer yes or no." ;;
   esac
 done
 
@@ -113,13 +113,13 @@ while true; do
   read -n 1 -r -p "Did running 'killall plasmashell && kstart plasmashell' fix the panel issue? (yes/no): " yn
 
   case $yn in
-  [Yy]*)
-    echo ""
-    echo "Exiting script."
-    exit 0
-    ;;
-  [Nn]*) break ;;
-  *) echo "Please answer yes or no." ;;
+    [Yy]*)
+      echo ""
+      echo "Exiting script."
+      exit 0
+      ;;
+    [Nn]*) break ;;
+    *) echo "Please answer yes or no." ;;
   esac
 done
 

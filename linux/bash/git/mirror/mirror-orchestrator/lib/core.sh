@@ -63,9 +63,9 @@ function handle_error() {
 
   # ignore harmless failures from conditionals
   case "$cmd" in
-  \[\[* | test* | grep*)
-    return
-    ;;
+    \[\[* | test* | grep*)
+      return
+      ;;
   esac
 
   error "Command failed (exit=$exit_code) at line $line"

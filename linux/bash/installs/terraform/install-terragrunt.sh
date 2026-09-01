@@ -25,14 +25,14 @@ curl -sL "https://github.com/gruntwork-io/terragrunt/releases/download/${VERSION
 
 ## Verify checksum
 echo "Verifying checksum..."
-EXPECTED_CHECKSUM="$(grep "$BINARY_NAME" < "$CHECKSUMS_PATH" | awk '{print $1}')"
+EXPECTED_CHECKSUM="$(grep "$BINARY_NAME" <"$CHECKSUMS_PATH" | awk '{print $1}')"
 ACTUAL_CHECKSUM="$(sha256sum "$BINARY_PATH" | awk '{print $1}')"
 
 if [[ "$EXPECTED_CHECKSUM" == "$ACTUAL_CHECKSUM" ]]; then
-    echo "Checksums match for ${VERSION}!"
+  echo "Checksums match for ${VERSION}!"
 else
-    echo "Checksum verification failed!"
-    exit 1
+  echo "Checksum verification failed!"
+  exit 1
 fi
 
 ## Remove checksum file

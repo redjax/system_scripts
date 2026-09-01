@@ -20,7 +20,7 @@ configure_startwm_sh() {
   sudo cp "$startwm" "$startwm.bak.$(date +%s)" # backup
 
   if [[ "$desktop" == "pop" ]]; then
-    sudo tee "$startwm" > /dev/null <<EOF
+    sudo tee "$startwm" >/dev/null <<EOF
 #!/bin/sh
 export GNOME_SHELL_SESSION_MODE=pop
 export GDMSESSION=pop
@@ -30,7 +30,7 @@ EOF
     sudo chmod +x "$startwm"
     echo "Configured Pop!_OS GNOME session."
   elif [[ "$desktop" == "kde" ]]; then
-    sudo tee "$startwm" > /dev/null <<EOF
+    sudo tee "$startwm" >/dev/null <<EOF
 #!/bin/sh
 export KDE_FULL_SESSION=true
 export XDG_CURRENT_DESKTOP=KDE
@@ -48,7 +48,7 @@ create_polkit_rules() {
   echo "Creating polkit rules to suppress authentication popups..."
   local polkit_rule="/etc/polkit-1/rules.d/49-xrdp-nopasswd.rules"
   sudo mkdir -p /etc/polkit-1/rules.d
-  sudo tee "$polkit_rule" > /dev/null <<'EOF'
+  sudo tee "$polkit_rule" >/dev/null <<'EOF'
 // Allow color management and package management actions for all users
 polkit.addRule(function(action, subject) {
     var allowedActions = [

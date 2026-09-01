@@ -8,23 +8,23 @@ OFFLINE=false
 DRY_RUN=false
 
 function show_help() {
-    echo ""
-    echo " | run-osv-scan.sh HELP |"
-    echo "  Usage: $0 [-p PATH] [-f FORMAT] [-s SEVERITY] [--ignore-dev] [--offline] [--dry-run]"
-    echo ""
+  echo ""
+  echo " | run-osv-scan.sh HELP |"
+  echo "  Usage: $0 [-p PATH] [-f FORMAT] [-s SEVERITY] [--ignore-dev] [--offline] [--dry-run]"
+  echo ""
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -p|--path)
+    -p | --path)
       SCAN_PATH="$2"
       shift 2
       ;;
-    -f|--format)
+    -f | --format)
       OUTPUT_FORMAT="$2"
       shift 2
       ;;
-    -s|--min-severity)
+    -s | --min-severity)
       MIN_SEVERITY="$2"
       shift 2
       ;;
@@ -37,10 +37,10 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --dry-run)
-        DRY_RUN=true
-        shift
-        ;;
-    -h|--help)
+      DRY_RUN=true
+      shift
+      ;;
+    -h | --help)
       show_help
       exit 0
       ;;

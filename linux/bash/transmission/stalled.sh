@@ -8,7 +8,7 @@ RM_STALLED="false"
 DELETE_DATA="false"
 
 function usage() {
-  cat << 'EOF'
+  cat <<'EOF'
 Usage: stalled.sh [OPTIONS]
 
   -h, --help                    Print this help menu
@@ -25,23 +25,39 @@ EOF
 function parse_arguments() {
   while [[ $# -gt 0 ]]; do
     case $1 in
-      -H|--host)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --host requires argument" >&2; usage; exit 1; }
+      -H | --host)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --host requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_HOST="$2"
         shift 2
         ;;
-      -p|--port)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --port requires argument" >&2; usage; exit 1; }
+      -p | --port)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --port requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_PORT="$2"
         shift 2
         ;;
-      -u|--username)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --username requires argument" >&2; usage; exit 1; }
+      -u | --username)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --username requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_USERNAME="$2"
         shift 2
         ;;
-      -P|--password)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --password requires argument" >&2; usage; exit 1; }
+      -P | --password)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --password requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_PASSWORD="$2"
         shift 2
         ;;
@@ -57,7 +73,7 @@ function parse_arguments() {
         DEBUG="true"
         shift
         ;;
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
@@ -106,7 +122,10 @@ list_stalled_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR"
 
 if [[ "$RM_STALLED" == "true" ]]; then
   STALLED_TORRENTS=$(count_stalled_torrents "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR")
-  [[ $STALLED_TORRENTS -eq 0 ]] && { echo "No stalled torrents to remove"; exit 0; }
+  [[ $STALLED_TORRENTS -eq 0 ]] && {
+    echo "No stalled torrents to remove"
+    exit 0
+  }
 
   echo "Removing $STALLED_TORRENTS stalled torrents"
   remove_stalled_torrents \

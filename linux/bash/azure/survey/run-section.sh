@@ -36,17 +36,23 @@ OUTPUT=""
 
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
-    -s|--subscription)
-      [[ -z "${2:-}" ]] && { echo "[ERROR] --subscription requires a value" >&2; exit 1; }
+    -s | --subscription)
+      [[ -z "${2:-}" ]] && {
+        echo "[ERROR] --subscription requires a value" >&2
+        exit 1
+      }
       SUBSCRIPTION="$2"
       shift 2
       ;;
-    -o|--output)
-      [[ -z "${2:-}" ]] && { echo "[ERROR] --output requires a file path" >&2; exit 1; }
+    -o | --output)
+      [[ -z "${2:-}" ]] && {
+        echo "[ERROR] --output requires a file path" >&2
+        exit 1
+      }
       OUTPUT="$2"
       shift 2
       ;;

@@ -39,4 +39,3 @@ fi
 
 ## Call git setup function
 do_git_setup
-

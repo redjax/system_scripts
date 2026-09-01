@@ -9,4 +9,3 @@ fi
 echo "Starting lnav, watching auth log"
 
 lnav /var/log/auth.log
-

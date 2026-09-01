@@ -8,14 +8,14 @@ fi
 echo "Listing all installed Snap packages..."
 snaps=$(snap list --all | awk 'NR>1 {print $1}' | grep -v "^core$" || true)
 if [ -n "$snaps" ]; then
-    echo "Removing all Snap packages..."
-    
-    for pkg in $snaps; do
-        sudo snap remove --purge "$pkg"
-    done
+  echo "Removing all Snap packages..."
+
+  for pkg in $snaps; do
+    sudo snap remove --purge "$pkg"
+  done
 
 else
-    echo "No Snap packages found."
+  echo "No Snap packages found."
 fi
 
 echo "Disabling Snapd systemd services..."
@@ -37,4 +37,3 @@ if [[ $? -ne 0 ]]; then
 else
   echo "Snap has been completely removed! It is recommended to reboot your system."
 fi
-

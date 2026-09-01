@@ -5,8 +5,8 @@ set -e
 ## Add Flathub repo if missing
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 if [[ $? -ne 0 ]]; then
-echo "[ERROR] Failed to add Flathub repo."
-exit 1
+  echo "[ERROR] Failed to add Flathub repo."
+  exit 1
 fi
 
 if ! command -v flatpak &>/dev/null; then

@@ -41,40 +41,40 @@ dns=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -c | --connection-name)
-    [[ $# -ge 2 ]] ||
-      error "$1 requires an argument"
+    -c | --connection-name)
+      [[ $# -ge 2 ]] ||
+        error "$1 requires an argument"
 
-    connection="$2"
-    shift 2
-    ;;
+      connection="$2"
+      shift 2
+      ;;
 
-  -d | --dns)
-    [[ $# -ge 2 ]] ||
-      error "$1 requires an argument"
+    -d | --dns)
+      [[ $# -ge 2 ]] ||
+        error "$1 requires an argument"
 
-    dns="$2"
-    shift 2
-    ;;
+      dns="$2"
+      shift 2
+      ;;
 
-  -h | --help)
-    usage
-    exit 0
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  --)
-    shift
-    [[ $# -eq 0 ]] ||
-      error "Unexpected arguments after --"
-    ;;
+    --)
+      shift
+      [[ $# -eq 0 ]] ||
+        error "Unexpected arguments after --"
+      ;;
 
-  -*)
-    error "Unknown option: $1"
-    ;;
+    -*)
+      error "Unknown option: $1"
+      ;;
 
-  *)
-    error "Unexpected argument: $1"
-    ;;
+    *)
+      error "Unexpected argument: $1"
+      ;;
   esac
 done
 

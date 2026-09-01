@@ -58,43 +58,43 @@ EOF
 ## Parse CLI arguments
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -u | --url)
-    GOTIFY_URL="$2"
-    shift 2
-    ;;
-  -t | --title)
-    TITLE="$2"
-    shift 2
-    ;;
-  -m | --message)
-    MESSAGE="$2"
-    shift 2
-    ;;
-  -p | --priority)
-    PRIORITY="$2"
-    shift 2
-    ;;
-  -T | --token)
-    TOKEN="$2"
-    shift 2
-    ;;
-  -f | --token-file)
-    TOKEN_FILE="$2"
-    shift 2
-    ;;
-  --silent)
-    SILENT="true"
-    shift
-    ;;
-  -h | --help)
-    _usage
-    exit 0
-    ;;
-  *)
-    echo "[ERROR] Invalid argument: $1" >&2
-    _usage
-    exit 1
-    ;;
+    -u | --url)
+      GOTIFY_URL="$2"
+      shift 2
+      ;;
+    -t | --title)
+      TITLE="$2"
+      shift 2
+      ;;
+    -m | --message)
+      MESSAGE="$2"
+      shift 2
+      ;;
+    -p | --priority)
+      PRIORITY="$2"
+      shift 2
+      ;;
+    -T | --token)
+      TOKEN="$2"
+      shift 2
+      ;;
+    -f | --token-file)
+      TOKEN_FILE="$2"
+      shift 2
+      ;;
+    --silent)
+      SILENT="true"
+      shift
+      ;;
+    -h | --help)
+      _usage
+      exit 0
+      ;;
+    *)
+      echo "[ERROR] Invalid argument: $1" >&2
+      _usage
+      exit 1
+      ;;
   esac
 done
 
