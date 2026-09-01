@@ -1,5 +1,5 @@
 ## https://hub.docker.com/_/alpine
-ARG ALPINE_IMG_VER=3.22.4
+ARG ALPINE_IMG_VER=3.24.1
 
 FROM alpine:${ALPINE_IMG_VER} AS base
 
