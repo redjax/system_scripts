@@ -1,0 +1,5 @@
+$env:DOMAINCHECK_MONITORING_TERMS_FILE = "./ingest/monitorTerms.txt"
+$env:DOMAINCHECK_TLDS_FILE = "./ingest/tlds.txt"
+$env:DOMAINCHECK_MAX_CANDIDATES = 10000
+$env:DOMAINCHECK_DNS_SERVER = ""
+$env:DOMAINCHECK_OUTPUT_DIR = "./output"
