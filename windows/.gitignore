@@ -1,0 +1,18 @@
+## Secrets
+secret[s].ps1
+.secret[s].ps1
+*.secret[s].ps1
+*.secret[s].*.ps1
+
+env.ps1
+*.env.ps1
+env.*.ps1
+*.env.*.ps1
+
+.env.ps1
+*.env.ps1
+*.env.*.ps1
+.env.*.ps1
+
+!*example*.*
+!*.*example*
