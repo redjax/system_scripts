@@ -12,33 +12,45 @@ echo "XDG_SESSION_TYPE: $XDG_SESSION_TYPE"
 
 install_espanso_mac() {
   echo "Installing Espanso on macOS"
+
   if command -v brew > /dev/null 2>&1; then
     echo "Using Homebrew to install"
     brew tap federico-terzi/espanso
     brew install espanso
   else
     echo "Homebrew not found. Installing manually"
-    ESPANSO_URL="https://github.com/espanso/espanso/releases/latest/download/espanso-macos.zip"
-    TMP_DIR=$(mktemp -d)
-    curl -L "$ESPANSO_URL" -o "$TMP_DIR/espanso.zip"
-    unzip "$TMP_DIR/espanso.zip" -d "$TMP_DIR"
-    sudo mv "$TMP_DIR/espanso" /usr/local/bin/espanso
-    chmod +x /usr/local/bin/espanso
-    rm -rf "$TMP_DIR"
+
+    local espanso_url="https://github.com/espanso/espanso/releases/latest/download/espanso-macos.zip"
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+    trap 'rm -rf "$tmp_dir"' RETURN
+
+    echo "Downloading Espanso..."
+    curl --fail --location "$espanso_url" -o "$tmp_dir/espanso.zip"
+
+    unzip "$tmp_dir/espanso.zip" -d "$tmp_dir"
+
+    sudo mv "$tmp_dir/espanso" /usr/local/bin/espanso
+    sudo chmod +x /usr/local/bin/espanso
   fi
+
   echo "Registering Espanso for accessibility permissions"
   espanso register
+
   echo "Installation complete. Run: espanso start"
 }
 
 install_espanso_debian() {
   echo "Installing Espanso on Debian/Ubuntu based system"
 
-  # Determine package postfix for X11 or Wayland and arch
   local arch_part=""
   case "$ARCH" in
-    x86_64) arch_part="amd64" ;;
-    aarch64) arch_part="arm64" ;;
+    x86_64)
+      arch_part="amd64"
+      ;;
+    aarch64)
+      arch_part="arm64"
+      ;;
     *)
       echo "Unsupported architecture: $ARCH"
       exit 1
@@ -50,14 +62,17 @@ install_espanso_debian() {
     session_part="wayland"
   fi
 
-  PACKAGE_NAME="espanso-debian-${session_part}-${arch_part}.deb"
-  DOWNLOAD_URL="https://github.com/espanso/espanso/releases/latest/download/${PACKAGE_NAME}"
+  local package_name="espanso-debian-${session_part}-${arch_part}.deb"
+  local download_url="https://github.com/espanso/espanso/releases/latest/download/${package_name}"
 
-  TMP_DIR=$(mktemp -d)
-  echo "Downloading $PACKAGE_NAME from $DOWNLOAD_URL"
-  curl -L "$DOWNLOAD_URL" -o "$TMP_DIR/espanso.deb"
-  sudo apt install -y "$TMP_DIR/espanso.deb"
-  rm -rf "$TMP_DIR"
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+  trap 'rm -rf "$tmp_dir"' RETURN
+
+  echo "Downloading $package_name from $download_url"
+  curl --fail --location "$download_url" -o "$tmp_dir/espanso.deb"
+
+  sudo apt install -y "$tmp_dir/espanso.deb"
 
   echo "Espanso installed. You can now register and start the service:"
   echo "  espanso service register"
@@ -67,27 +82,56 @@ install_espanso_debian() {
 install_espanso_fedora() {
   echo "Installing Espanso on Fedora-based system using Terra RPM repo..."
 
-  # Check for existing Terra repo files to avoid duplicates
+  ## Check for existing Terra repo files to avoid duplicates.
   if ls /etc/yum.repos.d/terra*.repo > /dev/null 2>&1; then
     echo "Terra repository already configured, skipping add."
   else
     echo "Adding Terra repo and installing terra-release package..."
-    sudo dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+    sudo dnf install \
+      --nogpgcheck \
+      --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' \
+      terra-release
   fi
 
-  # Check if espanso package is installed; install if missing
-  if ! rpm -q espanso-wayland &> /dev/null && ! rpm -q espanso-x11 &> /dev/null; then
-    echo "Installing Espanso package..."
-    if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
-      sudo dnf install -y espanso-wayland
-    else
-      sudo dnf install -y espanso-x11
-    fi
+  ## Select the package that matches the current display server.
+  local package_name="espanso-x11"
+
+  if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
+    package_name="espanso-wayland"
+  fi
+
+  echo "Selected package: $package_name"
+
+  ## Check whether the correct RPM is installed, and whether the executable
+  #  that package provides actually exists.
+  #
+  #  This prevents a broken RPM installation from being treated as healthy
+  #  if /usr/bin/espanso was manually removed or otherwise disappeared.
+  if rpm -q "$package_name" > /dev/null 2>&1 && [[ -x "/usr/bin/espanso" ]]; then
+    echo "$package_name is installed and /usr/bin/espanso exists."
+    echo "Skipping installation."
   else
-    echo "Espanso package already installed, skipping installation."
+    if rpm -q "$package_name" > /dev/null 2>&1; then
+      echo "$package_name is installed, but /usr/bin/espanso is missing or not executable."
+      echo "Reinstalling $package_name..."
+      sudo dnf reinstall -y "$package_name"
+    else
+      echo "$package_name is not installed."
+      echo "Installing $package_name..."
+      sudo dnf install -y "$package_name"
+    fi
   fi
 
-  echo "Espanso installed. Register and start with:"
+  ## Final sanity check.
+  if [[ ! -x "/usr/bin/espanso" ]]; then
+    echo "ERROR: Espanso installation completed but /usr/bin/espanso is missing."
+    exit 1
+  fi
+
+  echo "Espanso installed successfully:"
+  /usr/bin/espanso --version
+
+  echo "Register and start with:"
   echo "  espanso service register"
   echo "  espanso start"
 }
@@ -97,8 +141,12 @@ install_espanso_appimage() {
 
   local arch_part=""
   case "$ARCH" in
-    x86_64) arch_part="x86_64" ;;
-    aarch64) arch_part="arm64" ;;
+    x86_64)
+      arch_part="x86_64"
+      ;;
+    aarch64)
+      arch_part="arm64"
+      ;;
     *)
       echo "Unsupported architecture: $ARCH"
       exit 1
@@ -110,34 +158,39 @@ install_espanso_appimage() {
     session_part="wayland"
   fi
 
-  APPIMAGE="espanso-${session_part}-${arch_part}.AppImage"
-  DOWNLOAD_URL="https://github.com/espanso/espanso/releases/latest/download/$APPIMAGE"
+  local appimage="espanso-${session_part}-${arch_part}.AppImage"
+  local download_url="https://github.com/espanso/espanso/releases/latest/download/$appimage"
 
-  TMP_DIR=$(mktemp -d)
-  curl -L "$DOWNLOAD_URL" -o "$TMP_DIR/espanso.AppImage"
-  chmod +x "$TMP_DIR/espanso.AppImage"
-  sudo mv "$TMP_DIR/espanso.AppImage" /usr/local/bin/espanso
-  rm -rf "$TMP_DIR"
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+  trap 'rm -rf "$tmp_dir"' RETURN
 
-  echo "Espanso AppImage installed at /usr/local/bin/espanso"
+  echo "Downloading $appimage from $download_url"
+  curl --fail --location "$download_url" -o "$tmp_dir/espanso.AppImage"
 
-  # Create desktop entry for start menu integration
-  DESKTOP_DIR="$HOME/.local/share/applications"
-  mkdir -p "$DESKTOP_DIR"
-  ICON_PATH="/usr/share/icons/hicolor/256x256/apps/espanso.png"
+  chmod +x "$tmp_dir/espanso.AppImage"
+  sudo mv "$tmp_dir/espanso.AppImage" /usr/local/bin/espanso
 
-  cat > "$DESKTOP_DIR/espanso.desktop" << EOF
+  echo "Espanso installed at /usr/local/bin/espanso"
+
+  ## Create desktop entry for start menu integration.
+  local desktop_dir="$HOME/.local/share/applications"
+  local icon_path="/usr/share/icons/hicolor/256x256/apps/espanso.png"
+
+  mkdir -p "$desktop_dir"
+
+  cat > "$desktop_dir/espanso.desktop" << EOF
 [Desktop Entry]
 Name=Espanso
 Comment=Text expander tool
 Exec=/usr/local/bin/espanso
-Icon=$ICON_PATH
+Icon=$icon_path
 Terminal=false
 Type=Application
 Categories=Utility;
 EOF
 
-  echo "Created desktop entry at $DESKTOP_DIR/espanso.desktop"
+  echo "Created desktop entry at $desktop_dir/espanso.desktop"
   echo "Run 'espanso start' to begin"
 }
 
