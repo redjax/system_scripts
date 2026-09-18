@@ -23,22 +23,31 @@ install_espanso_mac() {
     local espanso_url="https://github.com/espanso/espanso/releases/latest/download/espanso-macos.zip"
     local tmp_dir
     tmp_dir="$(mktemp -d)"
-    trap 'rm -rf "$tmp_dir"' RETURN
 
-    echo "Downloading Espanso..."
+    trap 'rm -rf "$tmp_dir"' EXIT
+
+    echo "Downloading Espanso"
     curl --fail --location "$espanso_url" -o "$tmp_dir/espanso.zip"
 
     unzip "$tmp_dir/espanso.zip" -d "$tmp_dir"
 
     sudo mv "$tmp_dir/espanso" /usr/local/bin/espanso
     sudo chmod +x /usr/local/bin/espanso
+
+    trap - EXIT
+    rm -rf "$tmp_dir"
   fi
 
   echo "Registering Espanso for accessibility permissions"
   espanso register
 
-  echo "Installation complete. Run: espanso start"
+  echo "Espanso installed: $(command -v espanso)"
+  espanso --version
+
+  echo "Run:"
+  echo "  espanso service start"
 }
+
 
 install_espanso_debian() {
   echo "Installing Espanso on Debian/Ubuntu based system"
@@ -67,74 +76,97 @@ install_espanso_debian() {
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
-  trap 'rm -rf "$tmp_dir"' RETURN
 
-  echo "Downloading $package_name from $download_url"
+  trap 'rm -rf "$tmp_dir"' EXIT
+
+  echo "Downloading $package_name"
   curl --fail --location "$download_url" -o "$tmp_dir/espanso.deb"
 
   sudo apt install -y "$tmp_dir/espanso.deb"
 
-  echo "Espanso installed. You can now register and start the service:"
+  trap - EXIT
+  rm -rf "$tmp_dir"
+
+  echo "Espanso installed: $(command -v espanso)"
+  espanso --version
+
+  echo "Run:"
   echo "  espanso service register"
-  echo "  espanso start"
+  echo "  espanso service start"
 }
 
-install_espanso_fedora() {
-  echo "Installing Espanso on Fedora-based system using Terra RPM repo..."
 
-  ## Check for existing Terra repo files to avoid duplicates.
-  if ls /etc/yum.repos.d/terra*.repo > /dev/null 2>&1; then
-    echo "Terra repository already configured, skipping add."
+install_espanso_fedora() {
+  echo "Installing Espanso on Fedora-based system using Terra RPM repo"
+
+  ## Configure Terra if it isn't already configured.
+  if compgen -G "/etc/yum.repos.d/terra*.repo" > /dev/null; then
+    echo "Terra repository already configured."
   else
-    echo "Adding Terra repo and installing terra-release package..."
+    echo "Adding Terra repository"
     sudo dnf install \
       --nogpgcheck \
       --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' \
       terra-release
   fi
 
-  ## Select the package that matches the current display server.
+  ## Select the package matching the current display server.
   local package_name="espanso-x11"
 
   if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
     package_name="espanso-wayland"
   fi
 
-  echo "Selected package: $package_name"
+  echo "Using package: $package_name"
 
-  ## Check whether the correct RPM is installed, and whether the executable
-  #  that package provides actually exists.
-  #
-  #  This prevents a broken RPM installation from being treated as healthy
-  #  if /usr/bin/espanso was manually removed or otherwise disappeared.
-  if rpm -q "$package_name" > /dev/null 2>&1 && [[ -x "/usr/bin/espanso" ]]; then
-    echo "$package_name is installed and /usr/bin/espanso exists."
-    echo "Skipping installation."
-  else
-    if rpm -q "$package_name" > /dev/null 2>&1; then
-      echo "$package_name is installed, but /usr/bin/espanso is missing or not executable."
-      echo "Reinstalling $package_name..."
-      sudo dnf reinstall -y "$package_name"
-    else
-      echo "$package_name is not installed."
-      echo "Installing $package_name..."
-      sudo dnf install -y "$package_name"
-    fi
-  fi
+  ## Install/update the package.
+  sudo dnf install -y "$package_name"
 
-  ## Final sanity check.
-  if [[ ! -x "/usr/bin/espanso" ]]; then
-    echo "ERROR: Espanso installation completed but /usr/bin/espanso is missing."
+  ## Make sure the package actually owns the executable we expect.
+  if ! rpm -q "$package_name" > /dev/null 2>&1; then
+    echo "ERROR: $package_name is not installed."
     exit 1
   fi
 
-  echo "Espanso installed successfully:"
-  /usr/bin/espanso --version
+  if [[ ! -x "/usr/bin/espanso" ]]; then
+    echo "ERROR: $package_name is installed but /usr/bin/espanso is missing."
+    exit 1
+  fi
 
-  echo "Register and start with:"
+  ## Make sure the shell isn't resolving Espanso to some stale/manual copy.
+  local espanso_path
+  espanso_path="$(command -v espanso || true)"
+
+  if [[ "$espanso_path" != "/usr/bin/espanso" ]]; then
+    echo "WARNING: shell resolves espanso to:"
+    echo "  ${espanso_path:-<not found>}"
+    echo
+    echo "Expected:"
+    echo "  /usr/bin/espanso"
+    echo
+    echo "Check your PATH or shell aliases."
+  fi
+
+  echo
+  echo "Espanso installed:"
+  echo "  Package:  $(rpm -q "$package_name")"
+  echo "  Binary:   /usr/bin/espanso"
+
+  local binary_version
+  binary_version="$(/usr/bin/espanso --version 2>/dev/null || true)"
+
+  if [[ -n "$binary_version" ]]; then
+    echo "  Version:  $binary_version"
+  else
+    echo "  Version:  unable to determine"
+  fi
+
+  echo
+  echo "Run:"
   echo "  espanso service register"
-  echo "  espanso start"
+  echo "  espanso service start"
 }
+
 
 install_espanso_appimage() {
   echo "Installing Espanso AppImage fallback"
@@ -163,13 +195,17 @@ install_espanso_appimage() {
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
-  trap 'rm -rf "$tmp_dir"' RETURN
 
-  echo "Downloading $appimage from $download_url"
+  trap 'rm -rf "$tmp_dir"' EXIT
+
+  echo "Downloading $appimage"
   curl --fail --location "$download_url" -o "$tmp_dir/espanso.AppImage"
 
   chmod +x "$tmp_dir/espanso.AppImage"
   sudo mv "$tmp_dir/espanso.AppImage" /usr/local/bin/espanso
+
+  trap - EXIT
+  rm -rf "$tmp_dir"
 
   echo "Espanso installed at /usr/local/bin/espanso"
 
@@ -191,8 +227,15 @@ Categories=Utility;
 EOF
 
   echo "Created desktop entry at $desktop_dir/espanso.desktop"
-  echo "Run 'espanso start' to begin"
+
+  echo "Espanso installed: $(command -v espanso)"
+  espanso --version
+
+  echo "Run:"
+  echo "  espanso service register"
+  echo "  espanso service start"
 }
+
 
 case "$OS_TYPE" in
   Darwin)
