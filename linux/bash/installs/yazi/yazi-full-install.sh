@@ -33,4 +33,3 @@ done
 
 echo
 echo "Finished installing Yazi, its dependencies, and extras (plugins/themes)"
-
