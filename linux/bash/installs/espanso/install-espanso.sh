@@ -48,7 +48,6 @@ install_espanso_mac() {
   echo "  espanso service start"
 }
 
-
 install_espanso_debian() {
   echo "Installing Espanso on Debian/Ubuntu based system"
 
@@ -94,7 +93,6 @@ install_espanso_debian() {
   echo "  espanso service register"
   echo "  espanso service start"
 }
-
 
 install_espanso_fedora() {
   echo "Installing Espanso on Fedora-based system using Terra RPM repo"
@@ -153,7 +151,7 @@ install_espanso_fedora() {
   echo "  Binary:   /usr/bin/espanso"
 
   local binary_version
-  binary_version="$(/usr/bin/espanso --version 2>/dev/null || true)"
+  binary_version="$(/usr/bin/espanso --version 2> /dev/null || true)"
 
   if [[ -n "$binary_version" ]]; then
     echo "  Version:  $binary_version"
@@ -166,7 +164,6 @@ install_espanso_fedora() {
   echo "  espanso service register"
   echo "  espanso service start"
 }
-
 
 install_espanso_appimage() {
   echo "Installing Espanso AppImage fallback"
@@ -235,7 +232,6 @@ EOF
   echo "  espanso service register"
   echo "  espanso service start"
 }
-
 
 case "$OS_TYPE" in
   Darwin)
