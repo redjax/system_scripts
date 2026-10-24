@@ -15,7 +15,7 @@ md_die() {
 }
 
 md_have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 md_need_value() {
@@ -23,14 +23,14 @@ md_need_value() {
     md_die "Missing value for $1"
 
   case "$2" in
-  --*) md_die "Missing value for $1" ;;
+    --*) md_die "Missing value for $1" ;;
   esac
 }
 
 md_absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 
@@ -134,7 +134,7 @@ md_capture() {
     MD_NATIVE_RC="${MD_PIPE_CODES[0]}"
     MD_WRITER_RC="${MD_PIPE_CODES[1]}"
   else
-    : >"$report"
-    "$@" >"$report" 2>&1 || MD_NATIVE_RC=$?
+    : > "$report"
+    "$@" > "$report" 2>&1 || MD_NATIVE_RC=$?
   fi
 }

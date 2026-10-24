@@ -5,7 +5,7 @@ umask 077
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   run-scans.sh --all [options]
   run-scans.sh --scanners LIST [options]
@@ -113,7 +113,7 @@ die() {
 }
 
 have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 need_value() {
@@ -121,14 +121,14 @@ need_value() {
     die "Missing value for $1"
 
   case "$2" in
-  --*) die "Missing value for $1" ;;
+    --*) die "Missing value for $1" ;;
   esac
 }
 
 absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 
@@ -140,9 +140,9 @@ print_command() {
 
 validate_summary_value() {
   case "$1" in
-  *$'\t'* | *$'\n'* | *$'\r'*)
-    die "Scope contains unsupported tab or newline characters."
-    ;;
+    *$'\t'* | *$'\n'* | *$'\r'*)
+      die "Scope contains unsupported tab or newline characters."
+      ;;
   esac
 }
 
@@ -153,51 +153,51 @@ validate_list() {
   local -a items=()
 
   case "$list" in
-  "" | ,* | *, | *,,*)
-    die "Invalid $kind list: $list"
-    ;;
+    "" | ,* | *, | *,,*)
+      die "Invalid $kind list: $list"
+      ;;
   esac
 
-  IFS=',' read -r -a items <<<"$list"
+  IFS=',' read -r -a items <<< "$list"
 
   for item in "${items[@]}"; do
     case "$kind:$item" in
-    trivy-scanners:vuln | trivy-scanners:secret | \
-      trivy-scanners:misconfig | \
-      trivy-severity:UNKNOWN | trivy-severity:LOW | \
-      trivy-severity:MEDIUM | trivy-severity:HIGH | \
-      trivy-severity:CRITICAL) ;;
-    *)
-      die "Unsupported $kind value: $item"
-      ;;
+      trivy-scanners:vuln | trivy-scanners:secret | \
+        trivy-scanners:misconfig | \
+        trivy-severity:UNKNOWN | trivy-severity:LOW | \
+        trivy-severity:MEDIUM | trivy-severity:HIGH | \
+        trivy-severity:CRITICAL) ;;
+      *)
+        die "Unsupported $kind value: $item"
+        ;;
     esac
   done
 }
 
 supported() {
   case "$PLATFORM:$1" in
-  Linux:clamav | Linux:rkhunter | Linux:chkrootkit | \
-    Linux:lynis | Linux:maldet | Linux:trivy | \
-    Darwin:clamav | Darwin:lynis | Darwin:trivy)
-    return 0
-    ;;
-  *)
-    return 1
-    ;;
+    Linux:clamav | Linux:rkhunter | Linux:chkrootkit | \
+      Linux:lynis | Linux:maldet | Linux:trivy | \
+      Darwin:clamav | Darwin:lynis | Darwin:trivy)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
   esac
 }
 
 uses_targets() {
   case "$1" in
-  clamav | maldet)
-    return 0
-    ;;
-  trivy)
-    [[ "$TRIVY_MODE" != image ]]
-    ;;
-  *)
-    return 1
-    ;;
+    clamav | maldet)
+      return 0
+      ;;
+    trivy)
+      [[ "$TRIVY_MODE" != image ]]
+      ;;
+    *)
+      return 1
+      ;;
   esac
 }
 
@@ -234,88 +234,88 @@ TRIVY_TIMEOUT=15m
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --all)
-    SELECT_ALL=1
-    shift
-    ;;
+    --all)
+      SELECT_ALL=1
+      shift
+      ;;
 
-  --scanners | --tools | --target | --image | --output-dir | \
-    --clamav-database | --clamav-exclude-dir | --maldet-engine | \
-    --lynis-bin | --lynis-profile | --trivy-mode | --trivy-scanners | \
-    --trivy-severity | --trivy-ignorefile | --trivy-config | \
-    --trivy-skip-dir | --trivy-cache-dir | --trivy-bin | --trivy-timeout)
-    need_value "$@"
+    --scanners | --tools | --target | --image | --output-dir | \
+      --clamav-database | --clamav-exclude-dir | --maldet-engine | \
+      --lynis-bin | --lynis-profile | --trivy-mode | --trivy-scanners | \
+      --trivy-severity | --trivy-ignorefile | --trivy-config | \
+      --trivy-skip-dir | --trivy-cache-dir | --trivy-bin | --trivy-timeout)
+      need_value "$@"
 
-    case "$1" in
-    --scanners | --tools) SELECTION="$2" ;;
-    --target) TARGETS+=("$2") ;;
-    --image) IMAGES+=("$2") ;;
-    --output-dir) OUTPUT_DIR="$2" ;;
-    --clamav-database) CLAMAV_DATABASE="$2" ;;
-    --clamav-exclude-dir) CLAMAV_EXCLUDES+=("$2") ;;
-    --maldet-engine) MALDET_ENGINE="$2" ;;
-    --lynis-bin) LYNIS_BIN="$2" ;;
-    --lynis-profile) LYNIS_PROFILE="$2" ;;
-    --trivy-mode) TRIVY_MODE="$2" ;;
-    --trivy-scanners) TRIVY_SCANNERS="$2" ;;
-    --trivy-severity) TRIVY_SEVERITY="$2" ;;
-    --trivy-ignorefile) TRIVY_IGNOREFILE="$2" ;;
-    --trivy-config) TRIVY_CONFIG="$2" ;;
-    --trivy-skip-dir) TRIVY_SKIP_DIRS+=("$2") ;;
-    --trivy-cache-dir) TRIVY_CACHE_DIR="$2" ;;
-    --trivy-bin) TRIVY_BIN="$2" ;;
-    --trivy-timeout) TRIVY_TIMEOUT="$2" ;;
-    esac
+      case "$1" in
+        --scanners | --tools) SELECTION="$2" ;;
+        --target) TARGETS+=("$2") ;;
+        --image) IMAGES+=("$2") ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+        --clamav-database) CLAMAV_DATABASE="$2" ;;
+        --clamav-exclude-dir) CLAMAV_EXCLUDES+=("$2") ;;
+        --maldet-engine) MALDET_ENGINE="$2" ;;
+        --lynis-bin) LYNIS_BIN="$2" ;;
+        --lynis-profile) LYNIS_PROFILE="$2" ;;
+        --trivy-mode) TRIVY_MODE="$2" ;;
+        --trivy-scanners) TRIVY_SCANNERS="$2" ;;
+        --trivy-severity) TRIVY_SEVERITY="$2" ;;
+        --trivy-ignorefile) TRIVY_IGNOREFILE="$2" ;;
+        --trivy-config) TRIVY_CONFIG="$2" ;;
+        --trivy-skip-dir) TRIVY_SKIP_DIRS+=("$2") ;;
+        --trivy-cache-dir) TRIVY_CACHE_DIR="$2" ;;
+        --trivy-bin) TRIVY_BIN="$2" ;;
+        --trivy-timeout) TRIVY_TIMEOUT="$2" ;;
+      esac
 
-    case "$1" in
-    --trivy-*) TRIVY_OPTIONS_SET=1 ;;
-    esac
+      case "$1" in
+        --trivy-*) TRIVY_OPTIONS_SET=1 ;;
+      esac
 
-    shift 2
-    ;;
+      shift 2
+      ;;
 
-  --trivy-ignore-unfixed)
-    TRIVY_IGNORE_UNFIXED=1
-    TRIVY_OPTIONS_SET=1
-    shift
-    ;;
+    --trivy-ignore-unfixed)
+      TRIVY_IGNORE_UNFIXED=1
+      TRIVY_OPTIONS_SET=1
+      shift
+      ;;
 
-  --list)
-    LIST_ONLY=1
-    shift
-    ;;
+    --list)
+      LIST_ONLY=1
+      shift
+      ;;
 
-  --sudo)
-    USE_SUDO=1
-    shift
-    ;;
+    --sudo)
+      USE_SUDO=1
+      shift
+      ;;
 
-  --verbose)
-    VERBOSE=1
-    shift
-    ;;
+    --verbose)
+      VERBOSE=1
+      shift
+      ;;
 
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
 
-  -h | --help)
-    usage
-    exit 0
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  *)
-    die "Unknown option: $1"
-    ;;
+    *)
+      die "Unknown option: $1"
+      ;;
   esac
 done
 
 PLATFORM="$(uname -s)"
 
 case "$PLATFORM" in
-Linux | Darwin) ;;
-*) die "Unsupported platform: $PLATFORM" ;;
+  Linux | Darwin) ;;
+  *) die "Unsupported platform: $PLATFORM" ;;
 esac
 
 if [[ "$LIST_ONLY" -eq 1 ]]; then
@@ -355,33 +355,33 @@ else
     die "Specify --all or --scanners LIST."
 
   case "$SELECTION" in
-  ,* | *, | *,,*)
-    die "Invalid scanner list: $SELECTION"
-    ;;
+    ,* | *, | *,,*)
+      die "Invalid scanner list: $SELECTION"
+      ;;
   esac
 
   REQUESTED=()
-  IFS=',' read -r -a REQUESTED <<<"$SELECTION"
+  IFS=',' read -r -a REQUESTED <<< "$SELECTION"
 
   for scanner in "${REQUESTED[@]}"; do
     case "$scanner" in
-    clamav | rkhunter | chkrootkit | lynis | maldet | trivy) ;;
-    *) die "Unknown scanner: $scanner" ;;
+      clamav | rkhunter | chkrootkit | lynis | maldet | trivy) ;;
+      *) die "Unknown scanner: $scanner" ;;
     esac
 
     supported "$scanner" ||
       die "$scanner is not enabled by this suite for $PLATFORM."
 
     case " ${SCANNERS[*]:-} " in
-    *" $scanner "*) ;;
-    *) SCANNERS+=("$scanner") ;;
+      *" $scanner "*) ;;
+      *) SCANNERS+=("$scanner") ;;
     esac
   done
 fi
 
 case "$TRIVY_MODE" in
-filesystem | rootfs | image) ;;
-*) die "--trivy-mode must be filesystem, rootfs, or image." ;;
+  filesystem | rootfs | image) ;;
+  *) die "--trivy-mode must be filesystem, rootfs, or image." ;;
 esac
 
 HAS_TARGET_SCANNER=0
@@ -395,19 +395,19 @@ for scanner in "${SCANNERS[@]}"; do
   fi
 
   case "$scanner" in
-  clamav)
-    HAS_CLAMAV=1
-    ;;
-  rkhunter | chkrootkit | lynis | maldet)
-    NEEDS_ROOT=1
-    ;;
-  trivy)
-    HAS_TRIVY=1
-
-    if [[ "$TRIVY_MODE" == rootfs ]]; then
+    clamav)
+      HAS_CLAMAV=1
+      ;;
+    rkhunter | chkrootkit | lynis | maldet)
       NEEDS_ROOT=1
-    fi
-    ;;
+      ;;
+    trivy)
+      HAS_TRIVY=1
+
+      if [[ "$TRIVY_MODE" == rootfs ]]; then
+        NEEDS_ROOT=1
+      fi
+      ;;
   esac
 done
 
@@ -464,8 +464,8 @@ for image in "${IMAGES[@]}"; do
 done
 
 case "$MALDET_ENGINE" in
-native | clamav) ;;
-*) die "--maldet-engine must be native or clamav." ;;
+  native | clamav) ;;
+  *) die "--maldet-engine must be native or clamav." ;;
 esac
 
 if [[ "$HAS_CLAMAV" -eq 1 ]]; then
@@ -558,7 +558,7 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
   SUMMARY="$RUN_DIR/summary.tsv"
 
   printf 'job\tscanner\tscope\tstatus\tadapter_exit_code\toutput_log\n' \
-    >"$SUMMARY"
+    > "$SUMMARY"
 
   {
     printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -573,7 +573,7 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
       printf 'trivy_severity=%s\n' "$TRIVY_SEVERITY"
       printf 'trivy_timeout=%s\n' "$TRIVY_TIMEOUT"
     fi
-  } >"$RUN_DIR/metadata.txt"
+  } > "$RUN_DIR/metadata.txt"
 
   log "Batch reports: $RUN_DIR"
 fi
@@ -588,21 +588,21 @@ classify_result() {
   JOB_STATUS=error
 
   case "$scanner:$rc" in
-  clamav:0 | maldet:0 | rkhunter:0 | trivy:0)
-    JOB_STATUS=completed
-    ;;
+    clamav:0 | maldet:0 | rkhunter:0 | trivy:0)
+      JOB_STATUS=completed
+      ;;
 
-  clamav:1 | maldet:1)
-    JOB_STATUS=malware-hits
-    ;;
+    clamav:1 | maldet:1)
+      JOB_STATUS=malware-hits
+      ;;
 
-  trivy:1)
-    JOB_STATUS=security-findings
-    ;;
+    trivy:1)
+      JOB_STATUS=security-findings
+      ;;
 
-  rkhunter:3 | chkrootkit:3 | lynis:3)
-    JOB_STATUS=review-required
-    ;;
+    rkhunter:3 | chkrootkit:3 | lynis:3)
+      JOB_STATUS=review-required
+      ;;
   esac
 }
 
@@ -629,81 +629,81 @@ run_job() {
   fi
 
   case "$scanner" in
-  clamav)
-    args+=(
-      --target "$scope"
-      --database "$CLAMAV_DATABASE"
-      --output-dir "$job_dir/reports"
-    )
+    clamav)
+      args+=(
+        --target "$scope"
+        --database "$CLAMAV_DATABASE"
+        --output-dir "$job_dir/reports"
+      )
 
-    for regex in "${CLAMAV_EXCLUDES[@]}"; do
-      args+=(--exclude-dir "$regex")
-    done
-    ;;
+      for regex in "${CLAMAV_EXCLUDES[@]}"; do
+        args+=(--exclude-dir "$regex")
+      done
+      ;;
 
-  maldet)
-    args+=(
-      --target "$scope"
-      --engine "$MALDET_ENGINE"
-      --output-dir "$job_dir/reports"
-    )
-    ;;
+    maldet)
+      args+=(
+        --target "$scope"
+        --engine "$MALDET_ENGINE"
+        --output-dir "$job_dir/reports"
+      )
+      ;;
 
-  rkhunter | chkrootkit)
-    args+=(--output-dir "$job_dir/reports")
-    ;;
+    rkhunter | chkrootkit)
+      args+=(--output-dir "$job_dir/reports")
+      ;;
 
-  lynis)
-    args+=(--output-dir "$job_dir/reports")
+    lynis)
+      args+=(--output-dir "$job_dir/reports")
 
-    if [[ -n "$LYNIS_BIN" ]]; then
-      args+=(--lynis-bin "$LYNIS_BIN")
-    fi
+      if [[ -n "$LYNIS_BIN" ]]; then
+        args+=(--lynis-bin "$LYNIS_BIN")
+      fi
 
-    if [[ -n "$LYNIS_PROFILE" ]]; then
-      args+=(--profile "$LYNIS_PROFILE")
-    fi
-    ;;
+      if [[ -n "$LYNIS_PROFILE" ]]; then
+        args+=(--profile "$LYNIS_PROFILE")
+      fi
+      ;;
 
-  trivy)
-    args+=(
-      --mode "$TRIVY_MODE"
-      --scanners "$TRIVY_SCANNERS"
-      --severity "$TRIVY_SEVERITY"
-      --timeout "$TRIVY_TIMEOUT"
-      --output-dir "$job_dir/reports"
-    )
+    trivy)
+      args+=(
+        --mode "$TRIVY_MODE"
+        --scanners "$TRIVY_SCANNERS"
+        --severity "$TRIVY_SEVERITY"
+        --timeout "$TRIVY_TIMEOUT"
+        --output-dir "$job_dir/reports"
+      )
 
-    if [[ "$TRIVY_MODE" == image ]]; then
-      args+=(--image "$scope")
-    else
-      args+=(--target "$scope")
-    fi
+      if [[ "$TRIVY_MODE" == image ]]; then
+        args+=(--image "$scope")
+      else
+        args+=(--target "$scope")
+      fi
 
-    if [[ "$TRIVY_IGNORE_UNFIXED" -eq 1 ]]; then
-      args+=(--ignore-unfixed)
-    fi
+      if [[ "$TRIVY_IGNORE_UNFIXED" -eq 1 ]]; then
+        args+=(--ignore-unfixed)
+      fi
 
-    if [[ -n "$TRIVY_BIN" ]]; then
-      args+=(--trivy-bin "$TRIVY_BIN")
-    fi
+      if [[ -n "$TRIVY_BIN" ]]; then
+        args+=(--trivy-bin "$TRIVY_BIN")
+      fi
 
-    if [[ -n "$TRIVY_CONFIG" ]]; then
-      args+=(--config "$TRIVY_CONFIG")
-    fi
+      if [[ -n "$TRIVY_CONFIG" ]]; then
+        args+=(--config "$TRIVY_CONFIG")
+      fi
 
-    if [[ -n "$TRIVY_IGNOREFILE" ]]; then
-      args+=(--ignorefile "$TRIVY_IGNOREFILE")
-    fi
+      if [[ -n "$TRIVY_IGNOREFILE" ]]; then
+        args+=(--ignorefile "$TRIVY_IGNOREFILE")
+      fi
 
-    if [[ -n "$TRIVY_CACHE_DIR" ]]; then
-      args+=(--cache-dir "$TRIVY_CACHE_DIR")
-    fi
+      if [[ -n "$TRIVY_CACHE_DIR" ]]; then
+        args+=(--cache-dir "$TRIVY_CACHE_DIR")
+      fi
 
-    for skip_dir in "${TRIVY_SKIP_DIRS[@]}"; do
-      args+=(--skip-dir "$skip_dir")
-    done
-    ;;
+      for skip_dir in "${TRIVY_SKIP_DIRS[@]}"; do
+        args+=(--skip-dir "$skip_dir")
+      done
+      ;;
   esac
 
   # Preserve native output in the orchestration log.
@@ -730,11 +730,11 @@ run_job() {
     return 0
   fi
 
-  print_command "${command[@]}" >"$job_dir/command.txt"
+  print_command "${command[@]}" > "$job_dir/command.txt"
   log "[$JOB_NUMBER] Starting $scanner: $scope"
 
   if [[ ! -f "$adapter" ]]; then
-    printf 'Missing adapter: %s\n' "$adapter" >"$job_dir/output.log"
+    printf 'Missing adapter: %s\n' "$adapter" > "$job_dir/output.log"
     rc=127
   elif [[ "$VERBOSE" -eq 1 ]]; then
     set +e
@@ -745,15 +745,15 @@ run_job() {
     rc="${pipe_codes[0]}"
     writer_rc="${pipe_codes[1]}"
   else
-    : >"$job_dir/output.log"
-    "${command[@]}" >"$job_dir/output.log" 2>&1 || rc=$?
+    : > "$job_dir/output.log"
+    "${command[@]}" > "$job_dir/output.log" 2>&1 || rc=$?
   fi
 
   case "$rc" in
-  130 | 143)
-    log "Interrupted; partial reports remain in $RUN_DIR"
-    exit "$rc"
-    ;;
+    130 | 143)
+      log "Interrupted; partial reports remain in $RUN_DIR"
+      exit "$rc"
+      ;;
   esac
 
   classify_result "$scanner" "$rc"
@@ -763,27 +763,27 @@ run_job() {
   fi
 
   case "$JOB_STATUS" in
-  completed)
-    SUCCESSES=$((SUCCESSES + 1))
-    ;;
-  malware-hits)
-    HITS=$((HITS + 1))
-    ;;
-  security-findings)
-    SECURITY_FINDINGS=$((SECURITY_FINDINGS + 1))
-    ;;
-  review-required)
-    REVIEWS=$((REVIEWS + 1))
-    ;;
-  *)
-    ERRORS=$((ERRORS + 1))
-    ;;
+    completed)
+      SUCCESSES=$((SUCCESSES + 1))
+      ;;
+    malware-hits)
+      HITS=$((HITS + 1))
+      ;;
+    security-findings)
+      SECURITY_FINDINGS=$((SECURITY_FINDINGS + 1))
+      ;;
+    review-required)
+      REVIEWS=$((REVIEWS + 1))
+      ;;
+    *)
+      ERRORS=$((ERRORS + 1))
+      ;;
   esac
 
   {
     printf 'adapter_exit_code=%s\n' "$rc"
     printf 'writer_exit_code=%s\n' "$writer_rc"
-  } >"$job_dir/status.txt"
+  } > "$job_dir/status.txt"
 
   printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
     "$JOB_NUMBER" \
@@ -792,7 +792,7 @@ run_job() {
     "$JOB_STATUS" \
     "$rc" \
     "$job_dir/output.log" \
-    >>"$SUMMARY"
+    >> "$SUMMARY"
 
   log "[$JOB_NUMBER] $scanner: $JOB_STATUS (adapter exit $rc)"
 }

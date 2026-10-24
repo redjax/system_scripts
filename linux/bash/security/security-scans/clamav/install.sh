@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: install.sh [options]
 
 Options:
@@ -53,49 +53,49 @@ DATABASE_OWNER="${SUDO_USER:-$(id -un)}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --database | --owner)
-    clam_need_value "$@"
+    --database | --owner)
+      clam_need_value "$@"
 
-    case "$1" in
-    --database)
-      DATABASE="$2"
+      case "$1" in
+        --database)
+          DATABASE="$2"
+          ;;
+        --owner)
+          DATABASE_OWNER="$2"
+          ;;
+      esac
+
+      shift 2
       ;;
-    --owner)
-      DATABASE_OWNER="$2"
+
+    --dry-run)
+      DRY_RUN=1
+      shift
       ;;
-    esac
 
-    shift 2
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-
-  -h | --help)
-    usage
-    exit 0
-    ;;
-
-  *)
-    clam_die "Unknown option: $1"
-    ;;
+    *)
+      clam_die "Unknown option: $1"
+      ;;
   esac
 done
 
 PLATFORM="$(uname -s)"
 
 case "$PLATFORM" in
-Linux | Darwin) ;;
-*)
-  clam_die "Unsupported platform: $PLATFORM"
-  ;;
+  Linux | Darwin) ;;
+  *)
+    clam_die "Unsupported platform: $PLATFORM"
+    ;;
 esac
 
 DATABASE="$(clam_absolute_path "$DATABASE")"
 
-id "$DATABASE_OWNER" >/dev/null 2>&1 ||
+id "$DATABASE_OWNER" > /dev/null 2>&1 ||
   clam_die "Unknown database owner: $DATABASE_OWNER"
 
 [[ -f "$SCRIPT_DIR/configure.sh" ]] ||
@@ -115,11 +115,11 @@ fi
 
 if [[ "$SELINUX_ACTIVE" -eq 1 ]]; then
   case "$DATABASE" in
-  /var/lib/security-scans/*) ;;
-  *)
-    clam_die \
-      "SELinux is enabled. Use --database /var/lib/security-scans/clamav/db."
-    ;;
+    /var/lib/security-scans/*) ;;
+    *)
+      clam_die \
+        "SELinux is enabled. Use --database /var/lib/security-scans/clamav/db."
+      ;;
   esac
 fi
 
@@ -132,46 +132,46 @@ fi
 
 if [[ "$ALREADY_INSTALLED" -eq 0 ]]; then
   case "$PLATFORM" in
-  Darwin)
-    clam_have brew ||
-      clam_die "Homebrew is required on macOS."
+    Darwin)
+      clam_have brew ||
+        clam_die "Homebrew is required on macOS."
 
-    [[ "$EUID" -ne 0 ]] ||
-      clam_die "Run Homebrew installation as your normal user."
+      [[ "$EUID" -ne 0 ]] ||
+        clam_die "Run Homebrew installation as your normal user."
 
-    clam_run brew install clamav
-    ;;
+      clam_run brew install clamav
+      ;;
 
-  Linux)
-    if clam_have apt-get; then
-      clam_root apt-get update
-      clam_root apt-get install -y clamav clamav-freshclam
+    Linux)
+      if clam_have apt-get; then
+        clam_root apt-get update
+        clam_root apt-get install -y clamav clamav-freshclam
 
-    elif clam_have dnf; then
-      ## Resolve executable providers instead of assuming RPM package names.
-      clam_root dnf install -y \
-        /usr/bin/clamscan \
-        /usr/bin/freshclam
+      elif clam_have dnf; then
+        ## Resolve executable providers instead of assuming RPM package names.
+        clam_root dnf install -y \
+          /usr/bin/clamscan \
+          /usr/bin/freshclam
 
-    elif clam_have yum; then
-      clam_root yum install -y \
-        /usr/bin/clamscan \
-        /usr/bin/freshclam
+      elif clam_have yum; then
+        clam_root yum install -y \
+          /usr/bin/clamscan \
+          /usr/bin/freshclam
 
-    elif clam_have pacman; then
-      ## Do not perform a database-only refresh or partial upgrade.
-      clam_root pacman -S --needed --noconfirm clamav
+      elif clam_have pacman; then
+        ## Do not perform a database-only refresh or partial upgrade.
+        clam_root pacman -S --needed --noconfirm clamav
 
-    elif clam_have apk; then
-      clam_root apk add clamav-scanner freshclam
+      elif clam_have apk; then
+        clam_root apk add clamav-scanner freshclam
 
-    elif clam_have zypper; then
-      clam_root zypper --non-interactive install clamav
+      elif clam_have zypper; then
+        clam_root zypper --non-interactive install clamav
 
-    else
-      clam_die "No supported Linux package manager found."
-    fi
-    ;;
+      else
+        clam_die "No supported Linux package manager found."
+      fi
+      ;;
   esac
 fi
 

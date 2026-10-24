@@ -15,7 +15,7 @@ chk_die() {
 }
 
 chk_have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 chk_need_value() {
@@ -23,14 +23,14 @@ chk_need_value() {
     chk_die "Missing value for $1"
 
   case "$2" in
-  --*) chk_die "Missing value for $1" ;;
+    --*) chk_die "Missing value for $1" ;;
   esac
 }
 
 chk_absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 

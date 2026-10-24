@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: freshclam-update.sh [options]
 
 Options:
@@ -36,26 +36,26 @@ DATABASE="$(clam_default_database)"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --database)
-    clam_need_value "$@"
-    DATABASE="$2"
-    shift 2
-    ;;
-  -v | --verbose)
-    VERBOSE=1
-    shift
-    ;;
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    clam_die "Unknown option: $1"
-    ;;
+    --database)
+      clam_need_value "$@"
+      DATABASE="$2"
+      shift 2
+      ;;
+    -v | --verbose)
+      VERBOSE=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      clam_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -63,9 +63,9 @@ DATABASE="$(clam_absolute_path "$DATABASE")"
 
 ## The path is embedded in a quoted FreshClam configuration directive.
 case "$DATABASE" in
-*$'\n'* | *$'\r'* | *'"'* | *'\'*)
-  clam_die "Database path contains unsupported configuration characters."
-  ;;
+  *$'\n'* | *$'\r'* | *'"'* | *'\'*)
+    clam_die "Database path contains unsupported configuration characters."
+    ;;
 esac
 
 if [[ "$DRY_RUN" -eq 1 ]]; then
@@ -93,7 +93,7 @@ CONFIG="$WORK_DIR/freshclam.conf"
   printf 'DatabaseDirectory "%s"\n' "$DATABASE"
   printf 'DatabaseOwner %s\n' "$(id -un)"
   printf 'DatabaseMirror database.clamav.net\n'
-} >"$CONFIG"
+} > "$CONFIG"
 
 CMD=(freshclam "--config-file=$CONFIG")
 

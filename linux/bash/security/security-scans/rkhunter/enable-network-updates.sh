@@ -3,7 +3,7 @@ set -euo pipefail
 umask 077
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: enable-network-updates.sh [--dry-run]
 
 Explicitly enable upstream rkhunter data downloads.
@@ -22,18 +22,18 @@ DRY_RUN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    printf 'Unknown option: %s\n' "$1" >&2
-    exit 2
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      printf 'Unknown option: %s\n' "$1" >&2
+      exit 2
+      ;;
   esac
 done
 
@@ -54,14 +54,14 @@ CONFIG=/etc/rkhunter.conf
   exit 2
 }
 
-command -v rkhunter >/dev/null 2>&1 || {
+command -v rkhunter > /dev/null 2>&1 || {
   printf 'rkhunter is not installed.\n' >&2
   exit 2
 }
 
 ## Require wget for this adapter rather than selecting curl, whose
 #  rkhunter-generated command does not follow the observed redirects.
-if command -v wget >/dev/null 2>&1; then
+if command -v wget > /dev/null 2>&1; then
   DOWNLOADER=wget
 else
   printf 'Install wget before enabling rkhunter network updates.\n' >&2
@@ -98,23 +98,23 @@ trap 'rm -f -- "$TEMP"' EXIT
 
 awk '
   !/^[[:space:]]*(WEB_CMD|UPDATE_MIRRORS|MIRRORS_MODE)=/
-' "$CONFIG" >"$TEMP"
+' "$CONFIG" > "$TEMP"
 
 {
   printf '\n# Explicitly enabled by security-scans setup.\n'
   printf 'WEB_CMD=%s\n' "$DOWNLOADER"
   printf 'UPDATE_MIRRORS=1\n'
   printf 'MIRRORS_MODE=0\n'
-} >>"$TEMP"
+} >> "$TEMP"
 
 ## Preserve the existing file's ownership, mode, and security label.
-cat "$TEMP" >"$CONFIG"
+cat "$TEMP" > "$CONFIG"
 
 printf 'Backup: %s\n' "$BACKUP"
 
 if ! rkhunter --config-check; then
   printf 'Configuration validation failed; restoring backup.\n' >&2
-  cat "$BACKUP" >"$CONFIG"
+  cat "$BACKUP" > "$CONFIG"
   exit 2
 fi
 

@@ -15,7 +15,7 @@ tv_die() {
 }
 
 tv_have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 tv_need_value() {
@@ -23,14 +23,14 @@ tv_need_value() {
     tv_die "Missing value for $1"
 
   case "$2" in
-  --*) tv_die "Missing value for $1" ;;
+    --*) tv_die "Missing value for $1" ;;
   esac
 }
 
 tv_absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 
@@ -42,8 +42,8 @@ tv_print_command() {
 
 tv_require_platform() {
   case "$(uname -s)" in
-  Linux | Darwin) ;;
-  *) tv_die "Supported platforms: Linux and macOS." ;;
+    Linux | Darwin) ;;
+    *) tv_die "Supported platforms: Linux and macOS." ;;
   esac
 }
 

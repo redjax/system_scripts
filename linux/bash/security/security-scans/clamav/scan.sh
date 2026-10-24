@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: scan.sh [options]
 
 Targets:
@@ -66,61 +66,61 @@ EXCLUDE_DIRS=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -t | --target | --path | -e | --exclude | --exclude-dir | --database | \
-    --output-dir | --max-filesize | --max-scansize)
-    clam_need_value "$@"
+    -t | --target | --path | -e | --exclude | --exclude-dir | --database | \
+      --output-dir | --max-filesize | --max-scansize)
+      clam_need_value "$@"
 
-    case "$1" in
-    -t | --target | --path) TARGETS+=("$2") ;;
-    -e | --exclude) EXCLUDES+=("$2") ;;
-    --exclude-dir) EXCLUDE_DIRS+=("$2") ;;
-    --database) DATABASE="$2" ;;
-    --output-dir) OUTPUT_DIR="$2" ;;
-    --max-filesize) MAX_FILESIZE="$2" ;;
-    --max-scansize) MAX_SCANSIZE="$2" ;;
-    esac
+      case "$1" in
+        -t | --target | --path) TARGETS+=("$2") ;;
+        -e | --exclude) EXCLUDES+=("$2") ;;
+        --exclude-dir) EXCLUDE_DIRS+=("$2") ;;
+        --database) DATABASE="$2" ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+        --max-filesize) MAX_FILESIZE="$2" ;;
+        --max-scansize) MAX_SCANSIZE="$2" ;;
+      esac
 
-    shift 2
-    ;;
-  -r | --recursive)
-    RECURSIVE=1
-    shift
-    ;;
-  --no-recursive)
-    RECURSIVE=0
-    shift
-    ;;
-  -i | --infected-only)
-    INFECTED_ONLY=1
-    shift
-    ;;
-  --all-files)
-    INFECTED_ONLY=0
-    shift
-    ;;
-  --no-summary)
-    NO_SUMMARY=1
-    shift
-    ;;
-  --one-file-system)
-    ONE_FILE_SYSTEM=1
-    shift
-    ;;
-  -v | --verbose)
-    VERBOSE=1
-    shift
-    ;;
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    clam_die "Unknown option: $1"
-    ;;
+      shift 2
+      ;;
+    -r | --recursive)
+      RECURSIVE=1
+      shift
+      ;;
+    --no-recursive)
+      RECURSIVE=0
+      shift
+      ;;
+    -i | --infected-only)
+      INFECTED_ONLY=1
+      shift
+      ;;
+    --all-files)
+      INFECTED_ONLY=0
+      shift
+      ;;
+    --no-summary)
+      NO_SUMMARY=1
+      shift
+      ;;
+    --one-file-system)
+      ONE_FILE_SYSTEM=1
+      shift
+      ;;
+    -v | --verbose)
+      VERBOSE=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      clam_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -215,7 +215,7 @@ RUN_REGEX="$(
 CMD+=("--exclude-dir=^${RUN_REGEX}(/|$)")
 CMD+=("${TARGETS[@]}")
 
-clam_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
+clam_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -223,7 +223,7 @@ clam_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
   printf 'architecture=%s\n' "$(uname -m)"
   printf 'database=%s\n' "$DATABASE"
   clamscan --version
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
 clam_log "Report: $REPORT"
 
@@ -241,25 +241,25 @@ if [[ "$TEE_RC" -ne 0 ]]; then
   EXIT_CODE=2
 else
   case "$SCAN_RC" in
-  0)
-    STATUS=no-detection
-    EXIT_CODE=0
-    ;;
-  1)
-    STATUS=malware-detected
-    EXIT_CODE=1
-    ;;
-  *)
-    STATUS=scan-error
-    EXIT_CODE=2
-    ;;
+    0)
+      STATUS=no-detection
+      EXIT_CODE=0
+      ;;
+    1)
+      STATUS=malware-detected
+      EXIT_CODE=1
+      ;;
+    *)
+      STATUS=scan-error
+      EXIT_CODE=2
+      ;;
   esac
 fi
 
 {
   printf 'tool\tstatus\tnative_exit_code\treport_exit_code\n'
   printf 'clamav\t%s\t%s\t%s\n' "$STATUS" "$SCAN_RC" "$TEE_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 clam_log "Result: $STATUS"
 clam_log "Native scanner exit code: $SCAN_RC"

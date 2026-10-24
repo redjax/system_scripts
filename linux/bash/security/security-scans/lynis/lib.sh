@@ -15,7 +15,7 @@ lynis_die() {
 }
 
 lynis_have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 lynis_need_value() {
@@ -23,14 +23,14 @@ lynis_need_value() {
     lynis_die "Missing value for $1"
 
   case "$2" in
-  --*) lynis_die "Missing value for $1" ;;
+    --*) lynis_die "Missing value for $1" ;;
   esac
 }
 
 lynis_absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 
@@ -63,10 +63,10 @@ lynis_root() {
 
 lynis_require_platform() {
   case "$(uname -s)" in
-  Linux | Darwin) ;;
-  *)
-    lynis_die "This adapter supports Linux and macOS only."
-    ;;
+    Linux | Darwin) ;;
+    *)
+      lynis_die "This adapter supports Linux and macOS only."
+      ;;
   esac
 }
 

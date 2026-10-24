@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: install.sh [options]
 
 Options:
@@ -43,31 +43,31 @@ DRY_RUN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --version | --install-dir)
-    tv_need_value "$@"
+    --version | --install-dir)
+      tv_need_value "$@"
 
-    case "$1" in
-    --version) VERSION="$2" ;;
-    --install-dir) INSTALL_DIR="$2" ;;
-    esac
+      case "$1" in
+        --version) VERSION="$2" ;;
+        --install-dir) INSTALL_DIR="$2" ;;
+      esac
 
-    shift 2
-    ;;
-  --force)
-    FORCE=1
-    shift
-    ;;
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    tv_die "Unknown option: $1"
-    ;;
+      shift 2
+      ;;
+    --force)
+      FORCE=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      tv_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -86,14 +86,14 @@ if tv_have trivy && [[ "$FORCE" -eq 0 ]]; then
 fi
 
 case "$(uname -s)" in
-Linux) RELEASE_OS=Linux ;;
-Darwin) RELEASE_OS=macOS ;;
+  Linux) RELEASE_OS=Linux ;;
+  Darwin) RELEASE_OS=macOS ;;
 esac
 
 case "$(uname -m)" in
-x86_64 | amd64) RELEASE_ARCH=64bit ;;
-aarch64 | arm64) RELEASE_ARCH=ARM64 ;;
-*) tv_die "Unsupported architecture for this installer: $(uname -m)" ;;
+  x86_64 | amd64) RELEASE_ARCH=64bit ;;
+  aarch64 | arm64) RELEASE_ARCH=ARM64 ;;
+  *) tv_die "Unsupported architecture for this installer: $(uname -m)" ;;
 esac
 
 ARCHIVE="trivy_${VERSION}_${RELEASE_OS}-${RELEASE_ARCH}.tar.gz"
