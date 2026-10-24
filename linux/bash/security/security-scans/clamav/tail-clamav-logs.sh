@@ -1,108 +1,78 @@
 #!/usr/bin/env bash
-set -uo pipefail
+set -euo pipefail
 
-LOG_FILE=""
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
+source "$SCRIPT_DIR/lib.sh"
 
-function usage() {
-  echo ""
-  echo "Usage: $0 [OPTIONS]"
-  echo "Options:"
-  echo "  -l, --log-file <path>  Path to ClamAV log file (default: /var/log/clamav/system-scan.log)"
-  echo "  -h, --help             Show this help menu"
-  echo ""
+usage() {
+  cat <<'EOF'
+Usage:
+  tail-clamav-logs.sh --log-file FILE [--lines N]
+  tail-clamav-logs.sh --journal-unit UNIT [--lines N]
+
+Options:
+  -l, --log-file FILE    Follow an existing scan or service log
+      --journal-unit U  Follow an explicitly selected systemd unit
+  -n, --lines N          Initial lines to display (default: 50)
+  -h, --help             Show help
+
+Examples:
+  ./tail-clamav-logs.sh --log-file ./clamav-reports/run.ABC/output.log
+  ./tail-clamav-logs.sh --journal-unit clamav-freshclam.service
+EOF
 }
+
+LOG_FILE=
+JOURNAL_UNIT=
+LINES=50
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -l | --log-file)
-      if [[ -z "$2" ]]; then
-        echo "[ERROR] --log-file provided, but no log file path given."
-        exit 1
-      fi
+  -l | --log-file | --journal-unit | -n | --lines)
+    clam_need_value "$@"
 
-      LOG_FILE="$2"
-      shift 2
-      ;;
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $1"
-      usage
-      exit 1
-      ;;
+    case "$1" in
+    -l | --log-file) LOG_FILE="$2" ;;
+    --journal-unit) JOURNAL_UNIT="$2" ;;
+    -n | --lines) LINES="$2" ;;
+    esac
+
+    shift 2
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    clam_die "Unknown option: $1"
+    ;;
   esac
 done
 
-function detect_os() {
-  if command -v apt-get &> /dev/null; then
-    echo "debian"
-  elif command -v dnf &> /dev/null; then
-    echo "fedora"
-  elif command -v yum &> /dev/null; then
-    echo "rhel"
-  elif command -v pacman &> /dev/null; then
-    echo "arch"
-  else
-    echo "unknown"
-  fi
-}
+[[ "$LINES" =~ ^[0-9]+$ ]] ||
+  clam_die "--lines must be a nonnegative integer."
 
-function get_clam_log() {
-  case "$OS" in
-    debian | arch)
-      if [[ -f /var/log/clamav/clamd.log ]]; then
-        echo "/var/log/clamav/clamd.log"
-      elif [[ -f /var/log/clamd.log ]]; then
-        echo "/var/log/clamd.log"
-      else
-        echo "/var/log/clamav/clamd.log"
-      fi
-      ;;
-    fedora)
-      # Fedora clamd@scan service logs to journal, not file
-      if systemctl is-active --quiet clamd@scan; then
-        echo "journal:clamd@scan"
-      elif [[ -f /var/log/clamd.scan ]]; then
-        echo "/var/log/clamd.scan"
-      else
-        echo "/var/log/clamav/clamd.log"
-      fi
-      ;;
-    rhel)
-      if [[ -f /var/log/clamd.scan ]]; then
-        echo "/var/log/clamd.scan"
-      else
-        echo "/var/log/clamav/clamd.log"
-      fi
-      ;;
-    *)
-      echo "/var/log/clamav/clamd.log"
-      ;;
-  esac
-}
-
-OS=$(detect_os)
-
-if [[ -z "$LOG_FILE" ]]; then
-  LOG_FILE=$(get_clam_log)
-else
-  if [[ ! -f "$LOG_FILE" ]]; then
-    echo "[ERROR] Log file $LOG_FILE not found."
-    exit 1
-  fi
+if [[ -n "$LOG_FILE" && -n "$JOURNAL_UNIT" ]]; then
+  clam_die "Choose --log-file or --journal-unit, not both."
 fi
 
-if [[ "$LOG_FILE" =~ ^journal: ]]; then
-  SERVICE_NAME="${LOG_FILE#journal:}"
-  echo "Tailing journal logs for $SERVICE_NAME (Press Ctrl+C to exit)"
-  journalctl -u "$SERVICE_NAME" -f
-else
-  if [[ ! -f "$LOG_FILE" ]]; then
-    echo "Log file $LOG_FILE not found."
-    exit 1
-  fi
-  echo "Tailing log file $LOG_FILE (Press Ctrl+C to exit)"
-  tail -f "$LOG_FILE"
+if [[ -n "$JOURNAL_UNIT" ]]; then
+  clam_have journalctl ||
+    clam_die "journalctl is unavailable."
+
+  exec journalctl \
+    --unit="$JOURNAL_UNIT" \
+    --lines="$LINES" \
+    --follow
 fi
+
+[[ -n "$LOG_FILE" ]] ||
+  clam_die "Specify --log-file or --journal-unit."
+
+LOG_FILE="$(clam_absolute_path "$LOG_FILE")"
+
+[[ -f "$LOG_FILE" && -r "$LOG_FILE" ]] ||
+  clam_die "Log file is missing or unreadable: $LOG_FILE"
+
+exec tail -n "$LINES" -f "$LOG_FILE"
