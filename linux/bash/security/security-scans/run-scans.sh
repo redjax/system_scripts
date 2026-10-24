@@ -7,67 +7,99 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 usage() {
   cat <<'EOF'
 Usage:
-  scan.sh --all [options]
-  scan.sh --scanners LIST [options]
+  run-scans.sh --all [options]
+  run-scans.sh --scanners LIST [options]
 
 Selection:
-  --all                       Run all supported adapters for this platform
-  --scanners            LIST  Comma-separated names: clamav,rkhunter,chkrootkit,lynis,maldet
-  --tools               LIST  Alias for --scanners
-  --list                      List adapter support and script availability
+  --all                             Run all supported adapters for this platform
+  --scanners              LIST      Comma-separated names: clamav,rkhunter,chkrootkit,lynis,maldet,trivy
+  --tools                 LIST      Alias for --scanners.
+  --list                            List adapter support and script availability
 
-File-scan scope:
-  --target              PATH   Target for ClamAV and Maldet; repeatable. Required when either file scanner is selected
-  --clamav-database     DIR    ClamAV signature directory. Default: invoking user's XDG cache database
-  --clamav-exclude-dir  REGEX  ClamAV directory exclusion; repeatable
-  --maldet-engine       NAME   'native' or 'clamav'. Default: native
+Filesystem scope:
+  --target                PATH      Repeatable filesystem target. Used by ClamAV, Maldet, and Trivy filesystem/rootfs modes
+
+ClamAV:
+  --clamav-database       DIR       Signature directory. Default: invoking user's XDG cache database
+  --clamav-exclude-dir    REGEX     Repeatable directory exclusion
+
+Maldet:
+  --maldet-engine         NAME      'native' or 'clamav';. Default: native
 
 Lynis:
-  --lynis-bin           FILE   Explicit Lynis executable path. Useful for Homebrew with sudo
-  --lynis-profile       FILE   Alternate Lynis profile
+  --lynis-bin             FILE      Explicit Lynis executable path
+  --lynis-profile         FILE      Alternate Lynis profile
+
+Trivy:
+  --trivy-mode            MODE      'filesystem', 'rootfs', or 'image'. Default: filesystem
+  --image                 REF       Repeatable image reference for image mode.
+  --trivy-scanners        LIST      'vuln', 'secret', 'misconfig'. Default: vuln
+  --trivy-severity        LIST      Comma-separated severities. Default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+  --trivy-ignore-unfixed            Filter vulnerabilities without a known fix
+  --trivy-ignorefile      FILE      Explicit ignore file
+  --trivy-config          FILE      Explicit main configuration
+  --trivy-skip-dir        PATH      Repeatable directory/pattern exclusion
+  --trivy-cache-dir       DIR       Explicit database/cache directory
+  --trivy-bin             FILE      Explicit executable path
+  --trivy-timeout         DURATION  Scan timeout, e.g. 30s, 15m, or 1h. Default: 15m
 
 Execution:
-  --sudo                       Elevate adapter commands when not already root
-  --output-dir          DIR    Parent directory for orchestration reports. Default: ./security-scan-reports
-  --verbose                    Stream adapter output while saving it
-  --dry-run                    Show commands without executing or writing reports
-  -h, --help                   Show help
+  --sudo                            Elevate all adapter commands when not root
+  --output-dir            DIR       Batch report parent directory. Default: ./security-scan-reports
+  --verbose                         Stream adapter output while saving it
+  --dry-run                         Print commands without executing/writing reports
+  -h, --help                        Show help
 
 Behavior:
   - Run sequentially in requested order
   - Run host scanners once
-  - Run ClamAV and Maldet once per target
+  - Run filesystem scanners once per target
+  - Run Trivy image mode once per image reference
   - Continue after adapter failures and findings
-  - Do not install tools or update signatures
-  - Do not establish baselines or remediate findings
+  - Do not install tools, accept baselines, or remediate findings
+  - Do not explicitly invoke signature-update scripts
+  - Trivy may download/refresh databases as part of its normal scan
   - "all" excludes adapters unsupported by this suite on the platform
-  - Missing selected adapter scripts are errors, not silent skips
+  - Missing selected adapters are errors, not silent skips
 
 Scope:
-  - Targets apply only to ClamAV and Maldet.
-  - rkhunter, chkrootkit, and Lynis inspect the running host.
-  - File-scanner limits and ignore settings remain adapter-controlled.
+  - rkhunter, chkrootkit, and Lynis inspect the running host
+  - Trivy filesystem/rootfs modes require directory targets
+  - Trivy rootfs mode is enabled only on Linux and requires elevation here
+  - Trivy image mode requires --image and does not consume --target
+  - Other scanner limits and ignore settings remain adapter-controlled
+
+Privileges:
+  --sudo elevates every adapter, including Trivy image scans.
+  Elevated image scans may use root's registry/runtime credentials and cache.
+  Run Trivy image-only batches without --sudo when elevation is unnecessary.
 
 Exit codes:
-  0  All adapters returned their success status
-  1  At least one file scanner reported malware hits
+  0  All adapters returned their supported success status
+  1  At least one malware-hit or Trivy security-finding job
   2  At least one adapter/setup/report failure
   3  At least one adapter requires review
 
 Precedence:
-  error > malware hits > review required > success
+  error > findings > review required > success
 
 Success does not mean the host is uncompromised.
-Results preserve each adapter's exit code.
+Each adapter's exit code is preserved.
 
 Examples:
-  ./scan.sh --scanners clamav --target "$HOME/Downloads"
+  ./run-scans.sh --all --target /var/www --sudo
 
-  ./scan.sh --scanners rkhunter,chkrootkit,lynis --sudo --verbose
+  ./run-scans.sh --scanners trivy \
+    --target /srv/my-app --verbose
 
-  ./scan.sh --all --target /var/www --sudo
+  ./run-scans.sh --scanners trivy \
+    --trivy-mode rootfs --target / --sudo
 
-  ./scan.sh --all --target "$HOME/projects" --dry-run
+  ./run-scans.sh --scanners trivy \
+    --trivy-mode image --image example/app:tag
+
+  ./run-scans.sh --scanners rkhunter,chkrootkit,lynis \
+    --sudo --verbose
 EOF
 }
 
@@ -106,10 +138,47 @@ print_command() {
   printf '\n'
 }
 
+validate_summary_value() {
+  case "$1" in
+  *$'\t'* | *$'\n'* | *$'\r'*)
+    die "Scope contains unsupported tab or newline characters."
+    ;;
+  esac
+}
+
+validate_list() {
+  local list="$1"
+  local kind="$2"
+  local item
+  local -a items=()
+
+  case "$list" in
+  "" | ,* | *, | *,,*)
+    die "Invalid $kind list: $list"
+    ;;
+  esac
+
+  IFS=',' read -r -a items <<<"$list"
+
+  for item in "${items[@]}"; do
+    case "$kind:$item" in
+    trivy-scanners:vuln | trivy-scanners:secret | \
+      trivy-scanners:misconfig | \
+      trivy-severity:UNKNOWN | trivy-severity:LOW | \
+      trivy-severity:MEDIUM | trivy-severity:HIGH | \
+      trivy-severity:CRITICAL) ;;
+    *)
+      die "Unsupported $kind value: $item"
+      ;;
+    esac
+  done
+}
+
 supported() {
   case "$PLATFORM:$1" in
   Linux:clamav | Linux:rkhunter | Linux:chkrootkit | \
-    Linux:lynis | Linux:maldet | Darwin:clamav | Darwin:lynis)
+    Linux:lynis | Linux:maldet | Linux:trivy | \
+    Darwin:clamav | Darwin:lynis | Darwin:trivy)
     return 0
     ;;
   *)
@@ -118,17 +187,26 @@ supported() {
   esac
 }
 
-is_file_scanner() {
+uses_targets() {
   case "$1" in
-  clamav | maldet) return 0 ;;
-  *) return 1 ;;
+  clamav | maldet)
+    return 0
+    ;;
+  trivy)
+    [[ "$TRIVY_MODE" != image ]]
+    ;;
+  *)
+    return 1
+    ;;
   esac
 }
 
-ALL_SCANNERS=(clamav rkhunter chkrootkit lynis maldet)
+ALL_SCANNERS=(clamav rkhunter chkrootkit lynis maldet trivy)
 SCANNERS=()
 TARGETS=()
+IMAGES=()
 CLAMAV_EXCLUDES=()
+TRIVY_SKIP_DIRS=()
 
 SELECTION=
 SELECT_ALL=0
@@ -136,11 +214,23 @@ LIST_ONLY=0
 USE_SUDO=0
 VERBOSE=0
 DRY_RUN=0
+
 OUTPUT_DIR="$PWD/security-scan-reports"
 CLAMAV_DATABASE=
 MALDET_ENGINE=native
 LYNIS_BIN=
 LYNIS_PROFILE=
+
+TRIVY_MODE=filesystem
+TRIVY_SCANNERS=vuln
+TRIVY_SEVERITY=UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+TRIVY_IGNORE_UNFIXED=0
+TRIVY_IGNOREFILE=
+TRIVY_CONFIG=
+TRIVY_CACHE_DIR=
+TRIVY_BIN=
+TRIVY_OPTIONS_SET=0
+TRIVY_TIMEOUT=15m
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -149,23 +239,45 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
 
-  --scanners | --tools | --target | --output-dir | \
-    --clamav-database | --clamav-exclude-dir | \
-    --maldet-engine | --lynis-bin | --lynis-profile)
+  --scanners | --tools | --target | --image | --output-dir | \
+    --clamav-database | --clamav-exclude-dir | --maldet-engine | \
+    --lynis-bin | --lynis-profile | --trivy-mode | --trivy-scanners | \
+    --trivy-severity | --trivy-ignorefile | --trivy-config | \
+    --trivy-skip-dir | --trivy-cache-dir | --trivy-bin | --trivy-timeout)
     need_value "$@"
 
     case "$1" in
     --scanners | --tools) SELECTION="$2" ;;
     --target) TARGETS+=("$2") ;;
+    --image) IMAGES+=("$2") ;;
     --output-dir) OUTPUT_DIR="$2" ;;
     --clamav-database) CLAMAV_DATABASE="$2" ;;
     --clamav-exclude-dir) CLAMAV_EXCLUDES+=("$2") ;;
     --maldet-engine) MALDET_ENGINE="$2" ;;
     --lynis-bin) LYNIS_BIN="$2" ;;
     --lynis-profile) LYNIS_PROFILE="$2" ;;
+    --trivy-mode) TRIVY_MODE="$2" ;;
+    --trivy-scanners) TRIVY_SCANNERS="$2" ;;
+    --trivy-severity) TRIVY_SEVERITY="$2" ;;
+    --trivy-ignorefile) TRIVY_IGNOREFILE="$2" ;;
+    --trivy-config) TRIVY_CONFIG="$2" ;;
+    --trivy-skip-dir) TRIVY_SKIP_DIRS+=("$2") ;;
+    --trivy-cache-dir) TRIVY_CACHE_DIR="$2" ;;
+    --trivy-bin) TRIVY_BIN="$2" ;;
+    --trivy-timeout) TRIVY_TIMEOUT="$2" ;;
+    esac
+
+    case "$1" in
+    --trivy-*) TRIVY_OPTIONS_SET=1 ;;
     esac
 
     shift 2
+    ;;
+
+  --trivy-ignore-unfixed)
+    TRIVY_IGNORE_UNFIXED=1
+    TRIVY_OPTIONS_SET=1
+    shift
     ;;
 
   --list)
@@ -253,7 +365,7 @@ else
 
   for scanner in "${REQUESTED[@]}"; do
     case "$scanner" in
-    clamav | rkhunter | chkrootkit | lynis | maldet) ;;
+    clamav | rkhunter | chkrootkit | lynis | maldet | trivy) ;;
     *) die "Unknown scanner: $scanner" ;;
     esac
 
@@ -267,28 +379,67 @@ else
   done
 fi
 
-HAS_FILE_SCANNER=0
+case "$TRIVY_MODE" in
+filesystem | rootfs | image) ;;
+*) die "--trivy-mode must be filesystem, rootfs, or image." ;;
+esac
+
+HAS_TARGET_SCANNER=0
 HAS_CLAMAV=0
+HAS_TRIVY=0
 NEEDS_ROOT=0
 
 for scanner in "${SCANNERS[@]}"; do
-  if is_file_scanner "$scanner"; then
-    HAS_FILE_SCANNER=1
+  if uses_targets "$scanner"; then
+    HAS_TARGET_SCANNER=1
   fi
 
-  if [[ "$scanner" == clamav ]]; then
+  case "$scanner" in
+  clamav)
     HAS_CLAMAV=1
-  else
+    ;;
+  rkhunter | chkrootkit | lynis | maldet)
     NEEDS_ROOT=1
-  fi
+    ;;
+  trivy)
+    HAS_TRIVY=1
+
+    if [[ "$TRIVY_MODE" == rootfs ]]; then
+      NEEDS_ROOT=1
+    fi
+    ;;
+  esac
 done
 
-if [[ "$HAS_FILE_SCANNER" -eq 1 && ${#TARGETS[@]} -eq 0 ]]; then
-  die "Selected file scanners require at least one --target."
+if [[ "$HAS_TRIVY" -eq 0 ]]; then
+  if [[ "$TRIVY_OPTIONS_SET" -eq 1 || ${#IMAGES[@]} -gt 0 ]]; then
+    die "Trivy options and --image require selecting trivy."
+  fi
+else
+  validate_list "$TRIVY_SCANNERS" trivy-scanners
+  validate_list "$TRIVY_SEVERITY" trivy-severity
+
+  [[ "$TRIVY_TIMEOUT" =~ ^[1-9][0-9]*[smh]$ ]] ||
+    die "--trivy-timeout must be a positive duration such as 30s, 15m, or 1h."
+
+  if [[ "$TRIVY_MODE" == rootfs && "$PLATFORM" != Linux ]]; then
+    die "Trivy rootfs mode is enabled only on Linux."
+  fi
+
+  if [[ "$TRIVY_MODE" == image ]]; then
+    [[ ${#IMAGES[@]} -gt 0 ]] ||
+      die "Trivy image mode requires at least one --image."
+  elif [[ ${#IMAGES[@]} -gt 0 ]]; then
+    die "--image requires --trivy-mode image."
+  fi
 fi
 
-if [[ "$HAS_FILE_SCANNER" -eq 0 && ${#TARGETS[@]} -gt 0 ]]; then
-  die "--target applies only to ClamAV and Maldet."
+if [[ "$HAS_TARGET_SCANNER" -eq 1 && ${#TARGETS[@]} -eq 0 ]]; then
+  die "Selected filesystem scanners require at least one --target."
+fi
+
+if [[ "$HAS_TARGET_SCANNER" -eq 0 && ${#TARGETS[@]} -gt 0 ]]; then
+  die "--target is not consumed by the selected scanners/modes."
 fi
 
 for ((i = 0; i < ${#TARGETS[@]}; i++)); do
@@ -297,12 +448,19 @@ for ((i = 0; i < ${#TARGETS[@]}; i++)); do
   [[ -f "${TARGETS[$i]}" || -d "${TARGETS[$i]}" ]] ||
     die "Target is not an existing file or directory: ${TARGETS[$i]}"
 
-  ## Keep TSV summaries unambiguous.
-  case "${TARGETS[$i]}" in
-  *$'\t'* | *$'\n'* | *$'\r'*)
-    die "Target contains unsupported tab or newline characters."
-    ;;
-  esac
+  validate_summary_value "${TARGETS[$i]}"
+
+  if [[ "$HAS_TRIVY" -eq 1 && "$TRIVY_MODE" != image ]]; then
+    [[ -d "${TARGETS[$i]}" ]] ||
+      die "Trivy $TRIVY_MODE requires directory targets: ${TARGETS[$i]}"
+  fi
+done
+
+for image in "${IMAGES[@]}"; do
+  [[ -n "$image" && "$image" != -* ]] ||
+    die "Invalid image reference: $image"
+
+  validate_summary_value "$image"
 done
 
 case "$MALDET_ENGINE" in
@@ -315,13 +473,12 @@ if [[ "$HAS_CLAMAV" -eq 1 ]]; then
     if [[ "$EUID" -eq 0 &&
       -n "${SUDO_USER:-}" &&
       "$SUDO_USER" != root ]]; then
-      die "When launching this orchestrator with sudo, specify --clamav-database. Alternatively run as your normal user with --sudo."
+      die "When launching with sudo, specify --clamav-database. Alternatively run as your normal user with --sudo."
     fi
 
     CLAMAV_DATABASE="${XDG_CACHE_HOME:-$HOME/.cache}/security-scans/clamav/db"
   fi
 
-  ## Resolve before elevating any adapter.
   CLAMAV_DATABASE="$(absolute_path "$CLAMAV_DATABASE")"
 fi
 
@@ -331,7 +488,6 @@ if [[ -n "$LYNIS_BIN" ]]; then
   [[ -f "$LYNIS_BIN" && -x "$LYNIS_BIN" ]] ||
     die "Lynis executable is missing or not executable: $LYNIS_BIN"
 elif [[ "$PLATFORM" == Darwin ]] && have lynis; then
-  ## Preserve the Homebrew executable path before sudo changes PATH.
   LYNIS_BIN="$(absolute_path "$(command -v lynis)")"
 fi
 
@@ -342,19 +498,48 @@ if [[ -n "$LYNIS_PROFILE" ]]; then
     die "Lynis profile is missing or unreadable: $LYNIS_PROFILE"
 fi
 
+if [[ "$HAS_TRIVY" -eq 1 ]]; then
+  if [[ -n "$TRIVY_BIN" ]]; then
+    TRIVY_BIN="$(absolute_path "$TRIVY_BIN")"
+
+    [[ -f "$TRIVY_BIN" && -x "$TRIVY_BIN" ]] ||
+      die "Trivy executable is missing or not executable: $TRIVY_BIN"
+  elif have trivy; then
+    # Resolve before elevation changes the executable search path.
+    TRIVY_BIN="$(absolute_path "$(command -v trivy)")"
+  fi
+
+  if [[ -n "$TRIVY_CONFIG" ]]; then
+    TRIVY_CONFIG="$(absolute_path "$TRIVY_CONFIG")"
+
+    [[ -f "$TRIVY_CONFIG" && -r "$TRIVY_CONFIG" ]] ||
+      die "Trivy config is missing or unreadable: $TRIVY_CONFIG"
+  fi
+
+  if [[ -n "$TRIVY_IGNOREFILE" ]]; then
+    TRIVY_IGNOREFILE="$(absolute_path "$TRIVY_IGNOREFILE")"
+
+    [[ -f "$TRIVY_IGNOREFILE" && -r "$TRIVY_IGNOREFILE" ]] ||
+      die "Trivy ignore file is missing or unreadable: $TRIVY_IGNOREFILE"
+  fi
+
+  if [[ -n "$TRIVY_CACHE_DIR" ]]; then
+    TRIVY_CACHE_DIR="$(absolute_path "$TRIVY_CACHE_DIR")"
+  fi
+fi
+
 OUTPUT_DIR="$(absolute_path "$OUTPUT_DIR")"
 
 if [[ "$NEEDS_ROOT" -eq 1 &&
   "$EUID" -ne 0 &&
   "$USE_SUDO" -ne 1 ]]; then
-  die "Selected host/Maldet adapters require root. Run as your normal user with --sudo."
+  die "Selected adapters/modes require root. Run as your normal user with --sudo."
 fi
 
-if [[ "$USE_SUDO" -eq 1 && "$EUID" -ne 0 &&
+if [[ "$USE_SUDO" -eq 1 &&
+  "$EUID" -ne 0 &&
   "$DRY_RUN" -eq 0 ]]; then
   have sudo || die "--sudo requested, but sudo is unavailable."
-
-  ## Authenticate before starting the batch.
   sudo -v
 fi
 
@@ -362,6 +547,7 @@ RUN_DIR=
 SUMMARY=
 ERRORS=0
 HITS=0
+SECURITY_FINDINGS=0
 REVIEWS=0
 SUCCESSES=0
 JOB_NUMBER=0
@@ -380,13 +566,18 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
     printf 'architecture=%s\n' "$(uname -m)"
     printf 'scanners=%s\n' "${SCANNERS[*]}"
     printf 'sudo_requested=%s\n' "$USE_SUDO"
+
+    if [[ "$HAS_TRIVY" -eq 1 ]]; then
+      printf 'trivy_mode=%s\n' "$TRIVY_MODE"
+      printf 'trivy_scanners=%s\n' "$TRIVY_SCANNERS"
+      printf 'trivy_severity=%s\n' "$TRIVY_SEVERITY"
+      printf 'trivy_timeout=%s\n' "$TRIVY_TIMEOUT"
+    fi
   } >"$RUN_DIR/metadata.txt"
 
   log "Batch reports: $RUN_DIR"
 fi
 
-## Adapters remain responsible for their own native-tool locking.
-#  These traps stop the batch rather than continue after interruption.
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
@@ -397,12 +588,16 @@ classify_result() {
   JOB_STATUS=error
 
   case "$scanner:$rc" in
-  clamav:0 | maldet:0 | rkhunter:0)
+  clamav:0 | maldet:0 | rkhunter:0 | trivy:0)
     JOB_STATUS=completed
     ;;
 
   clamav:1 | maldet:1)
     JOB_STATUS=malware-hits
+    ;;
+
+  trivy:1)
+    JOB_STATUS=security-findings
     ;;
 
   rkhunter:3 | chkrootkit:3 | lynis:3)
@@ -416,6 +611,8 @@ run_job() {
   local scope="$2"
   local adapter="$SCRIPT_DIR/$scanner/scan.sh"
   local job_dir
+  local regex
+  local skip_dir
   local rc=0
   local writer_rc=0
   local -a args=()
@@ -467,10 +664,50 @@ run_job() {
       args+=(--profile "$LYNIS_PROFILE")
     fi
     ;;
+
+  trivy)
+    args+=(
+      --mode "$TRIVY_MODE"
+      --scanners "$TRIVY_SCANNERS"
+      --severity "$TRIVY_SEVERITY"
+      --timeout "$TRIVY_TIMEOUT"
+      --output-dir "$job_dir/reports"
+    )
+
+    if [[ "$TRIVY_MODE" == image ]]; then
+      args+=(--image "$scope")
+    else
+      args+=(--target "$scope")
+    fi
+
+    if [[ "$TRIVY_IGNORE_UNFIXED" -eq 1 ]]; then
+      args+=(--ignore-unfixed)
+    fi
+
+    if [[ -n "$TRIVY_BIN" ]]; then
+      args+=(--trivy-bin "$TRIVY_BIN")
+    fi
+
+    if [[ -n "$TRIVY_CONFIG" ]]; then
+      args+=(--config "$TRIVY_CONFIG")
+    fi
+
+    if [[ -n "$TRIVY_IGNOREFILE" ]]; then
+      args+=(--ignorefile "$TRIVY_IGNOREFILE")
+    fi
+
+    if [[ -n "$TRIVY_CACHE_DIR" ]]; then
+      args+=(--cache-dir "$TRIVY_CACHE_DIR")
+    fi
+
+    for skip_dir in "${TRIVY_SKIP_DIRS[@]}"; do
+      args+=(--skip-dir "$skip_dir")
+    done
+    ;;
   esac
 
-  ## Ask child adapters to include native terminal output in the
-  #  captured orchestration log. The parent controls live streaming.
+  # Preserve native output in the orchestration log.
+  # Parent --verbose controls whether it is streamed to the terminal.
   if [[ "$scanner" != clamav ]]; then
     args+=(--verbose)
   fi
@@ -512,7 +749,6 @@ run_job() {
     "${command[@]}" >"$job_dir/output.log" 2>&1 || rc=$?
   fi
 
-  ## Do not turn interruption into an ordinary adapter error.
   case "$rc" in
   130 | 143)
     log "Interrupted; partial reports remain in $RUN_DIR"
@@ -532,6 +768,9 @@ run_job() {
     ;;
   malware-hits)
     HITS=$((HITS + 1))
+    ;;
+  security-findings)
+    SECURITY_FINDINGS=$((SECURITY_FINDINGS + 1))
     ;;
   review-required)
     REVIEWS=$((REVIEWS + 1))
@@ -559,7 +798,11 @@ run_job() {
 }
 
 for scanner in "${SCANNERS[@]}"; do
-  if is_file_scanner "$scanner"; then
+  if [[ "$scanner" == trivy && "$TRIVY_MODE" == image ]]; then
+    for image in "${IMAGES[@]}"; do
+      run_job trivy "$image"
+    done
+  elif uses_targets "$scanner"; then
     for target in "${TARGETS[@]}"; do
       run_job "$scanner" "$target"
     done
@@ -580,16 +823,17 @@ fi
 
 printf '\n'
 printf 'Security scan batch summary\n'
-printf '  Jobs:             %s\n' "$JOB_NUMBER"
-printf '  Completed:        %s\n' "$SUCCESSES"
-printf '  Malware-hit jobs: %s\n' "$HITS"
-printf '  Review required:  %s\n' "$REVIEWS"
-printf '  Errors:           %s\n' "$ERRORS"
-printf '  Summary:          %s\n' "$SUMMARY"
+printf '  Jobs:                  %s\n' "$JOB_NUMBER"
+printf '  Completed:             %s\n' "$SUCCESSES"
+printf '  Malware-hit jobs:      %s\n' "$HITS"
+printf '  Security-finding jobs: %s\n' "$SECURITY_FINDINGS"
+printf '  Review required:       %s\n' "$REVIEWS"
+printf '  Errors:                %s\n' "$ERRORS"
+printf '  Summary:               %s\n' "$SUMMARY"
 
 if [[ "$ERRORS" -gt 0 ]]; then
   exit 2
-elif [[ "$HITS" -gt 0 ]]; then
+elif [[ "$HITS" -gt 0 || "$SECURITY_FINDINGS" -gt 0 ]]; then
   exit 1
 elif [[ "$REVIEWS" -gt 0 ]]; then
   exit 3
