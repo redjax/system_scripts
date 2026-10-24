@@ -1,0 +1,4 @@
+company
+companyname
+mycompany
+mycompanyname
