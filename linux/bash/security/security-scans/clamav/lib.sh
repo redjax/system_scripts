@@ -5,6 +5,11 @@ if [[ "${CLAMAV_SCRIPTS_LIB_LOADED:-0}" == 1 ]]; then
 fi
 CLAMAV_SCRIPTS_LIB_LOADED=1
 
+## Include standard administrative command directories.
+#  Keep existing entries so nonstandard installations remain discoverable.
+PATH="${PATH:-/usr/local/bin:/usr/bin:/bin}:/usr/local/sbin:/usr/sbin:/sbin"
+export PATH
+
 clam_log() {
   printf '[clamav] %s\n' "$*" >&2
 }

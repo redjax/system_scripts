@@ -47,6 +47,49 @@ Examples:
 EOF
 }
 
+ensure_apparmor_parser() {
+  [[ "$(uname -s)" == Linux ]] || return 0
+
+  ## Only request AppArmor tools when the kernel module is enabled.
+  if [[ ! -r /sys/module/apparmor/parameters/enabled ]] ||
+    ! grep -q '^Y' /sys/module/apparmor/parameters/enabled; then
+    return 0
+  fi
+
+  ## Match the profile layouts supported by configure.sh.
+  if [[ ! -f /etc/apparmor.d/usr.bin.freshclam &&
+    ! -f /etc/apparmor.d/usr.sbin.freshclam ]]; then
+    return 0
+  fi
+
+  if clam_have apparmor_parser; then
+    clam_log "AppArmor parser is already available."
+    return 0
+  fi
+
+  clam_log "FreshClam AppArmor configuration requires apparmor_parser."
+
+  if clam_have apt-get; then
+    clam_root apt-get update
+    clam_root apt-get install -y apparmor
+
+  elif clam_have zypper; then
+    clam_root zypper --non-interactive install apparmor-parser
+
+  elif clam_have pacman; then
+    clam_root pacman -S --needed --noconfirm apparmor
+
+  else
+    clam_die \
+      "Active FreshClam AppArmor profile found, but parser installation is not mapped for this package manager."
+  fi
+
+  if [[ "$DRY_RUN" -eq 0 ]]; then
+    clam_have apparmor_parser ||
+      clam_die "AppArmor package installation completed, but apparmor_parser is still unavailable."
+  fi
+}
+
 DRY_RUN=0
 DATABASE="$(clam_default_database)"
 DATABASE_OWNER="${SUDO_USER:-$(id -un)}"
@@ -182,6 +225,8 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
   clam_have freshclam ||
     clam_die "Installation completed, but freshclam is not on PATH."
 fi
+
+ensure_apparmor_parser
 
 CONFIG_ARGS=(
   --database "$DATABASE"

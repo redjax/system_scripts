@@ -263,8 +263,13 @@ if [[ "$APPARMOR_ACTIVE" -eq 1 ]]; then
       clam_die \
         "FreshClam profile lacks a recognized local include: $APPARMOR_PROFILE"
 
-    clam_have apparmor_parser ||
-      clam_die "AppArmor profile found, but apparmor_parser is unavailable."
+    if ! clam_have apparmor_parser; then
+      if [[ "$DRY_RUN" -eq 1 ]]; then
+        clam_log "Dry run: apparmor_parser must be installed before applying policy."
+      else
+        clam_die "AppArmor profile found, but apparmor_parser is unavailable. Run install.sh."
+      fi
+    fi
 
     if [[ -L "$APPARMOR_LOCAL" ]]; then
       clam_die "Refusing to edit a symlinked local profile: $APPARMOR_LOCAL"
