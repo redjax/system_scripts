@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: install.sh [options]
 
 Options:
@@ -39,35 +39,35 @@ VERBOSE=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --config | --output-dir)
-    rkh_need_value "$@"
+    --config | --output-dir)
+      rkh_need_value "$@"
 
-    case "$1" in
-    --config) CONFIG="$2" ;;
-    --output-dir) OUTPUT_DIR="$2" ;;
-    esac
+      case "$1" in
+        --config) CONFIG="$2" ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+      esac
 
-    shift 2
-    ;;
+      shift 2
+      ;;
 
-  --verbose)
-    VERBOSE=1
-    shift
-    ;;
+    --verbose)
+      VERBOSE=1
+      shift
+      ;;
 
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
 
-  -h | --help)
-    usage
-    exit 0
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  *)
-    rkh_die "Unknown option: $1"
-    ;;
+    *)
+      rkh_die "Unknown option: $1"
+      ;;
   esac
 done
 

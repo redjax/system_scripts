@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: scan.sh --target PATH [options]
 
 Target:
@@ -48,40 +48,40 @@ DRY_RUN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --target | --recent-days | --engine | --max-filesize-kb | \
-    --max-depth | --output-dir)
-    md_need_value "$@"
+    --target | --recent-days | --engine | --max-filesize-kb | \
+      --max-depth | --output-dir)
+      md_need_value "$@"
 
-    case "$1" in
-    --target) TARGET="$2" ;;
-    --recent-days) RECENT_DAYS="$2" ;;
-    --engine) ENGINE="$2" ;;
-    --max-filesize-kb) MAX_FILESIZE_KB="$2" ;;
-    --max-depth) MAX_DEPTH="$2" ;;
-    --output-dir) OUTPUT_DIR="$2" ;;
-    esac
+      case "$1" in
+        --target) TARGET="$2" ;;
+        --recent-days) RECENT_DAYS="$2" ;;
+        --engine) ENGINE="$2" ;;
+        --max-filesize-kb) MAX_FILESIZE_KB="$2" ;;
+        --max-depth) MAX_DEPTH="$2" ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+      esac
 
-    shift 2
-    ;;
+      shift 2
+      ;;
 
-  --verbose)
-    VERBOSE=1
-    shift
-    ;;
+    --verbose)
+      VERBOSE=1
+      shift
+      ;;
 
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
 
-  -h | --help)
-    usage
-    exit 0
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  *)
-    md_die "Unknown option: $1"
-    ;;
+    *)
+      md_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -99,21 +99,21 @@ OUTPUT_DIR="$(md_absolute_path "$OUTPUT_DIR")"
   md_die "Target must be an existing regular file or directory: $TARGET"
 
 case "$TARGET" in
-*'*'* | *'?'* | *'['* | *','* | *$'\n'* | *$'\r'*)
-  md_die "Target contains unsupported wildcard, list, or newline characters."
-  ;;
+  *'*'* | *'?'* | *'['* | *','* | *$'\n'* | *$'\r'*)
+    md_die "Target contains unsupported wildcard, list, or newline characters."
+    ;;
 esac
 
 case "$ENGINE" in
-native)
-  CLAMAV_ENABLED=0
-  ;;
-clamav)
-  CLAMAV_ENABLED=1
-  ;;
-*)
-  md_die "--engine must be native or clamav."
-  ;;
+  native)
+    CLAMAV_ENABLED=0
+    ;;
+  clamav)
+    CLAMAV_ENABLED=1
+    ;;
+  *)
+    md_die "--engine must be native or clamav."
+    ;;
 esac
 
 for number in "$MAX_FILESIZE_KB" "$MAX_DEPTH"; do
@@ -176,8 +176,8 @@ CMD[0]="$MALDET_BIN"
 mkdir -p "$OUTPUT_DIR"
 RUN_DIR="$(mktemp -d "$OUTPUT_DIR/scan.XXXXXXXX")"
 
-md_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
-printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
+md_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
+printf '%s\n' "$MALDET_VERSION_OUTPUT" > "$RUN_DIR/version.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -186,7 +186,7 @@ printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
   printf 'max_filesize_kib=%s\n' "$MAX_FILESIZE_KB"
   printf 'max_depth=%s\n' "$MAX_DEPTH"
   printf 'recent_days=%s\n' "${RECENT_DAYS:-all}"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
 md_log "Reports: $RUN_DIR"
 
@@ -197,18 +197,18 @@ if [[ "$MD_WRITER_RC" -ne 0 ]]; then
   EXIT_CODE=2
 else
   case "$MD_NATIVE_RC" in
-  0)
-    STATUS=no-hits-reported
-    EXIT_CODE=0
-    ;;
-  2)
-    STATUS=malware-hits
-    EXIT_CODE=1
-    ;;
-  *)
-    STATUS=scan-error
-    EXIT_CODE=2
-    ;;
+    0)
+      STATUS=no-hits-reported
+      EXIT_CODE=0
+      ;;
+    2)
+      STATUS=malware-hits
+      EXIT_CODE=1
+      ;;
+    *)
+      STATUS=scan-error
+      EXIT_CODE=2
+      ;;
   esac
 fi
 
@@ -216,7 +216,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\n'
   printf 'maldet\t%s\t%s\t%s\n' \
     "$STATUS" "$MD_NATIVE_RC" "$MD_WRITER_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 md_log "Result: $STATUS"
 md_log "Native exit code: $MD_NATIVE_RC"

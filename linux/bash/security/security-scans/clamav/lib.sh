@@ -15,7 +15,7 @@ clam_die() {
 }
 
 clam_have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 clam_need_value() {
@@ -23,7 +23,7 @@ clam_need_value() {
     clam_die "Missing value for $1"
 
   case "$2" in
-  --*) clam_die "Missing value for $1" ;;
+    --*) clam_die "Missing value for $1" ;;
   esac
 }
 
@@ -34,8 +34,8 @@ clam_default_database() {
 
 clam_absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 

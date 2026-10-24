@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   scan.sh --mode filesystem --target DIR [options]
   scan.sh --mode rootfs --target DIR [options]
@@ -71,76 +71,76 @@ TIMEOUT=15m
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --mode | --target | --image | --scanners | --severity | \
-    --ignorefile | --config | --trivy-bin | --cache-dir | \
-    --output-dir | --skip-dir | --timeout)
-    tv_need_value "$@"
+    --mode | --target | --image | --scanners | --severity | \
+      --ignorefile | --config | --trivy-bin | --cache-dir | \
+      --output-dir | --skip-dir | --timeout)
+      tv_need_value "$@"
 
-    case "$1" in
-    --mode) MODE="$2" ;;
-    --target) TARGET="$2" ;;
-    --image) IMAGE="$2" ;;
-    --scanners) SCANNERS="$2" ;;
-    --severity) SEVERITY="$2" ;;
-    --ignorefile) IGNOREFILE="$2" ;;
-    --config) CONFIG="$2" ;;
-    --trivy-bin) TRIVY_BIN="$2" ;;
-    --cache-dir) CACHE_DIR="$2" ;;
-    --output-dir) OUTPUT_DIR="$2" ;;
-    --skip-dir) SKIP_DIRS+=("$2") ;;
-    --timeout) TIMEOUT="$2" ;;
-    esac
+      case "$1" in
+        --mode) MODE="$2" ;;
+        --target) TARGET="$2" ;;
+        --image) IMAGE="$2" ;;
+        --scanners) SCANNERS="$2" ;;
+        --severity) SEVERITY="$2" ;;
+        --ignorefile) IGNOREFILE="$2" ;;
+        --config) CONFIG="$2" ;;
+        --trivy-bin) TRIVY_BIN="$2" ;;
+        --cache-dir) CACHE_DIR="$2" ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+        --skip-dir) SKIP_DIRS+=("$2") ;;
+        --timeout) TIMEOUT="$2" ;;
+      esac
 
-    shift 2
-    ;;
-  --ignore-unfixed)
-    IGNORE_UNFIXED=1
-    shift
-    ;;
-  --verbose)
-    VERBOSE=1
-    shift
-    ;;
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    tv_die "Unknown option: $1"
-    ;;
+      shift 2
+      ;;
+    --ignore-unfixed)
+      IGNORE_UNFIXED=1
+      shift
+      ;;
+    --verbose)
+      VERBOSE=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      tv_die "Unknown option: $1"
+      ;;
   esac
 done
 
 tv_require_platform
 
 case "$MODE" in
-filesystem | rootfs)
-  [[ -n "$TARGET" && -z "$IMAGE" ]] ||
-    tv_die "$MODE requires --target and does not accept --image."
+  filesystem | rootfs)
+    [[ -n "$TARGET" && -z "$IMAGE" ]] ||
+      tv_die "$MODE requires --target and does not accept --image."
 
-  TARGET="$(tv_absolute_path "$TARGET")"
-  [[ -d "$TARGET" ]] || tv_die "Target directory does not exist: $TARGET"
+    TARGET="$(tv_absolute_path "$TARGET")"
+    [[ -d "$TARGET" ]] || tv_die "Target directory does not exist: $TARGET"
 
-  if [[ "$MODE" == rootfs && "$(uname -s)" != Linux ]]; then
-    tv_die "This adapter enables rootfs mode on Linux only."
-  fi
+    if [[ "$MODE" == rootfs && "$(uname -s)" != Linux ]]; then
+      tv_die "This adapter enables rootfs mode on Linux only."
+    fi
 
-  SCAN_TARGET="$TARGET"
-  ;;
-image)
-  [[ -n "$IMAGE" && -z "$TARGET" ]] ||
-    tv_die "Image mode requires --image and does not accept --target."
+    SCAN_TARGET="$TARGET"
+    ;;
+  image)
+    [[ -n "$IMAGE" && -z "$TARGET" ]] ||
+      tv_die "Image mode requires --image and does not accept --target."
 
-  [[ "$IMAGE" != -* ]] || tv_die "Invalid image reference."
-  SCAN_TARGET="$IMAGE"
-  ;;
-*)
-  tv_die "Unknown mode: $MODE"
-  ;;
+    [[ "$IMAGE" != -* ]] || tv_die "Invalid image reference."
+    SCAN_TARGET="$IMAGE"
+    ;;
+  *)
+    tv_die "Unknown mode: $MODE"
+    ;;
 esac
 
 validate_list() {
@@ -150,19 +150,19 @@ validate_list() {
   local -a items=()
 
   case "$list" in
-  "" | ,* | *, | *,,*) tv_die "Invalid $kind list: $list" ;;
+    "" | ,* | *, | *,,*) tv_die "Invalid $kind list: $list" ;;
   esac
 
-  IFS=',' read -r -a items <<<"$list"
+  IFS=',' read -r -a items <<< "$list"
 
   for item in "${items[@]}"; do
     case "$kind:$item" in
-    scanners:vuln | scanners:secret | scanners:misconfig | \
-      severity:UNKNOWN | severity:LOW | severity:MEDIUM | \
-      severity:HIGH | severity:CRITICAL) ;;
-    *)
-      tv_die "Unsupported $kind value: $item"
-      ;;
+      scanners:vuln | scanners:secret | scanners:misconfig | \
+        severity:UNKNOWN | severity:LOW | severity:MEDIUM | \
+        severity:HIGH | severity:CRITICAL) ;;
+      *)
+        tv_die "Unsupported $kind value: $item"
+        ;;
     esac
   done
 }
@@ -222,7 +222,7 @@ else
     CONFIG_PATH="$CONFIG"
   else
     CONFIG_PATH="$RUN_DIR/empty-config.yaml"
-    printf '{}\n' >"$CONFIG_PATH"
+    printf '{}\n' > "$CONFIG_PATH"
   fi
 fi
 
@@ -260,7 +260,7 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
   exit 0
 fi
 
-tv_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
+tv_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -270,9 +270,9 @@ tv_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
   printf 'severity=%s\n' "$SEVERITY"
   printf 'ignore_unfixed=%s\n' "$IGNORE_UNFIXED"
   printf 'timeout=%s\n' "$TIMEOUT"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
-"$TRIVY_BIN" --version >"$RUN_DIR/version.txt" 2>&1
+"$TRIVY_BIN" --version > "$RUN_DIR/version.txt" 2>&1
 
 tv_log "Mode: $MODE"
 tv_log "Reports: $RUN_DIR"
@@ -289,8 +289,8 @@ if [[ "$VERBOSE" -eq 1 ]]; then
   NATIVE_RC="${PIPE_CODES[0]}"
   WRITER_RC="${PIPE_CODES[1]}"
 else
-  : >"$RUN_DIR/output.log"
-  "${CMD[@]}" >"$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
+  : > "$RUN_DIR/output.log"
+  "${CMD[@]}" > "$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
 fi
 
 CONVERT_RC=0
@@ -305,7 +305,7 @@ if [[ "$NATIVE_RC" -eq 0 || "$NATIVE_RC" -eq 10 ]] &&
     --format table \
     --output "$RUN_DIR/report.txt" \
     "$RUN_DIR/report.json" \
-    >"$RUN_DIR/convert.log" 2>&1 || CONVERT_RC=$?
+    > "$RUN_DIR/convert.log" 2>&1 || CONVERT_RC=$?
 else
   CONVERT_RC=1
 fi
@@ -315,18 +315,18 @@ if [[ "$WRITER_RC" -ne 0 || "$CONVERT_RC" -ne 0 ]]; then
   EXIT_CODE=2
 else
   case "$NATIVE_RC" in
-  0)
-    STATUS=no-selected-findings
-    EXIT_CODE=0
-    ;;
-  10)
-    STATUS=findings-detected
-    EXIT_CODE=1
-    ;;
-  *)
-    STATUS=scan-error
-    EXIT_CODE=2
-    ;;
+    0)
+      STATUS=no-selected-findings
+      EXIT_CODE=0
+      ;;
+    10)
+      STATUS=findings-detected
+      EXIT_CODE=1
+      ;;
+    *)
+      STATUS=scan-error
+      EXIT_CODE=2
+      ;;
   esac
 fi
 
@@ -340,7 +340,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\tconvert_exit_code\n'
   printf 'trivy\t%s\t%s\t%s\t%s\n' \
     "$STATUS" "$NATIVE_RC" "$WRITER_RC" "$CONVERT_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 if [[ "$VERBOSE" -eq 1 && -f "$RUN_DIR/report.txt" ]]; then
   cat "$RUN_DIR/report.txt"

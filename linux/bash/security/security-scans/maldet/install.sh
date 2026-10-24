@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: install.sh [options]
 
 Options:
@@ -51,35 +51,35 @@ DRY_RUN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --version | --output-dir)
-    md_need_value "$@"
+    --version | --output-dir)
+      md_need_value "$@"
 
-    case "$1" in
-    --version) VERSION="$2" ;;
-    --output-dir) OUTPUT_DIR="$2" ;;
-    esac
+      case "$1" in
+        --version) VERSION="$2" ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+      esac
 
-    shift 2
-    ;;
+      shift 2
+      ;;
 
-  --accept-upstream-install)
-    ACCEPT=1
-    shift
-    ;;
+    --accept-upstream-install)
+      ACCEPT=1
+      shift
+      ;;
 
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
 
-  -h | --help)
-    usage
-    exit 0
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  *)
-    md_die "Unknown option: $1"
-    ;;
+    *)
+      md_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -195,31 +195,31 @@ fi
 
 install_dependencies() {
   case "$PACKAGE_MANAGER" in
-  apt)
-    apt-get update
-    apt-get install -y "${PACKAGES[@]}"
-    ;;
-  dnf)
-    dnf install -y "${PACKAGES[@]}"
-    ;;
-  yum)
-    yum install -y "${PACKAGES[@]}"
-    ;;
-  zypper)
-    zypper --non-interactive install "${PACKAGES[@]}"
-    ;;
-  pacman)
-    pacman -S --needed --noconfirm "${PACKAGES[@]}"
-    ;;
-  apk)
-    apk add "${PACKAGES[@]}"
-    ;;
-  "")
-    return 0
-    ;;
-  *)
-    md_die "Unsupported package manager: $PACKAGE_MANAGER"
-    ;;
+    apt)
+      apt-get update
+      apt-get install -y "${PACKAGES[@]}"
+      ;;
+    dnf)
+      dnf install -y "${PACKAGES[@]}"
+      ;;
+    yum)
+      yum install -y "${PACKAGES[@]}"
+      ;;
+    zypper)
+      zypper --non-interactive install "${PACKAGES[@]}"
+      ;;
+    pacman)
+      pacman -S --needed --noconfirm "${PACKAGES[@]}"
+      ;;
+    apk)
+      apk add "${PACKAGES[@]}"
+      ;;
+    "")
+      return 0
+      ;;
+    *)
+      md_die "Unsupported package manager: $PACKAGE_MANAGER"
+      ;;
   esac
 }
 
@@ -263,7 +263,7 @@ fi
 LOCK_DIR=/run/security-scans-maldet-install.lock
 WORK_DIR=
 
-if ! mkdir -m 0700 "$LOCK_DIR" 2>/dev/null; then
+if ! mkdir -m 0700 "$LOCK_DIR" 2> /dev/null; then
   md_die "Installer lock exists: $LOCK_DIR. Check for another installation."
 fi
 
@@ -272,7 +272,7 @@ cleanup() {
     rm -rf -- "$WORK_DIR"
   fi
 
-  rmdir "$LOCK_DIR" 2>/dev/null || true
+  rmdir "$LOCK_DIR" 2> /dev/null || true
 }
 
 trap cleanup EXIT
@@ -287,7 +287,7 @@ if [[ ${#MISSING_COMMANDS[@]} -gt 0 ]]; then
   md_log "Dependency report: $RUN_DIR/dependencies.log"
 
   ## Run directly so failure inside the function stops the installer.
-  install_dependencies >"$RUN_DIR/dependencies.log" 2>&1
+  install_dependencies > "$RUN_DIR/dependencies.log" 2>&1
 fi
 
 for dependency in "${REQUIRED_COMMANDS[@]}"; do
@@ -307,7 +307,7 @@ git clone \
   --single-branch \
   "$REPOSITORY" \
   "$SOURCE_DIR" \
-  >"$RUN_DIR/download.log" 2>&1
+  > "$RUN_DIR/download.log" 2>&1
 
 for required_file in \
   install.sh \
@@ -329,7 +329,7 @@ grep -Eq '^[[:space:]]*lmd_version="2\.' \
   printf 'commit=%s\n' "$(git -C "$SOURCE_DIR" rev-parse HEAD)"
   printf 'installer_sha256=%s\n' \
     "$(sha256sum "$SOURCE_DIR/install.sh" | awk '{print $1}')"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
 md_log "Running upstream installer."
 md_log "Output: $RUN_DIR/output.log"
@@ -351,7 +351,7 @@ cd /
 md_find_binary
 md_require_v2
 
-printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
+printf '%s\n' "$MALDET_VERSION_OUTPUT" > "$RUN_DIR/version.txt"
 
 md_log "Installation complete."
 md_log "Reports: $RUN_DIR"

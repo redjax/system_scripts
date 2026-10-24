@@ -26,8 +26,8 @@ die() {
 
 absolute_path() {
   case "$1" in
-  /*) printf '%s\n' "$1" ;;
-  *) printf '%s/%s\n' "$PWD" "$1" ;;
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$PWD" "$1" ;;
   esac
 }
 
@@ -37,7 +37,7 @@ escape_regex() {
 }
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: easy-scan.sh [options]
 
 Run the configured security-scanning preset.
@@ -139,34 +139,34 @@ DRY_RUN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
 
-  --verbose)
-    VERBOSE=1
-    shift
-    ;;
+    --verbose)
+      VERBOSE=1
+      shift
+      ;;
 
-  -h | --help)
-    usage
-    exit 0
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  *)
-    die "Unknown option: $1. Use run-scans.sh for custom scan flags."
-    ;;
+    *)
+      die "Unknown option: $1. Use run-scans.sh for custom scan flags."
+      ;;
   esac
 done
 
 PLATFORM="$(uname -s)"
 
 case "$PLATFORM" in
-Linux | Darwin) ;;
-*)
-  die "Unsupported platform: $PLATFORM"
-  ;;
+  Linux | Darwin) ;;
+  *)
+    die "Unsupported platform: $PLATFORM"
+    ;;
 esac
 
 [[ -f "$ORCHESTRATOR" ]] ||
@@ -213,20 +213,20 @@ scanner_selected() {
 
   if [[ -z "$SCANNERS" ]]; then
     case "$PLATFORM:$name" in
-    Linux:clamav | Linux:rkhunter | Linux:chkrootkit | \
-      Linux:lynis | Linux:maldet | Linux:trivy | \
-      Darwin:clamav | Darwin:lynis | Darwin:trivy)
-      return 0
-      ;;
-    *)
-      return 1
-      ;;
+      Linux:clamav | Linux:rkhunter | Linux:chkrootkit | \
+        Linux:lynis | Linux:maldet | Linux:trivy | \
+        Darwin:clamav | Darwin:lynis | Darwin:trivy)
+        return 0
+        ;;
+      *)
+        return 1
+        ;;
     esac
   fi
 
   case ",$SCANNERS," in
-  *",$name,"*) return 0 ;;
-  *) return 1 ;;
+    *",$name,"*) return 0 ;;
+    *) return 1 ;;
   esac
 }
 
@@ -276,13 +276,13 @@ fi
 ## Resolve user-visible installations before adapter elevation changes PATH.
 if scanner_selected lynis &&
   [[ -z "$LYNIS_BIN" ]] &&
-  command -v lynis >/dev/null 2>&1; then
+  command -v lynis > /dev/null 2>&1; then
   LYNIS_BIN="$(command -v lynis)"
 fi
 
 if scanner_selected trivy &&
   [[ -z "$TRIVY_BIN" ]] &&
-  command -v trivy >/dev/null 2>&1; then
+  command -v trivy > /dev/null 2>&1; then
   TRIVY_BIN="$(command -v trivy)"
 fi
 

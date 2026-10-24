@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: scan.sh [options]
 
 Scan options:
@@ -56,63 +56,63 @@ TESTS=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --test | --root | --trusted-path | --work-dir | --output-dir)
-    chk_need_value "$@"
+    --test | --root | --trusted-path | --work-dir | --output-dir)
+      chk_need_value "$@"
 
-    case "$1" in
-    --test)
-      TESTS+=("$2")
+      case "$1" in
+        --test)
+          TESTS+=("$2")
+          ;;
+        --root)
+          ROOT_DIR="$2"
+          ;;
+        --trusted-path)
+          TRUSTED_PATH="$2"
+          ;;
+        --work-dir)
+          WORK_DIR="$2"
+          ;;
+        --output-dir)
+          OUTPUT_DIR="$2"
+          ;;
+      esac
+
+      shift 2
       ;;
-    --root)
-      ROOT_DIR="$2"
+
+    --skip-nfs)
+      SKIP_NFS=1
+      shift
       ;;
-    --trusted-path)
-      TRUSTED_PATH="$2"
+
+    --expert)
+      EXPERT=1
+      shift
       ;;
-    --work-dir)
-      WORK_DIR="$2"
+
+    --verbose)
+      VERBOSE=1
+      shift
       ;;
-    --output-dir)
-      OUTPUT_DIR="$2"
+
+    --list-tests)
+      LIST_TESTS=1
+      shift
       ;;
-    esac
 
-    shift 2
-    ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
 
-  --skip-nfs)
-    SKIP_NFS=1
-    shift
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  --expert)
-    EXPERT=1
-    shift
-    ;;
-
-  --verbose)
-    VERBOSE=1
-    shift
-    ;;
-
-  --list-tests)
-    LIST_TESTS=1
-    shift
-    ;;
-
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-
-  -h | --help)
-    usage
-    exit 0
-    ;;
-
-  *)
-    chk_die "Unknown option: $1"
-    ;;
+    *)
+      chk_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -132,21 +132,21 @@ OUTPUT_DIR="$(chk_absolute_path "$OUTPUT_DIR")"
 ## Permit simple test identifiers only, never option injection.
 for test_name in "${TESTS[@]}"; do
   case "$test_name" in
-  "" | -* | *[!a-zA-Z0-9_.-]*)
-    chk_die "Invalid test name: $test_name"
-    ;;
+    "" | -* | *[!a-zA-Z0-9_.-]*)
+      chk_die "Invalid test name: $test_name"
+      ;;
   esac
 done
 
 if [[ -n "$TRUSTED_PATH" ]]; then
   case "$TRUSTED_PATH" in
-  :* | *: | *::*)
-    chk_die "--trusted-path cannot contain empty directory entries."
-    ;;
+    :* | *: | *::*)
+      chk_die "--trusted-path cannot contain empty directory entries."
+      ;;
   esac
 
   TRUSTED_DIRS=()
-  IFS=':' read -r -a TRUSTED_DIRS <<<"$TRUSTED_PATH"
+  IFS=':' read -r -a TRUSTED_DIRS <<< "$TRUSTED_PATH"
 
   for trusted_dir in "${TRUSTED_DIRS[@]}"; do
     [[ "$trusted_dir" == /* && -d "$trusted_dir" ]] ||
@@ -221,7 +221,7 @@ fi
 
 LOCK_DIR=/run/security-scans-chkrootkit.lock
 
-if ! mkdir -m 0700 "$LOCK_DIR" 2>/dev/null; then
+if ! mkdir -m 0700 "$LOCK_DIR" 2> /dev/null; then
   chk_die "Suite lock exists: $LOCK_DIR. Check for another running scan."
 fi
 
@@ -232,7 +232,7 @@ trap 'exit 143' TERM
 mkdir -p "$OUTPUT_DIR"
 RUN_DIR="$(mktemp -d "$OUTPUT_DIR/scan.XXXXXXXX")"
 
-chk_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
+chk_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -242,13 +242,13 @@ chk_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
   printf 'root=%s\n' "$ROOT_DIR"
   printf 'working_directory=%s\n' "$WORK_DIR"
   printf 'trusted_path=%s\n' "${TRUSTED_PATH:-native-default}"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
 ## Version switches can have package-specific exit behavior.
 VERSION_RC=0
-"$SCANNER" -V >"$RUN_DIR/version.txt" 2>&1 || VERSION_RC=$?
+"$SCANNER" -V > "$RUN_DIR/version.txt" 2>&1 || VERSION_RC=$?
 printf 'version_command_exit_code=%s\n' "$VERSION_RC" \
-  >>"$RUN_DIR/metadata.txt"
+  >> "$RUN_DIR/metadata.txt"
 
 chk_log "Reports: $RUN_DIR"
 chk_log "Working directory: $WORK_DIR"
@@ -267,8 +267,8 @@ if [[ "$VERBOSE" -eq 1 ]]; then
   NATIVE_RC="${PIPE_CODES[0]}"
   WRITER_RC="${PIPE_CODES[1]}"
 else
-  : >"$RUN_DIR/output.log"
-  "${CMD[@]}" >"$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
+  : > "$RUN_DIR/output.log"
+  "${CMD[@]}" > "$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
 fi
 
 if [[ "$WRITER_RC" -ne 0 ]]; then
@@ -286,7 +286,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\n'
   printf 'chkrootkit\t%s\t%s\t%s\n' \
     "$STATUS" "$NATIVE_RC" "$WRITER_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 chk_log "Result: $STATUS"
 chk_log "Native exit code: $NATIVE_RC"

@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   tail-clamav-logs.sh --log-file FILE [--lines N]
   tail-clamav-logs.sh --journal-unit UNIT [--lines N]
@@ -29,24 +29,24 @@ LINES=50
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  -l | --log-file | --journal-unit | -n | --lines)
-    clam_need_value "$@"
+    -l | --log-file | --journal-unit | -n | --lines)
+      clam_need_value "$@"
 
-    case "$1" in
-    -l | --log-file) LOG_FILE="$2" ;;
-    --journal-unit) JOURNAL_UNIT="$2" ;;
-    -n | --lines) LINES="$2" ;;
-    esac
+      case "$1" in
+        -l | --log-file) LOG_FILE="$2" ;;
+        --journal-unit) JOURNAL_UNIT="$2" ;;
+        -n | --lines) LINES="$2" ;;
+      esac
 
-    shift 2
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  *)
-    clam_die "Unknown option: $1"
-    ;;
+      shift 2
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      clam_die "Unknown option: $1"
+      ;;
   esac
 done
 

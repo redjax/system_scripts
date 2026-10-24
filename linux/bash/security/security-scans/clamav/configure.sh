@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: configure.sh [options]
 
 Options:
@@ -61,34 +61,34 @@ DATABASE_OWNER="${SUDO_USER:-$(id -un)}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --database | --owner)
-    clam_need_value "$@"
+    --database | --owner)
+      clam_need_value "$@"
 
-    case "$1" in
-    --database)
-      DATABASE="$2"
+      case "$1" in
+        --database)
+          DATABASE="$2"
+          ;;
+        --owner)
+          DATABASE_OWNER="$2"
+          ;;
+      esac
+
+      shift 2
       ;;
-    --owner)
-      DATABASE_OWNER="$2"
+
+    --dry-run)
+      DRY_RUN=1
+      shift
       ;;
-    esac
 
-    shift 2
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
 
-  --dry-run)
-    DRY_RUN=1
-    shift
-    ;;
-
-  -h | --help)
-    usage
-    exit 0
-    ;;
-
-  *)
-    clam_die "Unknown option: $1"
-    ;;
+    *)
+      clam_die "Unknown option: $1"
+      ;;
   esac
 done
 
@@ -106,10 +106,10 @@ fi
 PLATFORM="$(uname -s)"
 
 case "$PLATFORM" in
-Linux | Darwin) ;;
-*)
-  clam_die "Unsupported platform: $PLATFORM"
-  ;;
+  Linux | Darwin) ;;
+  *)
+    clam_die "Unsupported platform: $PLATFORM"
+    ;;
 esac
 
 ## Configuration needs access to system policy files on Linux.
@@ -127,18 +127,18 @@ done
 
 ## Restrict policy paths to avoid injecting profile/configuration syntax.
 case "$DATABASE" in
-"" | / | *[!a-zA-Z0-9_./-]*)
-  clam_die "Database path must contain only letters, digits, _, ., /, and -."
-  ;;
+  "" | / | *[!a-zA-Z0-9_./-]*)
+    clam_die "Database path must contain only letters, digits, _, ., /, and -."
+    ;;
 esac
 
 case "$DATABASE/" in
-*//* | */./* | */../*)
-  clam_die "Use a normalized absolute database path without //, /./, or /../."
-  ;;
+  *//* | */./* | */../*)
+    clam_die "Use a normalized absolute database path without //, /./, or /../."
+    ;;
 esac
 
-id "$DATABASE_OWNER" >/dev/null 2>&1 ||
+id "$DATABASE_OWNER" > /dev/null 2>&1 ||
   clam_die "Unknown database owner: $DATABASE_OWNER"
 
 OWNER_UID="$(id -u "$DATABASE_OWNER")"
@@ -192,11 +192,11 @@ fi
 ## Complete security-policy preflight before making changes.
 if [[ "$SELINUX_ACTIVE" -eq 1 ]]; then
   case "$DATABASE" in
-  /var/lib/security-scans/*) ;;
-  *)
-    clam_die \
-      "SELinux is enabled. Use --database /var/lib/security-scans/clamav/db."
-    ;;
+    /var/lib/security-scans/*) ;;
+    *)
+      clam_die \
+        "SELinux is enabled. Use --database /var/lib/security-scans/clamav/db."
+      ;;
   esac
 
   clam_have semanage ||
@@ -232,7 +232,7 @@ if [[ "$SELINUX_ACTIVE" -eq 1 ]]; then
     while IFS= read -r existing_type; do
       [[ "$existing_type" == antivirus_db_t ]] ||
         clam_die "Conflicting SELinux mapping exists for: $DB_REGEX"
-    done <<<"$EXISTING_TYPES"
+    done <<< "$EXISTING_TYPES"
 
     SELINUX_MAPPING_EXISTS=1
   fi
@@ -315,11 +315,11 @@ if [[ -n "$APPARMOR_PROFILE" ]]; then
     fi
 
     if ! grep -Fqx "$RULE_DIR" "$APPARMOR_LOCAL"; then
-      printf '\n%s\n' "$RULE_DIR" >>"$APPARMOR_LOCAL"
+      printf '\n%s\n' "$RULE_DIR" >> "$APPARMOR_LOCAL"
     fi
 
     if ! grep -Fqx "$RULE_FILES" "$APPARMOR_LOCAL"; then
-      printf '%s\n' "$RULE_FILES" >>"$APPARMOR_LOCAL"
+      printf '%s\n' "$RULE_FILES" >> "$APPARMOR_LOCAL"
     fi
 
     apparmor_parser -r "$APPARMOR_PROFILE"
