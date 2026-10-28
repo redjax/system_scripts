@@ -158,11 +158,16 @@ if [[ -n "$EXT_FILE" ]]; then
   fi
 fi
 
+
 echo "[INFO] Scanning extensions from: $EXT_DIR"
 echo "[INFO] Writing report to: $OUT/report.json"
 
-set +e
-docker run --rm \
+## Show findings in terminal.
+echo
+echo "[ Scan findings ]"
+echo
+
+if ! docker run --rm \
   --read-only \
   --cap-drop=ALL \
   --security-opt=no-new-privileges \
@@ -172,23 +177,34 @@ docker run --rm \
   -v "$EXT_DIR:/tmp/.vscode/extensions:ro" \
   -v "$OUT/cache:/tmp/.vsix-scan/cache" \
   "$IMG" \
+  scan-all; then
+  echo "[ERROR] Human-readable scan failed." >&2
+  exit 1
+fi
+
+## Second run to output findings to file.
+echo
+echo "[INFO] Generating JSON report"
+
+if docker run --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+  -e HOME=/tmp \
+  -v "$EXT_DIR:/tmp/.vscode/extensions:ro" \
+  -v "$OUT/cache:/tmp/.vsix-scan/cache" \
+  "$IMG" \
   scan-all --format json \
-  2> >(tee "$OUT/scan.log" >&2) \
-  | tee "$OUT/report.json"
-
-status=( "${PIPESTATUS[@]}" )
-set -e
-
-if [[ "${status[0]}" -ne 0 ]]; then
-  echo "[ERROR] Docker scan failed (exit code ${status[0]})." >&2
-  exit "${status[0]}"
+  > "$OUT/report.json" \
+  2> >(tee "$OUT/scan.log" >&2); then
+  echo "[INFO] Scan finished."
+else
+  rc=$?
+  echo "[ERROR] JSON report generation failed (exit code $rc)." >&2
+  exit "$rc"
 fi
 
-if [[ "${status[1]}" -ne 0 ]]; then
-  echo "[ERROR] Failed writing the report (exit code ${status[1]})." >&2
-  exit "${status[1]}"
-fi
-
-echo "[INFO] Scan finished."
 echo "[INFO] Report saved to: $OUT/report.json"
 echo "[INFO] Log saved to: $OUT/scan.log"
+
