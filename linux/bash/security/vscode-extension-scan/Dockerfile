@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:26-slim
 
 RUN npm install --global vsix-scan \
   && npm cache clean --force
