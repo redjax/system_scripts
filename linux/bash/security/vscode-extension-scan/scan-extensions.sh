@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-IMG="vsix-scan:local"
+IMG_NAME="vsix-scan"
+TAG="local"
 EXT_FILE=""
 EXT_DIR="${VSCODE_EXTENSIONS_DIR:-$HOME/.vscode/extensions}"
 
@@ -15,6 +16,8 @@ Usage: $(basename "$0") [OPTIONS]
 Scan installed VS Code extensions using Docker.
 
 Options:
+  -n, --name             NAME  Docker image name (default: vsix-scan)
+  -t, --tag              TAG   Docker image tag (default: local)
   -f, --extensions-file  FILE  Optional exported inventory file
   -e, --extensions-dir   DIR   Extensions directory to scan. (default: ${EXT_DIR})
   -o, --output-dir       DIR   Report output directory. (default: ${OUT})
@@ -38,6 +41,24 @@ EOF
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+        -n|--name)
+      if [[ $# -lt 2 || -z "$2" ]]; then
+        echo "[ERROR] $1 requires an image name." >&2
+        usage >&2
+        exit 2
+      fi
+      IMG_NAME="$2"
+      shift 2
+      ;;
+    -t|--tag)
+      if [[ $# -lt 2 || -z "$2" ]]; then
+        echo "[ERROR] $1 requires a tag." >&2
+        usage >&2
+        exit 2
+      fi
+      TAG="$2"
+      shift 2
+      ;;
     -f|--extensions-file)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a filename." >&2
@@ -92,13 +113,21 @@ if [[ $# -gt 0 ]]; then
   exit 2
 fi
 
-# Resolve relative paths against the caller's current directory.
+## Resolve relative paths against the caller's current directory.
 [[ "$OUT" = /* ]] || OUT="$PWD/$OUT"
 [[ "$EXT_DIR" = /* ]] || EXT_DIR="$PWD/$EXT_DIR"
 
 if [[ -n "$EXT_FILE" && "$EXT_FILE" != /* ]]; then
   EXT_FILE="$PWD/$EXT_FILE"
 fi
+
+if [[ -z "$IMG_NAME" || -z "$TAG" ]]; then
+  echo "[ERROR] Image name and tag must not be empty." >&2
+  usage >&2
+  exit 2
+fi
+
+IMG="${IMG_NAME}:${TAG}"
 
 if ! docker image inspect "$IMG" >/dev/null 2>&1; then
   echo "[ERROR] Image not found: $IMG" >&2
@@ -119,8 +148,14 @@ fi
 mkdir -p "$OUT/cache"
 
 if [[ -n "$EXT_FILE" ]]; then
-  cp -- "$EXT_FILE" "$OUT/extensions.txt"
-  echo "[INFO] Inventory copied to: $OUT/extensions.txt"
+  DEST="$OUT/extensions.txt"
+
+  if [[ "$(realpath -e -- "$EXT_FILE")" != "$(realpath -m -- "$DEST")" ]]; then
+    cp -- "$EXT_FILE" "$DEST"
+    echo "[INFO] Inventory copied to: $DEST"
+  else
+    echo "[INFO] Inventory already exists at destination: $DEST"
+  fi
 fi
 
 echo "[INFO] Scanning extensions from: $EXT_DIR"
@@ -133,6 +168,7 @@ docker run --rm \
   --security-opt=no-new-privileges \
   --tmpfs /tmp:rw,noexec,nosuid,size=64m \
   -e HOME=/tmp \
+  -e FORCE_COLOR=1 \
   -v "$EXT_DIR:/tmp/.vscode/extensions:ro" \
   -v "$OUT/cache:/tmp/.vsix-scan/cache" \
   "$IMG" \
