@@ -9,7 +9,8 @@
   "enabledManagers": [
     "github-actions",
     "dockerfile",
-    "pre-commit"
+    "pre-commit",
+    "mise"
   ],
   "packageRules": [
     {
