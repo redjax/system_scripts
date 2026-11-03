@@ -233,6 +233,14 @@ function set_line_endings() {
   git config --global core.autocrlf input
 }
 
+## Enable tracking of executable file permissions.
+#  For example, detects when you chmod +x a .sh file.
+function set_filemode() {
+  echo "Enabling git file mode tracking"
+
+  git config --global core.filemode true
+}
+
 ## Set git editor
 function set_editor() {
   git config --global core.editor "$1"
@@ -335,6 +343,7 @@ function do_git_setup() {
   set_pager "${GIT_PAGER}"
   enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
   set_line_endings
+  set_filemode
   set_editor "${GIT_PREFERRED_EDITOR}"
   set_conflict_style
   set_autocorrect
