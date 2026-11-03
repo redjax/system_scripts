@@ -334,7 +334,7 @@ if ( $DryRun ) {
 }
 else {
     Write-Host "Deleting $($DeleteObjects.Count) file(s)." -ForegroundColor Cyan
-    
+
     ## Initialize count of deleted objects
     $DeletedCount = 0
 

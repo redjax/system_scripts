@@ -45,17 +45,17 @@ function Test-YaziInstalled {
     #>
     $yaziExists = Get-Command yazi -ErrorAction SilentlyContinue
     $yaExists = Get-Command ya -ErrorAction SilentlyContinue
-    
+
     if (-not $yaziExists) {
         Write-Error "Yazi is not installed. Please run Install-Yazi.ps1 first."
         return $false
     }
-    
+
     if (-not $yaExists) {
         Write-Error "The 'ya' command is not available. Yazi may not be properly installed."
         return $false
     }
-    
+
     return $true
 }
 
@@ -63,7 +63,7 @@ function Install-YaziPlugin {
     <#
         .SYNOPSIS
         Install a single Yazi plugin.
-        
+
         .PARAMETER PluginName
         The plugin identifier (e.g., "yazi-rs/plugins:smart-enter").
     #>
@@ -71,12 +71,12 @@ function Install-YaziPlugin {
         [Parameter(Mandatory = $true)]
         [string]$PluginName
     )
-    
+
     Write-Host "  Installing plugin: $PluginName" -ForegroundColor Cyan
-    
+
     try {
         $output = ya pkg add $PluginName 2>&1 | Out-String
-        
+
         if ($LASTEXITCODE -eq 0) {
             Write-Host "    ✓ Plugin '$PluginName' installed successfully." -ForegroundColor Green
             return @{ Success = $true; Plugin = $PluginName }
@@ -118,7 +118,7 @@ $results = @{
 ## Install each plugin
 foreach ($plugin in $pluginsToInstall) {
     $result = Install-YaziPlugin -PluginName $plugin
-    
+
     if ($result.Success) {
         if ($result.Skipped) {
             $results.Skipped += $plugin
@@ -128,7 +128,7 @@ foreach ($plugin in $pluginsToInstall) {
     } else {
         $results.Failed += $plugin
     }
-    
+
     Write-Host ""
 }
 

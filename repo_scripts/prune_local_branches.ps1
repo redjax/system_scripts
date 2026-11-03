@@ -22,9 +22,9 @@ try {
         $_.toString().Trim().Split(" ")[0]
     } `
     | ForEach-Object {
-        git branch -d $_ 
+        git branch -d $_
     }
-        
+
     Write-Host "Local branches pruned." -ForegroundColor Green
 
     exit 0

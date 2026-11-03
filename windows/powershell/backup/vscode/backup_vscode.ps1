@@ -3,7 +3,7 @@
     Backup Visual Studio Code settings, keybinds, & extensions for all profiles.
 
     .DESCRIPTION
-    This script backs up Visual Studio Code user settings, keybinds, and installed extensions for all profiles 
+    This script backs up Visual Studio Code user settings, keybinds, and installed extensions for all profiles
     to a specified directory. Each profile's backups are stored in separate subdirectories named after the profile.
     The script backs up both the default profile and any named profiles found in the profiles directory.
 
@@ -12,7 +12,7 @@
     Each profile will have its own subdirectory within this path.
 
     .PARAMETER Retain
-    The number of backup files to retain for each file type in each profile. Defaults to 3. 
+    The number of backup files to retain for each file type in each profile. Defaults to 3.
     Older backups will be deleted if this number is exceeded.
 
     .PARAMETER Trim
@@ -74,7 +74,7 @@ function Start-BackupsCleanup {
 
     ## Check if there are profile subdirectories
     $ProfileDirs = Get-ChildItem -Path $Dir -Directory -ErrorAction SilentlyContinue
-    
+
     if ($ProfileDirs) {
         ## Clean up each profile directory
         foreach ($ProfileDir in $ProfileDirs) {
@@ -116,7 +116,7 @@ function Start-BackupsCleanupForProfile {
 
         ## List files in path matching pattern
         $files = Get-ChildItem -Path $Dir -Filter $pattern -ErrorAction SilentlyContinue | Sort-Object Name -Descending
-        
+
         if ($files -and $files.Count -gt $RetainCount) {
             $toDelete = $files | Select-Object -Skip $RetainCount
 
@@ -148,7 +148,7 @@ function Start-VSCodeExtensionsBackup {
         [string]$OutputDir = $BackupDir,
         [string]$ProfileName = "default"
     )
-    
+
     $timestamp = Get-Timestamp
     $ExtensionsFile = "$OutputDir\$($timestamp)_extensions.txt"
 
@@ -189,7 +189,7 @@ function Start-VSCodeSettingsBackup {
     if ( -not ( $SettingsSource ) ) {
         throw "Could not find VS Code settings at path '$SettingsSource'"
     }
-    
+
     $timestamp = Get-Timestamp
     $SettingsDest = "$OutputDir\$($timestamp)_settings.json"
 
@@ -242,7 +242,7 @@ function Start-VSCodeKeybindsBackup {
     if ( -not ( $KeybindsSource ) ) {
         throw "Could not find VS Code keybinds at path '$KeybindsSource'"
     }
-    
+
     $timestamp = Get-Timestamp
     $KeybindsDest = "$OutputDir\$($timestamp)_keybinds.json"
 
@@ -370,7 +370,7 @@ $ProfilesRoot = "$env:APPDATA\Code\User\profiles"
 if (Test-Path $ProfilesRoot) {
     Write-Host "Found VS Code profiles directory. Backing up all profiles..." -ForegroundColor Cyan
     $ProfileDirs = Get-ChildItem -Path $ProfilesRoot -Directory -ErrorAction SilentlyContinue
-    
+
     if ($ProfileDirs) {
         foreach ($ProfileDir in $ProfileDirs) {
             $ProfileName = $ProfileDir.Name

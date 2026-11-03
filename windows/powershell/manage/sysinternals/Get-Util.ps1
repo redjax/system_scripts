@@ -22,7 +22,7 @@ ForEach ( $tool in $sysTools ) {
             If ( $Debug ) {
                 Write-Host "Filter match: [tool:$($tool)] [filter:$($Filter)]" -ForegroundColor Blue
             }
-            
+
             If ( -Not ( Test-Path $downloadpath ) ) {
                 Write-Host "Downloading tool: $($tool) to $downloadpath" -ForegroundColor Green
 

@@ -110,7 +110,7 @@ git config --global credential.https://dev.azure.com.helper ~/.git-credential-az
 > fatal: No credential store has been selected
 >
 > Set the GCM_CREDENTIAL_STORE environment variable or the credential.credentialStore Git configuration setting to one of the following options:
-> 
+>
 >   secretservice  : freedesktop.org Secret Service (requires graphical interface)
 >   gpg            : GNU `pass` compatible credential storage (requires GPG and `pass`)
 >   cache          : Git's in-memory credential cache

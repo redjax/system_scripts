@@ -34,11 +34,11 @@ if ( -Not ( $DefinitionFile ) ) {
 
 if ( -Not ( Test-Path -Path $DefinitionFile ) ) {
     Write-Error "Could not find definitions file: $($DefinitionFile)"
-    
+
     $ExampleDefinitionsJson = $ExampleDefinitionsObject | ConvertTo-Json -Depth 10 -AsArray
     $ExampleDefinitionsFile = "$PSScriptRoot$DirSeparator" + "example.backup_definitions.json"
     $ExampleDefinitionsJson | Set-Content -Path $ExampleDefinitionsFile
-    
+
     Write-Output "Example definitions file created: $ExampleDefinitionsFile"
     Write-Output "Please modify this file with your backup definitions and rerun the script."
     Write-Output "When you are finished, remove the 'example.' from the beginning of the filename, so you are left with 'backup_definitions.json'."

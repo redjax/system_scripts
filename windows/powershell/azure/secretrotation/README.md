@@ -64,7 +64,7 @@ Write-Host "Secret updated in KeyVault: $keyVaultName"
 $webAppPatterns = @(
     "Epi${cleanAppName}-np",  # For dev/rc
     "Epi${cleanAppName}-p",   # For prod
-    "EpiMHA.${cleanAppName}-np", 
+    "EpiMHA.${cleanAppName}-np",
     "EpiMHA.${cleanAppName}-p"
 )
 

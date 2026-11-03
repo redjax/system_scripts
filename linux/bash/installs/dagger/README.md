@@ -1,6 +1,6 @@
 # Dagger
 
-[Dagger](https://dagger.io) is an open-source runtime for composable workflows. 
+[Dagger](https://dagger.io) is an open-source runtime for composable workflows.
 
 ## Links
 

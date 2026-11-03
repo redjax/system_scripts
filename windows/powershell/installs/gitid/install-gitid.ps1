@@ -27,8 +27,8 @@ try {
     $release = Invoke-RestMethod -Uri $apiUrl
 
     # Pick first asset matching windows and architecture
-    $asset = $release.assets | Where-Object { 
-        $_.name -match "windows" -and $_.name -match $archStr 
+    $asset = $release.assets | Where-Object {
+        $_.name -match "windows" -and $_.name -match $archStr
     } | Select-Object -First 1
 
     if (-not $asset) {

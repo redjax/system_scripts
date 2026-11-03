@@ -51,7 +51,7 @@ foreach ( $resource in $resources ) {
     Write-Debug "Custom domain name: $($resource.CustomDomainName)"
     Write-Debug "Certificate secret name: $($resource.CertificateName)"
 
-    
+
     $cmdParams = @{
         AzSubscription = $resource.AzSubscription
         ResourceGroup = $resource.ResourceGroup

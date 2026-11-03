@@ -38,10 +38,10 @@
 Param(
     [Parameter(Mandatory = $false, HelpMessage = "Create backup of existing configuration files.")]
     [switch]$Backup,
-    
+
     [Parameter(Mandatory = $false, HelpMessage = "Overwrite existing files without prompting.")]
     [switch]$Force,
-    
+
     [Parameter(Mandatory = $false, HelpMessage = "Specify which config files to copy.")]
     [string[]]$ConfigFiles
 )
@@ -66,7 +66,7 @@ function Backup-ConfigFile {
         [Parameter(Mandatory = $true)]
         [string]$FilePath
     )
-    
+
     if (Test-Path $FilePath) {
         $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
         $backupPath = "$FilePath.$timestamp.bak"
@@ -157,14 +157,14 @@ $skippedCount = 0
 foreach ($file in $filesToCopy) {
     $sourcePath = Join-Path $configsSourceDir $file
     $destPath = Join-Path $yaziConfigDir $file
-    
+
     ## Check if destination file exists
     if (Test-Path $destPath) {
         if ($Backup) {
             Write-Warning "Backing up existing: $file"
             Backup-ConfigFile -FilePath $destPath
         }
-        
+
         if (-not $Force) {
             $overwrite = Read-Host "`n$file already exists. Overwrite? (Y/N)"
             if ($overwrite -ne "Y" -and $overwrite -ne "y") {
@@ -174,7 +174,7 @@ foreach ($file in $filesToCopy) {
             }
         }
     }
-    
+
     try {
         Copy-Item -Path $sourcePath -Destination $destPath -Force
         Write-Host "  Copied: $file" -ForegroundColor Green

@@ -70,7 +70,7 @@ function Get-StorageConfig {
 
     if ( -Not ( Test-Path $ConfigPath ) ) {
         Write-Warning "Config file not found at path: $ConfigPath. Creating default configuration and exiting early."
-        
+
         try {
             ## Convert $DefaultConfig to JSON and write to $ConfigPath
             $DefaultConfig | ConvertTo-Json -Depth 3 | Set-Content -Path $ConfigPath
@@ -132,7 +132,7 @@ function Get-EmptyBlobs {
         Write-Error "Error scanning for empty BLOBs. Details: $($_.Exception.Message)"
         return $null
     }
-    
+
 }
 
 function Get-LargeBlobs {
@@ -219,7 +219,7 @@ if ( $config ) {
     }
 
     if ( $context ) {
-        
+
         ## Get 0kb BLOBs
         Write-Host "Scanning for empty BLOBs" -ForegroundColor Cyan
         try {

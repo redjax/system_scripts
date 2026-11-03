@@ -1,18 +1,18 @@
 <#
     .SYNOPSIS
     Script to export Windows trusted root certificates to a file and optionally convert them to PEM format for use in WSL.
-    
+
     .DESCRIPTION
     This script requires OpenSSL to be installed on the system. It will check for OpenSSL in the following locations:
         1. C:\Program Files\OpenSSL-Win64\bin\openssl.exe
         2. C:\Program Files\Git\usr\bin\openssl.exe
-    
+
     If OpenSSL is not found in either location, the script will exit with an error message.
 
     This script also requires administrative privileges to run. If the script is not run as an administrator, it will exit with an error message.
 
     The script exports the root certificates to a file using the certutil command. The default output file is "roots.sst" in the specified output path.
-    
+
     It also creates a temporary directory to hold the exported certificates and a split directory to hold the individual PEM files.
 
     After running the script, the user will be prompted to copy the split certificates to WSL and run the update-ca-certificates command to update the CA store in WSL.
@@ -66,7 +66,7 @@ function Export-RootCertificates {
     <#
         Export root certificates using certutil
     #>
-    
+
     try {
         certutil -generateSSTFromWU "$OutputFile"
         Write-Host "Certificates exported to $OutputFile" -ForegroundColor Green
@@ -137,7 +137,7 @@ or Git for Windows (which includes OpenSSL).
             "LocalMachine"
         )
         $tempStore.Open("ReadWrite")
-        
+
         ## Create collection and add certificates properly
         $certCollection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
         $certCollection.AddRange($certificates)
@@ -148,7 +148,7 @@ or Git for Windows (which includes OpenSSL).
             $cert = $_
             $tempCer = Join-Path -Path $tempDir -ChildPath "$($cert.Thumbprint).cer"
             $tempPem = Join-Path -Path $tempDir -ChildPath "$($cert.Thumbprint).pem"
-            
+
             Export-Certificate -Cert $cert -FilePath $tempCer -Type CERT | Out-Null
             & "$opensslExe" x509 -inform der -in $tempCer -out $tempPem
         }
@@ -195,7 +195,7 @@ Next steps:
         (Debian/Ubuntu) sudo apt-get install ca-certificates
         (Fedora) sudo dnf install ca-certificates
         (Alpine) sudo apk add ca-certificates
-  
+
   3. Run update-ca-certificates to update the CA store in WSL.
         sudo update-ca-certificates
 

@@ -4,11 +4,11 @@
 
     .DESCRIPTION
     This script dynamically builds and executes the Aspire CLI installation command
-    based on the provided parameters. It supports custom installation paths, 
+    based on the provided parameters. It supports custom installation paths,
     specific versions, and verbose output.
 
     .PARAMETER InstallPath
-    The path where the Aspire CLI binary will be installed. 
+    The path where the Aspire CLI binary will be installed.
     Default: $env:USERPROFILE\.aspire\bin
 
     .PARAMETER VerboseOutput

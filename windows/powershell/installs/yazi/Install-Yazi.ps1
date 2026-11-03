@@ -106,7 +106,7 @@ if (Test-YaziInstalled) {
             exit 0
         }
     }
-    
+
     Write-Host "Uninstalling existing Yazi installation..." -ForegroundColor Yellow
     try {
         scoop uninstall yazi

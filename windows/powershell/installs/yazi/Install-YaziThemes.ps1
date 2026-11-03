@@ -71,17 +71,17 @@ function Test-YaziInstalled {
     #>
     $yaziExists = Get-Command yazi -ErrorAction SilentlyContinue
     $yaExists = Get-Command ya -ErrorAction SilentlyContinue
-    
+
     if (-not $yaziExists) {
         Write-Error "Yazi is not installed. Please run Install-Yazi.ps1 first."
         return $false
     }
-    
+
     if (-not $yaExists) {
         Write-Error "The 'ya' command is not available. Yazi may not be properly installed."
         return $false
     }
-    
+
     return $true
 }
 
@@ -89,7 +89,7 @@ function Install-YaziTheme {
     <#
         .SYNOPSIS
         Install a single Yazi theme.
-        
+
         .PARAMETER ThemeName
         The theme identifier (e.g., "dangooddd/kanagawa").
     #>
@@ -97,12 +97,12 @@ function Install-YaziTheme {
         [Parameter(Mandatory = $true)]
         [string]$ThemeName
     )
-    
+
     Write-Host "  Installing theme: $ThemeName" -ForegroundColor Cyan
-    
+
     try {
         $output = ya pkg add $ThemeName 2>&1 | Out-String
-        
+
         if ($LASTEXITCODE -eq 0) {
             Write-Host "    ✓ Theme '$ThemeName' installed successfully." -ForegroundColor Green
             return @{ Success = $true; Theme = $ThemeName }
@@ -154,7 +154,7 @@ $results = @{
 ## Install each theme
 foreach ($theme in $themesToInstall) {
     $result = Install-YaziTheme -ThemeName $theme
-    
+
     if ($result.Success) {
         if ($result.Skipped) {
             $results.Skipped += $theme
@@ -164,7 +164,7 @@ foreach ($theme in $themesToInstall) {
     } else {
         $results.Failed += $theme
     }
-    
+
     Write-Host ""
 }
 

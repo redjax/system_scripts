@@ -85,8 +85,8 @@ echo "$FILTERED_JSON" | jq -r --arg SIMPLE "$SIMPLE" '
     if $SIMPLE == "true" then
         .[] | .version | sub("^go"; "")
     else
-        .[] | 
-        .version as $v | 
+        .[] |
+        .version as $v |
         "\($v)\n" + (
             .files[] | "  \(.filename) (\(.os)/\(.arch))"
         )

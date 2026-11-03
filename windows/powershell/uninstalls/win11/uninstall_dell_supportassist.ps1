@@ -58,9 +58,9 @@ ForEach ($obj in $UninstallObjs) {
 
     Write-Host "Uninstalling" $obj.name
     Write-Host "Uninstall command: cmd /c" $obj.uninstall_string "/quiet /norestart"
-    
+
     $ArgList = "/C " + $obj.uninstall_string + " /quiet /norestart"
-    
+
     If ( $DEBUG_MSG -eq 1 ) {
         Write-Host "[DEBUG] Args: $ArgList"
     }
