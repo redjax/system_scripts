@@ -67,7 +67,7 @@ Option 1: raw shell command
 
 ```shell
 ## Every night at 4:30am
-30 4 * * * rclone --config /home/username/.config/rclone/rclone.conf --local-path /path/to/restic/repo --remote-name rclone-remote-name --bucket-name s3-bucket-name --bucket-path path/in/bucket --transfers 2 --checkers 4 --bwlimit 15M 
+30 4 * * * rclone --config /home/username/.config/rclone/rclone.conf --local-path /path/to/restic/repo --remote-name rclone-remote-name --bucket-name s3-bucket-name --bucket-path path/in/bucket --transfers 2 --checkers 4 --bwlimit 15M
 ```
 
 Option 2: [caller script](#caller-script)

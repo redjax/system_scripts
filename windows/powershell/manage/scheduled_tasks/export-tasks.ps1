@@ -31,8 +31,8 @@ function Export-Tasks {
 
         If ( -Not ( Test-Path "$($Task.OutputFile)" -PathType Leaf ) ) {
             Write-Host "Exporting task [$($Task.Path)\$($Task.Name)] to file [$($Task.OutputFile)]"
-        
-        
+
+
             try {
                 Export-ScheduledTask -TaskPath "$($Task.Path)" -TaskName "$($Task.Name)" | Set-Content -Path "$($Task.OutputFile)"
             }

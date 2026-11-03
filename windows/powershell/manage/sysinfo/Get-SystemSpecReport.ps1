@@ -2,10 +2,10 @@
 <#
     .SYNOPSIS
     Get system information and save to file.
-    
+
     .DESCRIPTION
     Get system information and save to file.
-    
+
     .PARAMETER Debug
     Enable Debug mode.
 
@@ -40,7 +40,7 @@ If ( $Help ) {
 
     Write-Host "Compile a report of system information, including OS & Powershell environment," `
         "CPU, GPU, GRAM, disks, and motherboard. Optionally export to a file with -Save.`n" -ForegroundColor Magenta
-    
+
     Write-Host "[Params]`n" -ForegroundColor cyan
 
     Write-Host "-Save" -ForegroundColor cyan -NoNewline; Write-Host ": Save report to file."
@@ -59,7 +59,7 @@ If ( $Help ) {
     Write-Host "C:\Temp " -NoNewline;
     Write-Host "-OutputFilename " -ForegroundColor cyan -NoNewline;
     Write-Host "SystemReport " -NoNewline;
-    Write-Host "-OutputFormat " -ForegroundColor cyan -NoNewline; 
+    Write-Host "-OutputFormat " -ForegroundColor cyan -NoNewline;
     Write-Host  "xml"
 
     Write-Host ""
@@ -75,15 +75,15 @@ function Format-ByteSize {
     <#
     .SYNOPSIS
     Format a size in bytes to a human-readable form (i.e. 1000000 bytes = 1MB)
-    
+
     # .DESCRIPTION
-    
+
     .PARAMETER SizeInBytes
     Parameter An integer representing a size in bytes to be converted to human-readable form.
-    
+
     .EXAMPLE
     Format-ByteSize -SizeInBytes 1000000
-    
+
     # .NOTES
     #>
     param (
@@ -149,7 +149,7 @@ function Get-SystemSpecs {
     <#
         .SYNOPSIS
         Get system information report.
-        
+
         .DESCRIPTION
         Compile data about system's hardware & OS, return a PSCustomObject that can be saved as XML, JSON, or TXT.
 

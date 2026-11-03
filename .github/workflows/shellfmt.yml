@@ -57,7 +57,7 @@ jobs:
       scan-path: ${{ inputs.scan-path }}
 
       shellfmt-mode: ${{ inputs.shellfmt-mode }}
-      
+
       shellfmt-commit-changes: ${{ inputs.shellfmt-mode == 'write' }}
       shellfmt-commit-message: "chore(shell): format shell scripts"
 

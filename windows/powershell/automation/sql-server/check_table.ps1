@@ -180,7 +180,7 @@ function New-AlertParams {
             "ContentType" = $AlertContentType
         }
 
-    
+
         return $AlertParams
     }
     catch {
@@ -255,10 +255,10 @@ function Start-Checks {
     # Write-Host "Workflows in the queue: $($DBCount)"
 
     If ( $DBCount -ge $ALERT_THRESHOLD ) {
-        
+
         $Multiplier = Set-DynamicThresholdMultiplier -Threshold $ALERT_THRESHOLD
         # Write-Host "Multiplier: $($Multiplier). DynamicThreshold: $($ALERT_THRESHOLD * $Multiplier)"
-        
+
         If ( $DBCount -ge ( $AlertThreshold * $Multiplier) -and $DBCount -lt $ALERT_THRESHOLD * 2) {
             ## Warn
             $AlertMsgText = "Alert threshold [$($ALERT_THRESHOLD)] exceeded. There are $($DBCount) rows in the column."

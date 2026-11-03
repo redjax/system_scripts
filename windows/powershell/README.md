@@ -28,7 +28,7 @@ function Get-AdminStatus {
         }
         else {
             Write-Host "User [$($windowsIdentity.Name)] is not an Admin"
-        }        
+        }
     }
 
     return $isAdmin
