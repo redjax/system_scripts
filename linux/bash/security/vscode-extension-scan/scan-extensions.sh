@@ -45,7 +45,7 @@ EOF
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -n|--name)
+    -n | --name)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires an image name." >&2
         usage >&2
@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
       IMG_NAME="$2"
       shift 2
       ;;
-    -t|--tag)
+    -t | --tag)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a tag." >&2
         usage >&2
@@ -63,7 +63,7 @@ while [[ $# -gt 0 ]]; do
       TAG="$2"
       shift 2
       ;;
-    -f|--extensions-file)
+    -f | --extensions-file)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a filename." >&2
         usage >&2
@@ -72,7 +72,7 @@ while [[ $# -gt 0 ]]; do
       EXT_FILE="$2"
       shift 2
       ;;
-    -e|--extensions-dir)
+    -e | --extensions-dir)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a directory." >&2
         usage >&2
@@ -90,7 +90,7 @@ while [[ $# -gt 0 ]]; do
       OUT="$2"
       shift 2
       ;;
-    -o|--output)
+    -o | --output)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a report filename." >&2
         usage >&2
@@ -99,7 +99,7 @@ while [[ $# -gt 0 ]]; do
       REPORT_OUT="$2"
       shift 2
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
@@ -221,8 +221,8 @@ else
   echo "[INFO] Generating JSON report: $REPORT_OUT"
 
   if run_scan --format json \
-      > "$REPORT_OUT" \
-      2> >(tee "$OUT/scan.log" >&2); then
+    >"$REPORT_OUT" \
+    2> >(tee "$OUT/scan.log" >&2); then
     echo "[INFO] JSON report generated."
   else
     rc=$?

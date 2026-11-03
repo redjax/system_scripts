@@ -15,7 +15,7 @@ chk_die() {
 }
 
 chk_have() {
-  command -v "$1" > /dev/null 2>&1
+  command -v "$1" >/dev/null 2>&1
 }
 
 chk_need_value() {
