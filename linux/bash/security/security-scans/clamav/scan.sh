@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat << 'EOF'
+  cat <<'EOF'
 Usage: scan.sh [options]
 
 Targets:
@@ -215,7 +215,7 @@ RUN_REGEX="$(
 CMD+=("--exclude-dir=^${RUN_REGEX}(/|$)")
 CMD+=("${TARGETS[@]}")
 
-clam_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
+clam_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -223,7 +223,7 @@ clam_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
   printf 'architecture=%s\n' "$(uname -m)"
   printf 'database=%s\n' "$DATABASE"
   clamscan --version
-} > "$RUN_DIR/metadata.txt"
+} >"$RUN_DIR/metadata.txt"
 
 clam_log "Report: $REPORT"
 
@@ -259,7 +259,7 @@ fi
 {
   printf 'tool\tstatus\tnative_exit_code\treport_exit_code\n'
   printf 'clamav\t%s\t%s\t%s\n' "$STATUS" "$SCAN_RC" "$TEE_RC"
-} > "$RUN_DIR/result.tsv"
+} >"$RUN_DIR/result.tsv"
 
 clam_log "Result: $STATUS"
 clam_log "Native scanner exit code: $SCAN_RC"

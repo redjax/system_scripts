@@ -20,7 +20,7 @@ clam_die() {
 }
 
 clam_have() {
-  command -v "$1" > /dev/null 2>&1
+  command -v "$1" >/dev/null 2>&1
 }
 
 clam_need_value() {
