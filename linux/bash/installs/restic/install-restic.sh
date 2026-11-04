@@ -92,11 +92,11 @@ function install_autorestic() {
   local WGET_INSTALLED=""
   local CURL_INSTALLED=""
 
-  if command -v wget >/dev/null 2>&1; then
+  if command -v wget > /dev/null 2>&1; then
     WGET_INSTALLED="true"
   fi
 
-  if command -v curl >/dev/null 2>&1; then
+  if command -v curl > /dev/null 2>&1; then
     CURL_INSTALLED="true"
   fi
 
@@ -125,7 +125,7 @@ function install_autorestic() {
 }
 
 function install_rclone_macos() {
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     echo "Installing rclone using Homebrew..."
     brew install rclone
   else
@@ -137,7 +137,7 @@ function install_rclone_macos() {
 
 function install_restic_macos() {
   ## Use Homebrew if available
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     echo "Installing restic using Homebrew..."
     brew install restic
   else
@@ -149,7 +149,7 @@ function install_restic_macos() {
 
 function install_resticprofile_macos() {
   ## Use Homebrew if available
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     echo "Installing resticprofile using Homebrew..."
     brew install resticprofile ## fixed: proper Homebrew package name instead of restic
   else
@@ -173,7 +173,7 @@ function main() {
   local INSTALL_RESTICPROFILE="false"
 
   ## Check restic is installed
-  if command -v restic &>/dev/null; then
+  if command -v restic &> /dev/null; then
     echo "Restic is already installed."
     RESTIC_INSTALLED="true"
   else
@@ -181,7 +181,7 @@ function main() {
   fi
 
   ## Check rclone is installed
-  if command -v rclone &>/dev/null; then
+  if command -v rclone &> /dev/null; then
     echo "Rclone is already installed."
     RCLONE_INSTALLED="true"
   else
@@ -192,7 +192,7 @@ function main() {
   fi
 
   ## Check autorestic is installed
-  if command -v autorestic &>/dev/null; then
+  if command -v autorestic &> /dev/null; then
     echo "Autorestic is already installed."
     AUTORESTIC_INSTALLED="true"
   else
@@ -203,7 +203,7 @@ function main() {
   fi
 
   ## Check resticprofile is installed
-  if command -v resticprofile &>/dev/null; then
+  if command -v resticprofile &> /dev/null; then
     echo "Resticprofile is already installed."
     RESTICPROFILE_INSTALLED="true"
   else

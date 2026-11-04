@@ -36,15 +36,15 @@ fi
 echo "Detected: $DISTRO"
 
 function detect_pkg_manager() {
-  if command -v apt >/dev/null; then
+  if command -v apt > /dev/null; then
     PKG_MANAGER="apt"
-  elif command -v dnf >/dev/null; then
+  elif command -v dnf > /dev/null; then
     PKG_MANAGER="dnf"
-  elif command -v pacman >/dev/null; then
+  elif command -v pacman > /dev/null; then
     PKG_MANAGER="pacman"
-  elif command -v zypper >/dev/null; then
+  elif command -v zypper > /dev/null; then
     PKG_MANAGER="zypper"
-  elif command -v apk >/dev/null; then
+  elif command -v apk > /dev/null; then
     PKG_MANAGER="apk"
   else
     PKG_MANAGER="unknown"
@@ -125,7 +125,7 @@ function install_ghostty_arch() {
   echo "Installing Ghostty on Arch Linux"
   sudo pacman -Sy --noconfirm ghostty || {
     echo "Installing from AUR"
-    if ! command -v yay >/dev/null; then
+    if ! command -v yay > /dev/null; then
       sudo pacman -S --needed --noconfirm base-devel git
       TMP_DIR=$(mktemp -d)
       git clone https://aur.archlinux.org/yay.git "$TMP_DIR/yay"

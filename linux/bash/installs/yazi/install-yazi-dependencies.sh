@@ -54,10 +54,10 @@ function install_debian() {
 
   ## Debian/Ubuntu call the fd executable "fdfind".
   #  Create a user-local "fd" wrapper if the real fd command doesn't exist.
-  if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
+  if ! command -v fd > /dev/null 2>&1 && command -v fdfind > /dev/null 2>&1; then
     mkdir -p "${HOME}/.local/bin"
 
-    cat >"${HOME}/.local/bin/fd" <<'EOF'
+    cat > "${HOME}/.local/bin/fd" << 'EOF'
 #!/usr/bin/env bash
 exec fdfind "$@"
 EOF
@@ -80,9 +80,9 @@ EOF
 
   ## Debian's package is normally p7zip-full, but package availability
   #  differs between Debian releases and Ubuntu releases.
-  if apt-cache show p7zip-full >/dev/null 2>&1; then
+  if apt-cache show p7zip-full > /dev/null 2>&1; then
     $SUDO apt-get install -y p7zip-full
-  elif apt-cache show 7zip >/dev/null 2>&1; then
+  elif apt-cache show 7zip > /dev/null 2>&1; then
     $SUDO apt-get install -y 7zip
   else
     echo "WARNING: Could not find a 7-Zip package in configured repositories."
@@ -107,9 +107,9 @@ function install_fedora() {
     fontconfig
 
   ## Package name varies by Fedora/RHEL-family release.
-  if $SUDO dnf install -y 7zip 2>/dev/null; then
+  if $SUDO dnf install -y 7zip 2> /dev/null; then
     :
-  elif $SUDO dnf install -y p7zip p7zip-plugins 2>/dev/null; then
+  elif $SUDO dnf install -y p7zip p7zip-plugins 2> /dev/null; then
     :
   else
     echo "WARNING: Could not install 7-Zip."

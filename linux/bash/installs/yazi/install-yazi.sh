@@ -37,7 +37,7 @@ for arg in "$@"; do
       USE_FLATPAK=1
       ;;
     --help | -h)
-      cat <<'EOF'
+      cat << 'EOF'
 Usage: install-yazi.sh [--flatpak]
 
 Options:
@@ -88,7 +88,7 @@ echo
 #############
 
 function require_command() {
-  if ! command -v "$1" >/dev/null 2>&1; then
+  if ! command -v "$1" > /dev/null 2>&1; then
     echo "ERROR: Required command not found: $1"
     exit 1
   fi
@@ -107,7 +107,7 @@ function install_native_arch() {
 function install_native_dnf() {
   echo "Checking for a Yazi package in configured DNF repositories"
 
-  if $SUDO dnf --assumeyes --quiet info yazi >/dev/null 2>&1; then
+  if $SUDO dnf --assumeyes --quiet info yazi > /dev/null 2>&1; then
     echo "Yazi is available from the configured repositories."
   else
     echo "Yazi is not currently available."
@@ -130,7 +130,7 @@ function install_native_dnf() {
 function install_native_opensuse() {
   echo "Checking configured openSUSE repositories for Yazi"
 
-  if $SUDO zypper --non-interactive --quiet info yazi >/dev/null 2>&1; then
+  if $SUDO zypper --non-interactive --quiet info yazi > /dev/null 2>&1; then
     echo "Yazi is available from the configured repositories."
     $SUDO zypper --non-interactive install yazi
     disable_binary_updater
@@ -154,14 +154,14 @@ function install_flatpak() {
   # yazi binary. Create a small wrapper so normal shell usage still works.
   mkdir -p "${HOME}/.local/bin"
 
-  cat >"${HOME}/.local/bin/yazi" <<'EOF'
+  cat > "${HOME}/.local/bin/yazi" << 'EOF'
 #!/usr/bin/env bash
 exec flatpak run io.github.sxyazi.yazi "$@"
 EOF
 
   chmod +x "${HOME}/.local/bin/yazi"
 
-  cat >"${HOME}/.local/bin/ya" <<'EOF'
+  cat > "${HOME}/.local/bin/ya" << 'EOF'
 #!/usr/bin/env bash
 exec flatpak run io.github.sxyazi.yazi "$@"
 EOF
@@ -355,7 +355,7 @@ function install_from_source() {
       ;;
   esac
 
-  if ! command -v rustup >/dev/null 2>&1; then
+  if ! command -v rustup > /dev/null 2>&1; then
     echo "Installing Rust via rustup"
 
     curl --proto '=https' \
@@ -442,7 +442,7 @@ function cleanup_old_versions() {
       sort -V
   )"
 
-  mapfile -t versions_array <<<"$versions"
+  mapfile -t versions_array <<< "$versions"
 
   if ((${#versions_array[@]} <= 3)); then
     return 0
@@ -456,7 +456,7 @@ function cleanup_old_versions() {
 function install_update_service() {
   echo "Installing automatic Yazi update service"
 
-  $SUDO tee "$UPDATE_SCRIPT" >/dev/null <<'EOF'
+  $SUDO tee "$UPDATE_SCRIPT" > /dev/null << 'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -472,7 +472,7 @@ EOF
 
   $SUDO chmod 0755 "$UPDATE_SCRIPT"
 
-  $SUDO tee /usr/local/sbin/yazi-update-run >/dev/null <<'EOF'
+  $SUDO tee /usr/local/sbin/yazi-update-run > /dev/null << 'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -594,7 +594,7 @@ EOF
 
   $SUDO chmod 0755 /usr/local/sbin/yazi-update-run
 
-  $SUDO tee "$SYSTEMD_SERVICE" >/dev/null <<EOF
+  $SUDO tee "$SYSTEMD_SERVICE" > /dev/null << EOF
 [Unit]
 Description=Update Yazi
 After=network-online.target
@@ -605,7 +605,7 @@ Type=oneshot
 ExecStart=${UPDATE_SCRIPT}
 EOF
 
-  $SUDO tee "$SYSTEMD_TIMER" >/dev/null <<'EOF'
+  $SUDO tee "$SYSTEMD_TIMER" > /dev/null << 'EOF'
 [Unit]
 Description=Weekly Yazi update check
 
@@ -627,7 +627,7 @@ EOF
 function install_source_update_service() {
   mkdir -p "${HOME}/.config/systemd/user"
 
-  cat >"${HOME}/.config/systemd/user/yazi-update.service" <<'EOF'
+  cat > "${HOME}/.config/systemd/user/yazi-update.service" << 'EOF'
 [Unit]
 Description=Update Yazi from crates.io
 
@@ -636,7 +636,7 @@ Type=oneshot
 ExecStart=/bin/sh -lc 'source "$HOME/.cargo/env" && cargo install --force yazi-build'
 EOF
 
-  cat >"${HOME}/.config/systemd/user/yazi-update.timer" <<'EOF'
+  cat > "${HOME}/.config/systemd/user/yazi-update.timer" << 'EOF'
 [Unit]
 Description=Weekly Yazi source update
 
@@ -656,14 +656,14 @@ EOF
 }
 
 function disable_binary_updater() {
-  $SUDO systemctl disable --now yazi-update.timer 2>/dev/null || true
+  $SUDO systemctl disable --now yazi-update.timer 2> /dev/null || true
   $SUDO rm -f \
     "$SYSTEMD_SERVICE" \
     "$SYSTEMD_TIMER" \
     "$UPDATE_SCRIPT" \
     /usr/local/sbin/yazi-update-run
 
-  $SUDO systemctl daemon-reload 2>/dev/null || true
+  $SUDO systemctl daemon-reload 2> /dev/null || true
 }
 
 function verify_yazi() {
@@ -673,12 +673,12 @@ function verify_yazi() {
   echo
   echo "Verifying installation"
 
-  if ! command -v yazi >/dev/null 2>&1; then
+  if ! command -v yazi > /dev/null 2>&1; then
     echo "ERROR: yazi is not in PATH."
     exit 1
   fi
 
-  if ! command -v ya >/dev/null 2>&1; then
+  if ! command -v ya > /dev/null 2>&1; then
     echo "ERROR: ya is not in PATH."
     exit 1
   fi

@@ -5,7 +5,7 @@ IMG="vsix-scan"
 TAG="local"
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [OPTIONS]
 
 Build the VS Code extension scanner Docker image.

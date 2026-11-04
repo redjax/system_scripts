@@ -2,7 +2,7 @@
 
 ## Unban an app from the SSHD fail2ban jail
 
-if ! command -v fail2ban-client &>/dev/null; then
+if ! command -v fail2ban-client &> /dev/null; then
   echo "Fail2Ban client is not installed."
   exit 1
 fi

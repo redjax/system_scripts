@@ -5,13 +5,13 @@ echo "[*] Detecting OS"
 
 OS=""
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  if command -v apt >/dev/null 2>&1; then
+  if command -v apt > /dev/null 2>&1; then
     OS="debian"
-  elif command -v dnf >/dev/null 2>&1; then
+  elif command -v dnf > /dev/null 2>&1; then
     OS="fedora"
-  elif command -v yum >/dev/null 2>&1; then
+  elif command -v yum > /dev/null 2>&1; then
     OS="centos"
-  elif command -v pacman >/dev/null 2>&1; then
+  elif command -v pacman > /dev/null 2>&1; then
     OS="arch"
   else
     echo "Unsupported Linux distro"
@@ -31,7 +31,7 @@ case $OS in
     echo "[*] Adding ntop APT repo"
     curl -fsSL https://packages.ntop.org/apt/ntop.key | sudo gpg --dearmor -o /usr/share/keyrings/ntop.gpg
     echo "deb [signed-by=/usr/share/keyrings/ntop.gpg] https://packages.ntop.org/apt/stable/$(lsb_release -is | tr 'A-Z' 'a-z') $(lsb_release -cs) main" |
-      sudo tee /etc/apt/sources.list.d/ntop.list >/dev/null
+      sudo tee /etc/apt/sources.list.d/ntop.list > /dev/null
 
     sudo apt update
     sudo apt install -y ntopng redis-server
@@ -47,7 +47,7 @@ case $OS in
     ;;
   arch)
     echo "[*] Installing from AUR"
-    if ! command -v yay >/dev/null; then
+    if ! command -v yay > /dev/null; then
       echo "yay must be installed first"
       exit 1
     fi

@@ -5,16 +5,16 @@ set -euo pipefail
 WGET_INSTALLED=""
 CURL_INSTALLED=""
 
-if command -v autorestic >/dev/null 2>&1; then
+if command -v autorestic > /dev/null 2>&1; then
   echo "autorestic is already installed."
   exit 0
 fi
 
-if command -v wget >/dev/null 2>&1; then
+if command -v wget > /dev/null 2>&1; then
   WGET_INSTALLED="true"
 fi
 
-if command -v curl >/dev/null 2>&1; then
+if command -v curl > /dev/null 2>&1; then
   CURL_INSTALLED="true"
 fi
 

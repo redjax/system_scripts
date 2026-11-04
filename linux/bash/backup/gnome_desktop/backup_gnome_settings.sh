@@ -9,13 +9,13 @@ TAR_ARCHIVE_FILE="gnome_settings_backup.tar.gz"
 function dump_gnome_settings {
   OUTPUT_PATH=$1
 
-  if ! command -v dconf >/dev/null 2>&1; then
+  if ! command -v dconf > /dev/null 2>&1; then
     echo "[ERROR] dconf is not installed"
     return 1
   fi
 
   echo "Dumping Gnome settings to: $OUTPUT_PATH"
-  dconf dump / >$OUTPUTS_PATH
+  dconf dump / > $OUTPUTS_PATH
   if [[ $? -ne 0 ]]; then
     echo "[ERROR] Failed to dump Gnome settings"
     return $?
@@ -26,7 +26,7 @@ function create_tar_backup {
   OUTPUT_PATH=$1
   GNOME_SETTINGS_DUMP_FILE=$2
 
-  if ! command -v tar >/dev/null 2>&1; then
+  if ! command -v tar > /dev/null 2>&1; then
     echo "[ERROR] tar is not installed"
     return 1
   fi
@@ -53,7 +53,7 @@ function restore_tar_backup {
     return 1
   fi
 
-  dconf load / <$GNOME_SETTINGS_DUMP_FILE
+  dconf load / < $GNOME_SETTINGS_DUMP_FILE
   if [[ $? -ne 0 ]]; then
     echo "[ERROR] Failed to restore Gnome settings from backup."
     return $?

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if ! command -v git >/dev/null 2>&1; then
+if ! command -v git > /dev/null 2>&1; then
   echo "[ERROR] git is not installed"
   exit 1
 fi
 
-if ! command -v curl >/dev/null 2>&1; then
+if ! command -v curl > /dev/null 2>&1; then
   echo "[ERROR] curl is not installed"
   exit 1
 fi

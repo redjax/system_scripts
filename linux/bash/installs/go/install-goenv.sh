@@ -2,7 +2,7 @@
 
 set -uo pipefail
 
-if ! command -v git &>/dev/null; then
+if ! command -v git &> /dev/null; then
   echo "[ERROR] git is not installed."
   exit 1
 fi

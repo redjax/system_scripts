@@ -13,7 +13,7 @@ echo "Installing Mise CLI to ${INSTALL_PATH}"
 
 ## Check dependencies
 for cmd in curl shasum tar; do
-  if ! command -v $cmd >/dev/null 2>&1; then
+  if ! command -v $cmd > /dev/null 2>&1; then
     echo "Error: $cmd is required but not installed." >&2
 
     if [[ "$cmd" == "shasum" ]]; then

@@ -13,7 +13,7 @@ set -euo pipefail
 ###################################################
 
 ## Ensure git is installed
-if ! command -v git >/dev/null 2>&1; then
+if ! command -v git > /dev/null 2>&1; then
   echo "[ERROR] git is not installed. Install git before running this script." >&2
   exit 1
 fi
@@ -36,7 +36,7 @@ GIT_PAGER="less -FRX"
 
 ## Default gitignore contents
 DEFAULT_GITIGNORE_CONTENT=$(
-  cat <<'EOF'
+  cat << 'EOF'
 ############################################################
 # Global gitignore                                         #
 #                                                          #
@@ -112,7 +112,7 @@ EOF
 
 ## Print help menu
 function usage() {
-  cat <<EOF
+  cat << EOF
 USAGE: $(basename "$0") [OPTIONS]
 
 Options:
@@ -248,7 +248,7 @@ function set_global_gitignore() {
 
   mkdir -p "$(dirname "${gitignore_path}")"
 
-  printf "%s\n" "${DEFAULT_GITIGNORE_CONTENT}" >"${gitignore_path}"
+  printf "%s\n" "${DEFAULT_GITIGNORE_CONTENT}" > "${gitignore_path}"
 
   git config --global core.excludesfile "${gitignore_path}"
 }

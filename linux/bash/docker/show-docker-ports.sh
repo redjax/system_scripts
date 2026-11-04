@@ -26,7 +26,7 @@ while read -r line; do
   if ((length > max_length)); then
     max_length=$length
   fi
-done <<<"$docker_output"
+done <<< "$docker_output"
 
 # Second pass to generate the output
 while read -r line; do
@@ -58,7 +58,7 @@ while read -r line; do
       not_exposed_output+="${GREEN}${container}${padding} : ${ports}${NC}\n"
     fi
   fi
-done <<<"$docker_output"
+done <<< "$docker_output"
 
 # Sort and print output
 echo -e "$exposed_output"
