@@ -13,7 +13,7 @@ echo "XDG_SESSION_TYPE: $XDG_SESSION_TYPE"
 install_espanso_mac() {
   echo "Installing Espanso on macOS"
 
-  if command -v brew > /dev/null 2>&1; then
+  if command -v brew >/dev/null 2>&1; then
     echo "Using Homebrew to install"
     brew tap federico-terzi/espanso
     brew install espanso
@@ -98,7 +98,7 @@ install_espanso_fedora() {
   echo "Installing Espanso on Fedora-based system using Terra RPM repo"
 
   ## Configure Terra if it isn't already configured.
-  if compgen -G "/etc/yum.repos.d/terra*.repo" > /dev/null; then
+  if compgen -G "/etc/yum.repos.d/terra*.repo" >/dev/null; then
     echo "Terra repository already configured."
   else
     echo "Adding Terra repository"
@@ -121,7 +121,7 @@ install_espanso_fedora() {
   sudo dnf install -y "$package_name"
 
   ## Make sure the package actually owns the executable we expect.
-  if ! rpm -q "$package_name" > /dev/null 2>&1; then
+  if ! rpm -q "$package_name" >/dev/null 2>&1; then
     echo "ERROR: $package_name is not installed."
     exit 1
   fi
@@ -151,7 +151,7 @@ install_espanso_fedora() {
   echo "  Binary:   /usr/bin/espanso"
 
   local binary_version
-  binary_version="$(/usr/bin/espanso --version 2> /dev/null || true)"
+  binary_version="$(/usr/bin/espanso --version 2>/dev/null || true)"
 
   if [[ -n "$binary_version" ]]; then
     echo "  Version:  $binary_version"
@@ -212,7 +212,7 @@ install_espanso_appimage() {
 
   mkdir -p "$desktop_dir"
 
-  cat > "$desktop_dir/espanso.desktop" << EOF
+  cat >"$desktop_dir/espanso.desktop" <<EOF
 [Desktop Entry]
 Name=Espanso
 Comment=Text expander tool
@@ -238,9 +238,9 @@ case "$OS_TYPE" in
     install_espanso_mac
     ;;
   Linux)
-    if command -v apt > /dev/null 2>&1; then
+    if command -v apt >/dev/null 2>&1; then
       install_espanso_debian
-    elif command -v dnf > /dev/null 2>&1; then
+    elif command -v dnf >/dev/null 2>&1; then
       install_espanso_fedora
     else
       install_espanso_appimage

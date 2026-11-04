@@ -15,7 +15,7 @@ lynis_die() {
 }
 
 lynis_have() {
-  command -v "$1" > /dev/null 2>&1
+  command -v "$1" >/dev/null 2>&1
 }
 
 lynis_need_value() {

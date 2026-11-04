@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat << 'EOF'
+  cat <<'EOF'
 Usage: install.sh [options]
 
 Options:
@@ -263,7 +263,7 @@ fi
 LOCK_DIR=/run/security-scans-maldet-install.lock
 WORK_DIR=
 
-if ! mkdir -m 0700 "$LOCK_DIR" 2> /dev/null; then
+if ! mkdir -m 0700 "$LOCK_DIR" 2>/dev/null; then
   md_die "Installer lock exists: $LOCK_DIR. Check for another installation."
 fi
 
@@ -272,7 +272,7 @@ cleanup() {
     rm -rf -- "$WORK_DIR"
   fi
 
-  rmdir "$LOCK_DIR" 2> /dev/null || true
+  rmdir "$LOCK_DIR" 2>/dev/null || true
 }
 
 trap cleanup EXIT
@@ -287,7 +287,7 @@ if [[ ${#MISSING_COMMANDS[@]} -gt 0 ]]; then
   md_log "Dependency report: $RUN_DIR/dependencies.log"
 
   ## Run directly so failure inside the function stops the installer.
-  install_dependencies > "$RUN_DIR/dependencies.log" 2>&1
+  install_dependencies >"$RUN_DIR/dependencies.log" 2>&1
 fi
 
 for dependency in "${REQUIRED_COMMANDS[@]}"; do
@@ -307,7 +307,7 @@ git clone \
   --single-branch \
   "$REPOSITORY" \
   "$SOURCE_DIR" \
-  > "$RUN_DIR/download.log" 2>&1
+  >"$RUN_DIR/download.log" 2>&1
 
 for required_file in \
   install.sh \
@@ -329,7 +329,7 @@ grep -Eq '^[[:space:]]*lmd_version="2\.' \
   printf 'commit=%s\n' "$(git -C "$SOURCE_DIR" rev-parse HEAD)"
   printf 'installer_sha256=%s\n' \
     "$(sha256sum "$SOURCE_DIR/install.sh" | awk '{print $1}')"
-} > "$RUN_DIR/metadata.txt"
+} >"$RUN_DIR/metadata.txt"
 
 md_log "Running upstream installer."
 md_log "Output: $RUN_DIR/output.log"
@@ -351,7 +351,7 @@ cd /
 md_find_binary
 md_require_v2
 
-printf '%s\n' "$MALDET_VERSION_OUTPUT" > "$RUN_DIR/version.txt"
+printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
 
 md_log "Installation complete."
 md_log "Reports: $RUN_DIR"
