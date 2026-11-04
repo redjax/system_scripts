@@ -86,8 +86,6 @@ SHFMT_CMD+=("-ci")
 if [[ "$DRY_RUN" == "true" ]]; then
   SHFMT_CMD+=("-d")
   echo "[INFO] Dry-run mode enabled (diff only)"
-
-  exit 0
 else
   ## write changes
   SHFMT_CMD+=("-w")
