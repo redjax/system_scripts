@@ -7,7 +7,7 @@ REPO_LIST="/etc/apt/sources.list.d/sourcegit.list"
 
 ## Check if required tool/command is available or exit
 function need() {
-  command -v "$1" >/dev/null || {
+  command -v "$1" > /dev/null || {
     echo "Missing required command: $1"
     exit 1
   }
@@ -54,7 +54,7 @@ function install_appimage() {
   ## Install appimage
   sudo install -m755 /tmp/sourcegit.AppImage /opt/sourcegit/sourcegit
 
-  cat <<'EOF' | sudo tee /usr/local/bin/sourcegit >/dev/null
+  cat << 'EOF' | sudo tee /usr/local/bin/sourcegit > /dev/null
 #!/bin/sh
 exec /opt/sourcegit/sourcegit "$@"
 EOF
@@ -74,13 +74,13 @@ function install_apt() {
   if [[ ! -f "$REPO_KEY" ]]; then
     curl -fsSL \
       https://codeberg.org/api/packages/yataro/debian/repository.key |
-      sudo tee "$REPO_KEY" >/dev/null
+      sudo tee "$REPO_KEY" > /dev/null
   fi
 
   ## Add repo list or retrieve from remote
   if [[ ! -f "$REPO_LIST" ]]; then
     echo "deb [signed-by=$REPO_KEY arch=$(dpkg --print-architecture)] https://codeberg.org/api/packages/yataro/debian generic main" |
-      sudo tee "$REPO_LIST" >/dev/null
+      sudo tee "$REPO_LIST" > /dev/null
   fi
 
   sudo apt update
@@ -95,7 +95,7 @@ function install_dnf() {
   ## Download rpm package
   curl -fsSL \
     https://codeberg.org/api/packages/yataro/rpm.repo |
-    sed 's/gpgcheck=1/gpgcheck=0/' >"$TMP"
+    sed 's/gpgcheck=1/gpgcheck=0/' > "$TMP"
 
   ## Install dnf package
   if dnf config-manager --help 2>&1 | grep -q "addrepo"; then
@@ -111,7 +111,7 @@ function install_dnf() {
 
 ## Already installed
 
-if command -v sourcegit >/dev/null 2>&1 || [[ -x /opt/sourcegit/sourcegit ]]; then
+if command -v sourcegit > /dev/null 2>&1 || [[ -x /opt/sourcegit/sourcegit ]]; then
 
   echo "SourceGit is already installed."
 
@@ -121,12 +121,12 @@ if command -v sourcegit >/dev/null 2>&1 || [[ -x /opt/sourcegit/sourcegit ]]; th
   fi
 
   ## Update with apt
-  if command -v dpkg >/dev/null && dpkg -s sourcegit >/dev/null 2>&1; then
+  if command -v dpkg > /dev/null && dpkg -s sourcegit > /dev/null 2>&1; then
     sudo apt update
     sudo apt install --only-upgrade -y sourcegit
 
   ## Update with dnf
-  elif command -v rpm >/dev/null && rpm -q sourcegit >/dev/null 2>&1; then
+  elif command -v rpm > /dev/null && rpm -q sourcegit > /dev/null 2>&1; then
     sudo dnf upgrade -y sourcegit
 
   ## Update appimage
@@ -141,10 +141,10 @@ if command -v sourcegit >/dev/null 2>&1 || [[ -x /opt/sourcegit/sourcegit ]]; th
 ## Sourcegit not installed, do install
 else
 
-  if command -v apt >/dev/null; then
+  if command -v apt > /dev/null; then
     install_apt
 
-  elif command -v dnf >/dev/null; then
+  elif command -v dnf > /dev/null; then
     install_dnf
 
   else
@@ -160,14 +160,14 @@ echo
 gcm_installed=0
 libsecret_installed=0
 
-if command -v git-credential-manager >/dev/null 2>&1; then
+if command -v git-credential-manager > /dev/null 2>&1; then
   echo "git-credential-manager: installed"
   gcm_installed=1
 else
   echo "[WARNING] git-credential-manager: not installed"
 fi
 
-if command -v git-credential-libsecret >/dev/null 2>&1; then
+if command -v git-credential-libsecret > /dev/null 2>&1; then
   echo "git-credential-libsecret: installed"
   libsecret_installed=1
 else
@@ -183,7 +183,7 @@ if [[ $gcm_installed -eq 0 && $libsecret_installed -eq 0 ]]; then
 
   if confirm "Would you like to install a supported Git credential helper?"; then
 
-    if command -v apt >/dev/null 2>&1; then
+    if command -v apt > /dev/null 2>&1; then
       echo "Installing git-credential-manager"
 
       sudo apt update

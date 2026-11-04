@@ -5,7 +5,7 @@ REPO="GitFiend/Support"
 
 # Check for required commands
 for cmd in curl grep awk sed; do
-  if ! command -v $cmd &>/dev/null; then
+  if ! command -v $cmd &> /dev/null; then
     echo "$cmd is required but not installed."
     exit 1
   fi

@@ -14,7 +14,7 @@ fi
 
 echo "Detected distro: $DISTRO_ID, architecture: $ARCH"
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed."
   exit 1
 fi
@@ -42,7 +42,7 @@ install_fedora_redhat() {
 
   sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
 
-  sudo tee /etc/yum.repos.d/1password.repo >/dev/null <<EOF
+  sudo tee /etc/yum.repos.d/1password.repo > /dev/null << EOF
 [1password]
 name=1Password Stable Channel
 baseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch
@@ -52,7 +52,7 @@ repo_gpgcheck=1
 gpgkey=https://downloads.1password.com/linux/keys/1password.asc
 EOF
 
-  if command -v dnf &>/dev/null; then
+  if command -v dnf &> /dev/null; then
     sudo dnf install -y 1password
   else
     sudo yum install -y 1password

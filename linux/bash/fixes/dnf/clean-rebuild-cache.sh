@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! command -v dnf &>/dev/null; then
+if ! command -v dnf &> /dev/null; then
   echo "dnf is not installed."
   exit 1
 fi

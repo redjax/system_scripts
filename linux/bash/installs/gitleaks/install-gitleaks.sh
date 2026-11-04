@@ -2,7 +2,7 @@
 
 set -e
 
-if command -v gitleaks &>/dev/null; then
+if command -v gitleaks &> /dev/null; then
   echo "Gitleaks is already installed."
   exit 1
 fi

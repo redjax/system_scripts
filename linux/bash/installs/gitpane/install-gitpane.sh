@@ -5,7 +5,7 @@ REPO="affromero/gitpane"
 INSTALL_DIR="${HOME}/.local/bin"
 
 function require() {
-  command -v "$1" >/dev/null 2>&1 || {
+  command -v "$1" > /dev/null 2>&1 || {
     echo "Missing required command: $1"
     exit 1
   }

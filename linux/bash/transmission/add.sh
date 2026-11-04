@@ -8,7 +8,7 @@ TORRENT_LINK=""
 PAUSED="false"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: add.sh [OPTIONS]
 
   -h, --help                       Print this help menu
@@ -115,7 +115,7 @@ echo "Connected to ${TRANSMISSION_USERNAME}:<hidden>@${TRANSMISSION_HOST}:${TRAN
 response=$(rpc_torrent_add "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "$TORRENT_LINK" "$PAUSED")
 echo "$response" | jq .
 
-if echo "$response" | jq -e '.result == "success"' >/dev/null; then
+if echo "$response" | jq -e '.result == "success"' > /dev/null; then
   echo "Add request sent"
 else
   echo "[ERROR] Add request failed" >&2

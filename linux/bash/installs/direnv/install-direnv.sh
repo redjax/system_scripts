@@ -23,7 +23,7 @@ function install_direnv() {
       ;;
     rhel | rocky | almalinux)
       ## Try dnf first, fallback to yum for older releases
-      if command -v dnf &>/dev/null; then
+      if command -v dnf &> /dev/null; then
         sudo dnf install -y direnv
       else
         sudo yum install -y direnv
@@ -42,7 +42,7 @@ function install_direnv() {
   esac
 }
 
-if ! command -v direnv &>/dev/null; then
+if ! command -v direnv &> /dev/null; then
   echo "Detected distribution: $DISTRO_ID"
   install_direnv "$DISTRO_ID"
 

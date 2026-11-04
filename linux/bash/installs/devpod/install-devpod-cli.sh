@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl could not be found, please install curl first."
   exit 1
 fi

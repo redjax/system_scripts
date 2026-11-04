@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: scan.sh --target PATH [options]
 
 Target:
@@ -176,8 +176,8 @@ CMD[0]="$MALDET_BIN"
 mkdir -p "$OUTPUT_DIR"
 RUN_DIR="$(mktemp -d "$OUTPUT_DIR/scan.XXXXXXXX")"
 
-md_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
-printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
+md_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
+printf '%s\n' "$MALDET_VERSION_OUTPUT" > "$RUN_DIR/version.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -186,7 +186,7 @@ printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
   printf 'max_filesize_kib=%s\n' "$MAX_FILESIZE_KB"
   printf 'max_depth=%s\n' "$MAX_DEPTH"
   printf 'recent_days=%s\n' "${RECENT_DAYS:-all}"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
 md_log "Reports: $RUN_DIR"
 
@@ -216,7 +216,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\n'
   printf 'maldet\t%s\t%s\t%s\n' \
     "$STATUS" "$MD_NATIVE_RC" "$MD_WRITER_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 md_log "Result: $STATUS"
 md_log "Native exit code: $MD_NATIVE_RC"

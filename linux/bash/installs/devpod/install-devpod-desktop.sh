@@ -10,12 +10,12 @@ icon_source_dir="$install_dir/usr/share/icons/hicolor"
 icon_target_dir="$HOME/.local/share/icons/hicolor"
 
 function install_devpod {
-  if ! command -v curl &>/dev/null; then
+  if ! command -v curl &> /dev/null; then
     echo "curl could not be found, please install curl first."
     exit 1
   fi
 
-  if command -v devpod &>/dev/null || command -v devpod-desktop &>/dev/null; then
+  if command -v devpod &> /dev/null || command -v devpod-desktop &> /dev/null; then
     echo "DevPod is already installed."
     exit 0
   fi
@@ -67,7 +67,7 @@ function install_devpod {
 
   ## Create desktop entry
   mkdir -p "$desktop_entry_dir"
-  cat >"$desktop_entry_file" <<EOF
+  cat > "$desktop_entry_file" << EOF
 [Desktop Entry]
 Name=DevPod Desktop
 Comment=DevPod Development Environment GUI
