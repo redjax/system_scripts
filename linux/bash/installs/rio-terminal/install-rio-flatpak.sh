@@ -4,7 +4,7 @@ RIO_FLATPAK_CONF_DIR="$HOME/.var/app/com.rioterm.Rio/config/rio"
 RIO_NATIVE_CONF_DIR="$HOME/.config/rio"
 
 ## Check if flatpak is installed
-if ! command -v flatpak &>/dev/null; then
+if ! command -v flatpak &> /dev/null; then
   echo "Error: Flatpak is not installed. Please install it first."
   exit 1
 fi
@@ -20,7 +20,7 @@ if ! flatpak remotes --columns=name | grep -q '^flathub$'; then
 fi
 
 ## Check if Rio is already installed
-if flatpak info com.rioterm.Rio &>/dev/null; then
+if flatpak info com.rioterm.Rio &> /dev/null; then
   echo "Rio Flatpak is already installed."
 else
   echo "Installing Rio terminal from Flathub"
@@ -51,7 +51,7 @@ else
 fi
 
 ## Check if terminfo is already installed
-if infocmp rio &>/dev/null; then
+if infocmp rio &> /dev/null; then
   echo "Rio terminfo already installed"
 else
   echo "Installing Rio terminfo"

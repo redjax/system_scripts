@@ -9,7 +9,7 @@ ALL="false"
 LOCATION=""
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: move.sh [OPTIONS]
 
   -h, --help                   Print this help menu

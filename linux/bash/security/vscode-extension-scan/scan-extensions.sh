@@ -11,7 +11,7 @@ THIS_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 OUT="${THIS_DIR}/vscode-audit"
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [OPTIONS]
 
 Scan installed VS Code extensions using Docker.
@@ -146,7 +146,7 @@ fi
 
 IMG="${IMG_NAME}:${TAG}"
 
-if ! docker image inspect "$IMG" >/dev/null 2>&1; then
+if ! docker image inspect "$IMG" > /dev/null 2>&1; then
   echo "[ERROR] Image not found: $IMG" >&2
   echo "Run build-container.sh first." >&2
   exit 1
@@ -221,7 +221,7 @@ else
   echo "[INFO] Generating JSON report: $REPORT_OUT"
 
   if run_scan --format json \
-    >"$REPORT_OUT" \
+    > "$REPORT_OUT" \
     2> >(tee "$OUT/scan.log" >&2); then
     echo "[INFO] JSON report generated."
   else

@@ -5,7 +5,7 @@ APP_ID="io.missioncenter.MissionCenter"
 FLATHUB_REPO="https://flathub.org/repo/flathub.flatpakrepo"
 
 ## Check if flatpak is installed
-if ! command -v flatpak &>/dev/null; then
+if ! command -v flatpak &> /dev/null; then
   echo "Flatpak is not installed. Install it first, then add Flathub and rerun."
   echo "Ubuntu/Debian: sudo apt install flatpak"
 

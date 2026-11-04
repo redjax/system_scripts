@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi
@@ -15,7 +15,7 @@ trap 'rm -rf "$TMPDIR"' EXIT
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 
-if [[ "$OS" == "Linux" ]] && command -v flatpak >/dev/null 2>&1; then
+if [[ "$OS" == "Linux" ]] && command -v flatpak > /dev/null 2>&1; then
   flatpak remote-add --if-not-exists flathub \
     https://dl.flathub.org/repo/flathub.flatpakrepo
 

@@ -66,7 +66,7 @@ backup_crontab() {
   current_user="$(whoami)"
   local dest="$BACKUP_PATH/${TODAY}_${user}_crontab.txt"
 
-  if ! id "$user" &>/dev/null; then
+  if ! id "$user" &> /dev/null; then
     echo "[WARNING] User '$user' does not exist. Skipping."
 
     return 1
@@ -74,24 +74,24 @@ backup_crontab() {
 
   if [[ "$user" == "$current_user" && "$EUID" -ne 0 ]]; then
     # Backup own crontab, no -u
-    if ! crontab -l &>/dev/null; then
+    if ! crontab -l &> /dev/null; then
       echo "[WARNING] User '$user' has no crontab. Skipping."
 
       return 1
     fi
 
-    crontab -l >"$dest"
+    crontab -l > "$dest"
   else
     # Backing up someone else, must be root
     require_root "$user" || return 1
 
-    if ! crontab -l -u "$user" &>/dev/null; then
+    if ! crontab -l -u "$user" &> /dev/null; then
       echo "[WARNING] User '$user' has no crontab. Skipping."
 
       return 1
     fi
 
-    crontab -l -u "$user" >"$dest"
+    crontab -l -u "$user" > "$dest"
   fi
 
   echo "Backed up user's crontab: ${user} > ${dest}"

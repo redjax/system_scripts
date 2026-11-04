@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if command -v lazydocker &>/dev/null; then
+if command -v lazydocker &> /dev/null; then
   echo "Lazydocker is already installed."
   read -p "Run anyway (this will update the app if there is an available update)? (y/n): " update
 
@@ -19,7 +19,7 @@ if command -v lazydocker &>/dev/null; then
   esac
 fi
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi

@@ -43,7 +43,7 @@ function install_rclone_linux() {
 }
 
 function install_rclone_macos() {
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     echo "Installing rclone using Homebrew..."
     brew install rclone
   else
@@ -56,7 +56,7 @@ function install_rclone_macos() {
 function main() {
   OS=$(uname -s)
 
-  if command -v rclone &>/dev/null; then
+  if command -v rclone &> /dev/null; then
     echo "Rclone is already installed."
 
     return 0

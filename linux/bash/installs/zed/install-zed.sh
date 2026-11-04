@@ -29,7 +29,7 @@ cpu_platform() {
 
 # Check if flatpak is installed
 is_flatpak_installed() {
-  command -v flatpak >/dev/null 2>&1
+  command -v flatpak > /dev/null 2>&1
 }
 
 # Install Zed using flatpak if available
@@ -92,7 +92,7 @@ install_via_download() {
 create_desktop_entry() {
   local desktop_file=~/.local/share/applications/zed.desktop
   mkdir -p ~/.local/share/applications
-  cat >"$desktop_file" <<EOF
+  cat > "$desktop_file" << EOF
 [Desktop Entry]
 Name=Zed
 Comment=Zed code editor

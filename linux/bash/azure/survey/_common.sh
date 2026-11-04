@@ -33,7 +33,7 @@ function survey_strip_colors() {
 }
 
 function survey_require_az() {
-  if ! command -v az >/dev/null 2>&1; then
+  if ! command -v az > /dev/null 2>&1; then
     printf "${RED}[ERROR] The Azure CLI (az) is not installed${NC}\n" >&2
     exit 1
   fi
@@ -66,13 +66,13 @@ function survey_run_az() {
 
 function survey_get_signed_in_user_id() {
   local user_id
-  user_id="$(az ad signed-in-user show --query id -o tsv 2>/dev/null || true)"
+  user_id="$(az ad signed-in-user show --query id -o tsv 2> /dev/null || true)"
   if [[ -n "$user_id" ]]; then
     echo "$user_id"
     return 0
   fi
 
-  user_id="$(az ad signed-in-user show --query objectId -o tsv 2>/dev/null || true)"
+  user_id="$(az ad signed-in-user show --query objectId -o tsv 2> /dev/null || true)"
   if [[ -n "$user_id" ]]; then
     echo "$user_id"
     return 0
@@ -115,7 +115,7 @@ function survey_run_section() {
     return 0
   fi
 
-  if ! declare -F "$section_function" >/dev/null; then
+  if ! declare -F "$section_function" > /dev/null; then
     echo -e "${RED}[ERROR] Missing function for section: $section_name${NC}"
     return 1
   fi

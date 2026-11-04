@@ -6,7 +6,7 @@ REPO="jj-vcs/jj"
 INSTALL_DIR="/usr/local/bin"
 
 function require() {
-  command -v "$1" >/dev/null 2>&1 || {
+  command -v "$1" > /dev/null 2>&1 || {
     echo "Error: required command '$1' not found"
     exit 1
   }

@@ -10,17 +10,17 @@ tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 
 outfile="$tmpdir/security.log"
-: >"$outfile"
+: > "$outfile"
 
 append_file() {
   local f="$1"
-  [[ -f "$f" ]] && cat "$f" >>"$outfile"
+  [[ -f "$f" ]] && cat "$f" >> "$outfile"
 }
 
 append_journal() {
   local pattern="$1"
-  if command -v journalctl >/dev/null 2>&1; then
-    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >>"$outfile" || true
+  if command -v journalctl > /dev/null 2>&1; then
+    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >> "$outfile" || true
   fi
 }
 

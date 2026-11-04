@@ -21,7 +21,7 @@ function sync_run() {
 
     info "syncing ${url} -> ${target} as remote ${name}"
 
-    if git -C "$path" remote get-url "$name" >/dev/null 2>&1; then
+    if git -C "$path" remote get-url "$name" > /dev/null 2>&1; then
       run_cmd git -C "$path" remote set-url "$name" "$target"
     else
       run_cmd git -C "$path" remote add "$name" "$target"
