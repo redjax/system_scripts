@@ -30,7 +30,7 @@ EOF
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -f|--extensions-file)
+    -f | --extensions-file)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a filename." >&2
         usage >&2
@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
       EXT_FILE="$2"
       shift 2
       ;;
-    -e|--extensions-dir)
+    -e | --extensions-dir)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a directory." >&2
         usage >&2
@@ -48,7 +48,7 @@ while [[ $# -gt 0 ]]; do
       EXT_DIR="$2"
       shift 2
       ;;
-    -o|--output-dir)
+    -o | --output-dir)
       if [[ $# -lt 2 || -z "$2" ]]; then
         echo "[ERROR] $1 requires a directory." >&2
         usage >&2
@@ -57,7 +57,7 @@ while [[ $# -gt 0 ]]; do
       OUT="$2"
       shift 2
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
@@ -110,9 +110,9 @@ mkdir -p "$OUT"
 mkdir -p "$(dirname -- "$EXT_FILE")"
 
 echo "[INFO] Exporting extension inventory"
-code --list-extensions --show-versions | sort > "$EXT_FILE"
+code --list-extensions --show-versions | sort >"$EXT_FILE"
 
-printf '%s\n' "$EXT_DIR" > "$OUT/extensions-path.txt"
+printf '%s\n' "$EXT_DIR" >"$OUT/extensions-path.txt"
 
 echo "[INFO] Inventory saved to: $EXT_FILE"
 echo "[INFO] Extension directory: $EXT_DIR"

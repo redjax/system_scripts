@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat << 'EOF'
+  cat <<'EOF'
 Usage: freshclam-update.sh [options]
 
 Options:
@@ -93,7 +93,7 @@ CONFIG="$WORK_DIR/freshclam.conf"
   printf 'DatabaseDirectory "%s"\n' "$DATABASE"
   printf 'DatabaseOwner %s\n' "$(id -un)"
   printf 'DatabaseMirror database.clamav.net\n'
-} > "$CONFIG"
+} >"$CONFIG"
 
 CMD=(freshclam "--config-file=$CONFIG")
 
