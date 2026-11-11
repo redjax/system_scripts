@@ -12,7 +12,7 @@ BASE_DIR="${RENOVATE_BASE_DIR:-$REPO_ROOT/cache/renovate}"
 RENOVATE_BIN="${RENOVATE_BIN:-}"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   run-renovate-local.sh [options]
 
@@ -107,11 +107,11 @@ export RENOVATE_BASE_DIR="$BASE_DIR"
 export LOG_LEVEL="${LOG_LEVEL:-info}"
 
 if [[ -z "$RENOVATE_BIN" ]]; then
-  if command -v npx >/dev/null 2>&1; then
+  if command -v npx > /dev/null 2>&1; then
     RENOVATE_BIN="npx"
-  elif command -v renovate >/dev/null 2>&1; then
+  elif command -v renovate > /dev/null 2>&1; then
     RENOVATE_BIN="renovate"
-  elif command -v npm >/dev/null 2>&1; then
+  elif command -v npm > /dev/null 2>&1; then
     echo "Renovate not found; installing with npm..."
     npm install -g renovate
     RENOVATE_BIN="renovate"

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   set-udev-permissions.sh --allow --device /dev/hidraw#
   set-udev-permissions.sh --deny  --device /dev/hidraw#
@@ -65,7 +65,7 @@ if ! $allow && ! $deny; then
 fi
 
 if [[ -z "$device" ]]; then
-  cat <<'EOF'
+  cat << 'EOF'
 No device was provided. You must pass /dev/hidraw{num}.
 
 Follow the steps below to find which /dev/hidraw device you should use:

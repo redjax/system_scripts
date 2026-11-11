@@ -3,7 +3,7 @@ set -uo pipefail
 
 ## Check dependencies
 for cmd in jq curl uname; do
-  if ! command -v "$cmd" &>/dev/null; then
+  if ! command -v "$cmd" &> /dev/null; then
     echo "[ERROR] '$cmd' is not installed."
     exit 1
   fi

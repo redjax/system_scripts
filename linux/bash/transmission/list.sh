@@ -5,7 +5,7 @@ THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${THIS_DIR}/_common.sh"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: all.sh [OPTIONS]
 
   -h, --help                   Print this help menu

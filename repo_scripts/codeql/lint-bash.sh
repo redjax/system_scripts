@@ -9,7 +9,7 @@ CWD="$(pwd)"
 LINT_PATH="${_LINT_BASH_REPO_ROOT}"
 LINT_SEV="error"
 
-if ! command -v shellcheck &>/dev/null; then
+if ! command -v shellcheck &> /dev/null; then
   echo "[ERROR] shellcheck is not installed."
   exit 1
 fi
@@ -20,7 +20,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [OPTIONS]
 
 Options:

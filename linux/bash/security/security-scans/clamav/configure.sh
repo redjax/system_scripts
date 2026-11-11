@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: configure.sh [options]
 
 Options:
@@ -138,7 +138,7 @@ case "$DATABASE/" in
     ;;
 esac
 
-id "$DATABASE_OWNER" >/dev/null 2>&1 ||
+id "$DATABASE_OWNER" > /dev/null 2>&1 ||
   clam_die "Unknown database owner: $DATABASE_OWNER"
 
 OWNER_UID="$(id -u "$DATABASE_OWNER")"
@@ -232,7 +232,7 @@ if [[ "$SELINUX_ACTIVE" -eq 1 ]]; then
     while IFS= read -r existing_type; do
       [[ "$existing_type" == antivirus_db_t ]] ||
         clam_die "Conflicting SELinux mapping exists for: $DB_REGEX"
-    done <<<"$EXISTING_TYPES"
+    done <<< "$EXISTING_TYPES"
 
     SELINUX_MAPPING_EXISTS=1
   fi
@@ -320,11 +320,11 @@ if [[ -n "$APPARMOR_PROFILE" ]]; then
     fi
 
     if ! grep -Fqx "$RULE_DIR" "$APPARMOR_LOCAL"; then
-      printf '\n%s\n' "$RULE_DIR" >>"$APPARMOR_LOCAL"
+      printf '\n%s\n' "$RULE_DIR" >> "$APPARMOR_LOCAL"
     fi
 
     if ! grep -Fqx "$RULE_FILES" "$APPARMOR_LOCAL"; then
-      printf '%s\n' "$RULE_FILES" >>"$APPARMOR_LOCAL"
+      printf '%s\n' "$RULE_FILES" >> "$APPARMOR_LOCAL"
     fi
 
     apparmor_parser -r "$APPARMOR_PROFILE"

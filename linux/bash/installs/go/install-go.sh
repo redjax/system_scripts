@@ -47,12 +47,12 @@ rm -f "$TARBALL"
 
 # Ensure PATH
 if ! grep -q '/usr/local/go/bin' "$HOME/.bashrc"; then
-  echo 'export PATH="/usr/local/go/bin:$PATH"' >>"$HOME/.bashrc"
+  echo 'export PATH="/usr/local/go/bin:$PATH"' >> "$HOME/.bashrc"
 fi
 
 # Disable Go toolchain auto-downloads
 if ! grep -q 'GOTOOLCHAIN=local' "$HOME/.bashrc"; then
-  echo 'export GOTOOLCHAIN=local' >>"$HOME/.bashrc"
+  echo 'export GOTOOLCHAIN=local' >> "$HOME/.bashrc"
 fi
 
 export PATH="/usr/local/go/bin:$PATH"

@@ -15,7 +15,7 @@ rkh_die() {
 }
 
 rkh_have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 rkh_need_value() {
@@ -69,7 +69,7 @@ rkh_require_linux() {
 rkh_action_usage() {
   local action="$1"
 
-  cat <<EOF
+  cat << EOF
 Usage: ${action}.sh [options]
 
 Common options:
@@ -83,7 +83,7 @@ EOF
 
   case "$action" in
     scan)
-      cat <<'EOF'
+      cat << 'EOF'
 
 Scan options:
   --enable TESTS     Run selected tests; comma-separated rkhunter names
@@ -103,7 +103,7 @@ EOF
       ;;
 
     configure)
-      cat <<'EOF'
+      cat << 'EOF'
 
 Behavior:
   Validate the existing configuration for its currently enabled tests.
@@ -116,7 +116,7 @@ EOF
       ;;
 
     update)
-      cat <<'EOF'
+      cat << 'EOF'
 
 Behavior:
   Update rkhunter detection/support data.
@@ -133,7 +133,7 @@ EOF
       ;;
 
     baseline)
-      cat <<'EOF'
+      cat << 'EOF'
 
 Required option:
   --accept-current-state
@@ -152,7 +152,7 @@ EOF
       ;;
   esac
 
-  cat <<'EOF'
+  cat << 'EOF'
 
 Except for dry runs, invoke this script as root.
 Reports preserve rkhunter's native exit code.
@@ -313,7 +313,7 @@ rkh_action_main() {
     rkh_die "rkhunter not found. Run install.sh first."
 
   # This lock coordinates these wrappers only.
-  if ! mkdir -m 0700 "$lock_dir" 2>/dev/null; then
+  if ! mkdir -m 0700 "$lock_dir" 2> /dev/null; then
     rkh_die "Suite lock exists: $lock_dir. Check for another running operation."
   fi
 
@@ -327,7 +327,7 @@ rkh_action_main() {
   run_dir="$(mktemp -d "$output_dir/${action}.XXXXXXXX")"
   cmd+=(--logfile "$run_dir/rkhunter.log")
 
-  rkh_print_command "${cmd[@]}" >"$run_dir/command.txt"
+  rkh_print_command "${cmd[@]}" > "$run_dir/command.txt"
 
   {
     printf 'action=%s\n' "$action"
@@ -336,7 +336,7 @@ rkh_action_main() {
     printf 'architecture=%s\n' "$(uname -m)"
     printf 'config=%s\n' "${config:-package-default}"
     rkhunter --version
-  } >"$run_dir/metadata.txt"
+  } > "$run_dir/metadata.txt"
 
   rkh_log "Action: $action"
   rkh_log "Reports: $run_dir"
@@ -359,9 +359,9 @@ rkh_action_main() {
   else
     # Create the output before executing so redirection failures are
     # wrapper errors, not mistaken for native scan warnings.
-    : >"$run_dir/output.log"
+    : > "$run_dir/output.log"
 
-    "${cmd[@]}" >"$run_dir/output.log" 2>&1 || native_rc=$?
+    "${cmd[@]}" > "$run_dir/output.log" 2>&1 || native_rc=$?
   fi
 
   if [[ "$writer_rc" -ne 0 ]]; then
@@ -412,7 +412,7 @@ rkh_action_main() {
     printf 'tool\taction\tstatus\tnative_exit_code\twriter_exit_code\n'
     printf 'rkhunter\t%s\t%s\t%s\t%s\n' \
       "$action" "$status" "$native_rc" "$writer_rc"
-  } >"$run_dir/result.tsv"
+  } > "$run_dir/result.tsv"
 
   rkh_log "Result: $status"
   rkh_log "Native exit code: $native_rc"

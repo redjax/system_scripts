@@ -20,7 +20,7 @@ DEFAULT_BRANCH="main"
 FETCH_ALL="true"
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage:
   ${0##*/} --target-repo DIRECTORY [OPTIONS]
 
@@ -95,7 +95,7 @@ done
 [[ -n "${TARGET_REPO}" ]] || errexit "--target-repo DIRECTORY is required"
 [[ -d "${TARGET_REPO}" ]] || errexit "Target repository directory does not exist: ${TARGET_REPO}"
 
-if ! git -C "${TARGET_REPO}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+if ! git -C "${TARGET_REPO}" rev-parse --is-inside-work-tree > /dev/null 2>&1; then
   errexit "Target is not inside a Git work tree: ${TARGET_REPO}"
 fi
 

@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: scan.sh [options]
 
 Audit selection:
@@ -192,7 +192,7 @@ CMD+=(
   --report-file "$RUN_DIR/lynis-report.dat"
 )
 
-lynis_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
+lynis_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -202,14 +202,14 @@ lynis_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
   printf 'profile=%s\n' "${PROFILE:-native-default}"
   printf 'category=%s\n' "${CATEGORY:-native-default}"
   printf 'tests=%s\n' "${TESTS[*]:-native-default}"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
 VERSION_RC=0
 "$LYNIS_BIN" show version \
-  >"$RUN_DIR/version.txt" 2>&1 || VERSION_RC=$?
+  > "$RUN_DIR/version.txt" 2>&1 || VERSION_RC=$?
 
 printf 'version_command_exit_code=%s\n' "$VERSION_RC" \
-  >>"$RUN_DIR/metadata.txt"
+  >> "$RUN_DIR/metadata.txt"
 
 lynis_log "Reports: $RUN_DIR"
 
@@ -225,8 +225,8 @@ if [[ "$VERBOSE" -eq 1 ]]; then
   NATIVE_RC="${PIPE_CODES[0]}"
   WRITER_RC="${PIPE_CODES[1]}"
 else
-  : >"$RUN_DIR/output.log"
-  "${CMD[@]}" >"$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
+  : > "$RUN_DIR/output.log"
+  "${CMD[@]}" > "$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
 fi
 
 REPORT="$RUN_DIR/lynis-report.dat"
@@ -248,7 +248,7 @@ if [[ -s "$REPORT" ]]; then
   awk '
     index($0, "warning[]=") == 1 ||
     index($0, "suggestion[]=") == 1
-  ' "$REPORT" >"$RUN_DIR/findings.txt"
+  ' "$REPORT" > "$RUN_DIR/findings.txt"
 fi
 
 if [[ "$WRITER_RC" -ne 0 ]]; then
@@ -269,7 +269,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\twarnings\tsuggestions\n'
   printf 'lynis\t%s\t%s\t%s\t%s\t%s\n' \
     "$STATUS" "$NATIVE_RC" "$WRITER_RC" "$WARNINGS" "$SUGGESTIONS"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 lynis_log "Result: $STATUS"
 lynis_log "Native exit code: $NATIVE_RC"

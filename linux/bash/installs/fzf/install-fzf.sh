@@ -4,7 +4,7 @@ SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SO
 PARENT_DIR="$(dirname "$SCRIPT_PATH")"
 
 function install_fzf {
-  if command -v fzf 2>&1 >/dev/null; then
+  if command -v fzf 2>&1 > /dev/null; then
     echo "fzf is already installed."
     return 0
   fi

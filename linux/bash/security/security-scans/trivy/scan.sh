@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   scan.sh --mode filesystem --target DIR [options]
   scan.sh --mode rootfs --target DIR [options]
@@ -153,7 +153,7 @@ validate_list() {
     "" | ,* | *, | *,,*) tv_die "Invalid $kind list: $list" ;;
   esac
 
-  IFS=',' read -r -a items <<<"$list"
+  IFS=',' read -r -a items <<< "$list"
 
   for item in "${items[@]}"; do
     case "$kind:$item" in
@@ -222,7 +222,7 @@ else
     CONFIG_PATH="$CONFIG"
   else
     CONFIG_PATH="$RUN_DIR/empty-config.yaml"
-    printf '{}\n' >"$CONFIG_PATH"
+    printf '{}\n' > "$CONFIG_PATH"
   fi
 fi
 
@@ -260,7 +260,7 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
   exit 0
 fi
 
-tv_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
+tv_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
 
 {
   printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -270,9 +270,9 @@ tv_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
   printf 'severity=%s\n' "$SEVERITY"
   printf 'ignore_unfixed=%s\n' "$IGNORE_UNFIXED"
   printf 'timeout=%s\n' "$TIMEOUT"
-} >"$RUN_DIR/metadata.txt"
+} > "$RUN_DIR/metadata.txt"
 
-"$TRIVY_BIN" --version >"$RUN_DIR/version.txt" 2>&1
+"$TRIVY_BIN" --version > "$RUN_DIR/version.txt" 2>&1
 
 tv_log "Mode: $MODE"
 tv_log "Reports: $RUN_DIR"
@@ -289,8 +289,8 @@ if [[ "$VERBOSE" -eq 1 ]]; then
   NATIVE_RC="${PIPE_CODES[0]}"
   WRITER_RC="${PIPE_CODES[1]}"
 else
-  : >"$RUN_DIR/output.log"
-  "${CMD[@]}" >"$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
+  : > "$RUN_DIR/output.log"
+  "${CMD[@]}" > "$RUN_DIR/output.log" 2>&1 || NATIVE_RC=$?
 fi
 
 CONVERT_RC=0
@@ -305,7 +305,7 @@ if [[ "$NATIVE_RC" -eq 0 || "$NATIVE_RC" -eq 10 ]] &&
     --format table \
     --output "$RUN_DIR/report.txt" \
     "$RUN_DIR/report.json" \
-    >"$RUN_DIR/convert.log" 2>&1 || CONVERT_RC=$?
+    > "$RUN_DIR/convert.log" 2>&1 || CONVERT_RC=$?
 else
   CONVERT_RC=1
 fi
@@ -340,7 +340,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\tconvert_exit_code\n'
   printf 'trivy\t%s\t%s\t%s\t%s\n' \
     "$STATUS" "$NATIVE_RC" "$WRITER_RC" "$CONVERT_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 if [[ "$VERBOSE" -eq 1 && -f "$RUN_DIR/report.txt" ]]; then
   cat "$RUN_DIR/report.txt"

@@ -11,7 +11,7 @@ fi
 
 function create_monitor_config {
   ## Write global server flags
-  cat <<EOF | sudo tee -a /etc/X11/xorg.conf.d/10-monitor.conf
+  cat << EOF | sudo tee -a /etc/X11/xorg.conf.d/10-monitor.conf
 Section "ServerFlags"
     Option "DontZap" "True"  # Prevent Ctrl+Alt+Backspace from terminating the X session
     Option "BlankTime" "0"   # Disable screen blanking
@@ -32,7 +32,7 @@ EOF
 
   ## Loop through each connected monitor and add it to the config
   for monitor in $connected_monitors; do
-    cat <<EOF | sudo tee -a /etc/X11/xorg.conf.d/10-monitor.conf
+    cat << EOF | sudo tee -a /etc/X11/xorg.conf.d/10-monitor.conf
 Section "Monitor"
     Identifier "$monitor"
     Option "DPMS" "false"  # Disable DPMS (Display Power Management Signaling)

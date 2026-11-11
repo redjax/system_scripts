@@ -8,7 +8,7 @@ RM_FINISHED="false"
 DELETE_DATA="false"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: finished.sh [OPTIONS]
 
   -h, --help                   Print this help menu

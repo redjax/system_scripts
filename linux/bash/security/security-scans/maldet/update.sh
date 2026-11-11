@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: update.sh [options]
 
 Options:
@@ -83,8 +83,8 @@ RUN_DIR="$(mktemp -d "$OUTPUT_DIR/update.XXXXXXXX")"
 
 CMD=("$MALDET_BIN" --update-sigs)
 
-md_print_command "${CMD[@]}" >"$RUN_DIR/command.txt"
-printf '%s\n' "$MALDET_VERSION_OUTPUT" >"$RUN_DIR/version.txt"
+md_print_command "${CMD[@]}" > "$RUN_DIR/command.txt"
+printf '%s\n' "$MALDET_VERSION_OUTPUT" > "$RUN_DIR/version.txt"
 
 md_log "Reports: $RUN_DIR"
 
@@ -102,7 +102,7 @@ fi
   printf 'tool\tstatus\tnative_exit_code\twriter_exit_code\n'
   printf 'maldet\t%s\t%s\t%s\n' \
     "$STATUS" "$MD_NATIVE_RC" "$MD_WRITER_RC"
-} >"$RUN_DIR/result.tsv"
+} > "$RUN_DIR/result.tsv"
 
 md_log "Result: $STATUS"
 md_log "Native exit code: $MD_NATIVE_RC"

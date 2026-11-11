@@ -10,7 +10,7 @@ ACTION_METHOD="torrent-stop"
 ACTION_NAME="Pause"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: pause.sh [OPTIONS]
 
   -h, --help                   Print this help menu

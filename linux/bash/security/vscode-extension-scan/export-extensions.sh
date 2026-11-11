@@ -110,9 +110,9 @@ mkdir -p "$OUT"
 mkdir -p "$(dirname -- "$EXT_FILE")"
 
 echo "[INFO] Exporting extension inventory"
-code --list-extensions --show-versions | sort >"$EXT_FILE"
+code --list-extensions --show-versions | sort > "$EXT_FILE"
 
-printf '%s\n' "$EXT_DIR" >"$OUT/extensions-path.txt"
+printf '%s\n' "$EXT_DIR" > "$OUT/extensions-path.txt"
 
 echo "[INFO] Inventory saved to: $EXT_FILE"
 echo "[INFO] Extension directory: $EXT_DIR"

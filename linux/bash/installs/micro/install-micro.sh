@@ -63,9 +63,9 @@ get_latest_release() {
 
   echo "Fetching latest release information from GitHub..." >&2
 
-  if command -v curl >/dev/null 2>&1; then
+  if command -v curl > /dev/null 2>&1; then
     latest_tag=$(curl -sL "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-  elif command -v wget >/dev/null 2>&1; then
+  elif command -v wget > /dev/null 2>&1; then
     latest_tag=$(wget -qO- "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
   else
     echo "[ERROR] Neither curl nor wget is available. Please install one of them." >&2
@@ -82,7 +82,7 @@ get_latest_release() {
 
 ## Function to get current installed version
 get_installed_version() {
-  if command -v micro >/dev/null 2>&1; then
+  if command -v micro > /dev/null 2>&1; then
     micro -version 2>&1 | head -n1 | awk '{print $3}'
   else
     echo ""
@@ -103,13 +103,13 @@ install_micro() {
   echo "Downloading micro $version for $platform"
   echo "Download URL: $download_url"
 
-  if command -v curl >/dev/null 2>&1; then
+  if command -v curl > /dev/null 2>&1; then
     if ! curl -fSL --progress-bar "$download_url" -o "$tarball"; then
       echo "[ERROR] Download failed!"
       cleanup
       exit 1
     fi
-  elif command -v wget >/dev/null 2>&1; then
+  elif command -v wget > /dev/null 2>&1; then
     if ! wget --show-progress -O "$tarball" "$download_url"; then
       echo "[ERROR] Download failed!"
       cleanup
@@ -168,12 +168,12 @@ main() {
   echo ""
 
   ## Check for required tools
-  if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+  if ! command -v curl > /dev/null 2>&1 && ! command -v wget > /dev/null 2>&1; then
     echo "[ERROR] Neither curl nor wget is installed. Please install one of them."
     exit 1
   fi
 
-  if ! command -v tar >/dev/null 2>&1; then
+  if ! command -v tar > /dev/null 2>&1; then
     echo "[ERROR] tar is not installed. Please install it."
     exit 1
   fi
@@ -209,7 +209,7 @@ main() {
   install_micro "$platform" "$latest_version"
 
   ## Verify installation
-  if command -v micro >/dev/null 2>&1; then
+  if command -v micro > /dev/null 2>&1; then
     echo "Verification: $(micro -version 2>&1 | head -n1)"
   else
     echo "[WARN] micro command not found. You may need to restart your shell or add $INSTALL_DIR to your PATH."

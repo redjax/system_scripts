@@ -4,18 +4,18 @@ set -euo pipefail
 ## Find a Python interpreter for pip installs
 PYTHON_BIN=""
 for bin in python3 python py py3 python; do
-  if command -v "$bin" >/dev/null 2>&1; then
+  if command -v "$bin" > /dev/null 2>&1; then
     PYTHON_BIN=$bin
     break
   fi
 done
 
 ## Ensure git-filter-repo is installed (try uv first, then pip)
-if ! command -v git-filter-repo >/dev/null 2>&1; then
+if ! command -v git-filter-repo > /dev/null 2>&1; then
   echo "git-filter-repo not found."
 
   ## Install with uv, if available
-  if command -v uv >/dev/null 2>&1; then
+  if command -v uv > /dev/null 2>&1; then
     echo "uv found. Installing git-filter-repo as a tool..."
     uv tool install git-filter-repo
     export PATH="$HOME/.local/bin:$PATH"
@@ -33,7 +33,7 @@ if ! command -v git-filter-repo >/dev/null 2>&1; then
 fi
 
 ## Test git-filter-repo was installed correctly
-if ! command -v git-filter-repo >/dev/null 2>&1; then
+if ! command -v git-filter-repo > /dev/null 2>&1; then
   echo "git-filter-repo still not found after installation attempts."
   exit 1
 fi

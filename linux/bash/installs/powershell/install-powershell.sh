@@ -23,7 +23,7 @@ function error() {
 }
 
 function require_cmd() {
-  if ! command -v "$1" >/dev/null 2>&1; then
+  if ! command -v "$1" > /dev/null 2>&1; then
     error "Required command not found: $1"
   fi
 }
@@ -37,7 +37,7 @@ function cleanup_tmp_dir() {
 function run_as_root() {
   if [[ "${EUID}" -eq 0 ]]; then
     "$@"
-  elif command -v sudo >/dev/null 2>&1; then
+  elif command -v sudo > /dev/null 2>&1; then
     sudo "$@"
   else
     error "This action requires root privileges. Install sudo or run as root."
@@ -69,7 +69,7 @@ function is_musl() {
     return 0
   fi
 
-  if command -v ldd >/dev/null 2>&1 && ldd --version 2>&1 | grep -qi musl; then
+  if command -v ldd > /dev/null 2>&1 && ldd --version 2>&1 | grep -qi musl; then
     return 0
   fi
 
@@ -133,11 +133,11 @@ function is_update_needed() {
 }
 
 function current_pwsh_version() {
-  if ! command -v pwsh >/dev/null 2>&1; then
+  if ! command -v pwsh > /dev/null 2>&1; then
     return 1
   fi
 
-  pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion.ToString()' 2>/dev/null | tr -d '[:space:]'
+  pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion.ToString()' 2> /dev/null | tr -d '[:space:]'
 }
 
 function extract_latest_tag() {
@@ -228,17 +228,17 @@ function install_deb() {
 function install_rpm() {
   local pkg_file="$1"
 
-  if command -v dnf >/dev/null 2>&1; then
+  if command -v dnf > /dev/null 2>&1; then
     run_as_root dnf install -y "$pkg_file"
     return
   fi
 
-  if command -v yum >/dev/null 2>&1; then
+  if command -v yum > /dev/null 2>&1; then
     run_as_root yum localinstall -y "$pkg_file"
     return
   fi
 
-  if command -v zypper >/dev/null 2>&1; then
+  if command -v zypper > /dev/null 2>&1; then
     run_as_root zypper --non-interactive install "$pkg_file"
     return
   fi

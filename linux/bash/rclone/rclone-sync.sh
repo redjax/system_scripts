@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v rclone >/dev/null 2>&1; then
+if ! command -v rclone > /dev/null 2>&1; then
   echo "[ERROR] rclone is not installed" >&2
   exit 1
 fi
@@ -23,7 +23,7 @@ RCLONE_LOG_FILE="${RCLONE_LOG_FILE:-}"
 RCLONE_DRY_RUN="${RCLONE_DRY_RUN:-false}"
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: ${0} [OPTIONS]
 
 Options:
@@ -182,7 +182,7 @@ fi
 
 LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/restic-rclone-sync.lock"
 
-exec 200>"$LOCK_FILE"
+exec 200> "$LOCK_FILE"
 
 if ! flock -n 200; then
   error "Another sync is already running (lock: $LOCK_FILE)"

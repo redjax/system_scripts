@@ -15,7 +15,7 @@ main() {
 
 ## Help message function
 show_help() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [PROGRAM_NAME]...
 
 Kills all processes matching each PROGRAM_NAME argument.

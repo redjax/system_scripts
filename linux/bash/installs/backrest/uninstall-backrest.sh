@@ -5,7 +5,7 @@ SERVICE_NAME="backrest"
 SERVICE_PATH="/etc/systemd/system/${SERVICE_NAME}.service"
 BINARY_PATH="/usr/local/bin/backrest"
 
-if ! command -v backrest &>/dev/null; then
+if ! command -v backrest &> /dev/null; then
   echo "Backrest is not installed."
   exit 1
 fi

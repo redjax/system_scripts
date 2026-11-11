@@ -19,8 +19,8 @@ add_if_exists() {
 
 journal_fallback() {
   local pattern="$1"
-  if command -v journalctl >/dev/null 2>&1; then
-    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" >"$tmpdir/journal.log" || true
+  if command -v journalctl > /dev/null 2>&1; then
+    journalctl -b --no-pager -o short-iso | grep -Ei "$pattern" > "$tmpdir/journal.log" || true
     [[ -s "$tmpdir/journal.log" ]] && logs+=("$tmpdir/journal.log")
   fi
 }
