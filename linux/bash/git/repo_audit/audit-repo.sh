@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v git >/dev/null 2>&1; then
+if ! command -v git > /dev/null 2>&1; then
   echo "[ERROR] git is not installed" >&2
   exit 1
 fi
@@ -22,7 +22,7 @@ trap cleanup EXIT
 
 ## Print help menu
 function usage() {
-  cat <<EOF
+  cat << EOF
 
 
 Usage: $0 [OPTIONS]
@@ -177,7 +177,7 @@ function parse_args() {
 
 ## Ensure target repo is a git repo
 function ensure_repo() {
-  if ! git -C "$TARGET_REPO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if ! git -C "$TARGET_REPO" rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     echo "[ERROR] Not a git repository: $TARGET_REPO" >&2
     exit 1
   fi
@@ -352,7 +352,7 @@ function submodules() {
 function lfs() {
   echo "[ Git LFS ]"
   echo
-  if git lfs version >/dev/null 2>&1; then
+  if git lfs version > /dev/null 2>&1; then
     git lfs ls-files
   else
     echo "Git LFS is not installed or available."

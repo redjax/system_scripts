@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v brew >/dev/null 2>&1; then
+if ! command -v brew > /dev/null 2>&1; then
   echo "[ERROR] Homebrew is not installed" >&2
   exit 1
 fi
@@ -9,7 +9,7 @@ fi
 DRY_RUN="false"
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage:
   ${0##*/} [OPTIONS]
 
@@ -25,7 +25,7 @@ while [[ $# -gt 0 ]]; do
       DRY_RUN="true"
       shift
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 1
       ;;
@@ -51,4 +51,3 @@ fi
 
 echo
 echo "Homebrew cleanup complete"
-

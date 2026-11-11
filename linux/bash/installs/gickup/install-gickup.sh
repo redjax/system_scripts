@@ -6,7 +6,7 @@ REPO="cooperspencer/gickup"
 
 ## Check for required commands
 for cmd in curl sha256sum tar; do
-  if ! command -v $cmd &>/dev/null; then
+  if ! command -v $cmd &> /dev/null; then
     echo "$cmd is required but not installed."
     exit 1
   fi

@@ -16,7 +16,7 @@ function detect_linux_distro() {
 }
 
 function install_fresh_brew() {
-  if ! command -v brew &>/dev/null; then
+  if ! command -v brew &> /dev/null; then
     echo "Error: Homebrew is not installed. Install it from https://brew.sh"
     exit 1
   fi
@@ -26,9 +26,9 @@ function install_fresh_brew() {
 }
 
 function install_fresh_arch() {
-  if command -v yay &>/dev/null; then
+  if command -v yay &> /dev/null; then
     yay -S fresh-editor-bin
-  elif command -v paru &>/dev/null; then
+  elif command -v paru &> /dev/null; then
     paru -S fresh-editor-bin
   else
     echo "Installing fresh-editor from AUR manually"

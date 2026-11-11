@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-if ! command -v freshclam &>/dev/null; then
+if ! command -v freshclam &> /dev/null; then
   echo "freshclam is not installed."
   exit 1
 fi
@@ -19,7 +19,7 @@ FRESHCLAM_CONF_PATH=""
 FORCE=false
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $0 [-f] [-h]
 
 Options:

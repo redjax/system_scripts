@@ -5,7 +5,7 @@ umask 077
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   run-scans.sh --all [options]
   run-scans.sh --scanners LIST [options]
@@ -113,7 +113,7 @@ die() {
 }
 
 have() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 need_value() {
@@ -158,7 +158,7 @@ validate_list() {
       ;;
   esac
 
-  IFS=',' read -r -a items <<<"$list"
+  IFS=',' read -r -a items <<< "$list"
 
   for item in "${items[@]}"; do
     case "$kind:$item" in
@@ -361,7 +361,7 @@ else
   esac
 
   REQUESTED=()
-  IFS=',' read -r -a REQUESTED <<<"$SELECTION"
+  IFS=',' read -r -a REQUESTED <<< "$SELECTION"
 
   for scanner in "${REQUESTED[@]}"; do
     case "$scanner" in
@@ -558,7 +558,7 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
   SUMMARY="$RUN_DIR/summary.tsv"
 
   printf 'job\tscanner\tscope\tstatus\tadapter_exit_code\toutput_log\n' \
-    >"$SUMMARY"
+    > "$SUMMARY"
 
   {
     printf 'started_utc=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -573,7 +573,7 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
       printf 'trivy_severity=%s\n' "$TRIVY_SEVERITY"
       printf 'trivy_timeout=%s\n' "$TRIVY_TIMEOUT"
     fi
-  } >"$RUN_DIR/metadata.txt"
+  } > "$RUN_DIR/metadata.txt"
 
   log "Batch reports: $RUN_DIR"
 fi
@@ -730,11 +730,11 @@ run_job() {
     return 0
   fi
 
-  print_command "${command[@]}" >"$job_dir/command.txt"
+  print_command "${command[@]}" > "$job_dir/command.txt"
   log "[$JOB_NUMBER] Starting $scanner: $scope"
 
   if [[ ! -f "$adapter" ]]; then
-    printf 'Missing adapter: %s\n' "$adapter" >"$job_dir/output.log"
+    printf 'Missing adapter: %s\n' "$adapter" > "$job_dir/output.log"
     rc=127
   elif [[ "$VERBOSE" -eq 1 ]]; then
     set +e
@@ -745,8 +745,8 @@ run_job() {
     rc="${pipe_codes[0]}"
     writer_rc="${pipe_codes[1]}"
   else
-    : >"$job_dir/output.log"
-    "${command[@]}" >"$job_dir/output.log" 2>&1 || rc=$?
+    : > "$job_dir/output.log"
+    "${command[@]}" > "$job_dir/output.log" 2>&1 || rc=$?
   fi
 
   case "$rc" in
@@ -783,7 +783,7 @@ run_job() {
   {
     printf 'adapter_exit_code=%s\n' "$rc"
     printf 'writer_exit_code=%s\n' "$writer_rc"
-  } >"$job_dir/status.txt"
+  } > "$job_dir/status.txt"
 
   printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
     "$JOB_NUMBER" \
@@ -792,7 +792,7 @@ run_job() {
     "$JOB_STATUS" \
     "$rc" \
     "$job_dir/output.log" \
-    >>"$SUMMARY"
+    >> "$SUMMARY"
 
   log "[$JOB_NUMBER] $scanner: $JOB_STATUS (adapter exit $rc)"
 }

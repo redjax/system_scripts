@@ -37,7 +37,7 @@ install_dbeaver_rpm() {
 }
 
 main() {
-  if command -v flatpak >/dev/null 2>&1; then
+  if command -v flatpak > /dev/null 2>&1; then
     install_flatpak_dbeaver
     exit 0
   fi

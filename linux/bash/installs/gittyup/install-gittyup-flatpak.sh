@@ -2,12 +2,12 @@
 
 set -e
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed."
   exit 1
 fi
 
-if ! command -v flatpak &>/dev/null; then
+if ! command -v flatpak &> /dev/null; then
   echo "Flatpak not found. Please install Flatpak first."
   exit 1
 fi

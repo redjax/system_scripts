@@ -42,7 +42,7 @@ detect_arch() {
 
 ## Check if lnav is already installed
 check_installed() {
-  if command -v lnav &>/dev/null; then
+  if command -v lnav &> /dev/null; then
     INSTALLED_VERSION=$(lnav -V 2>&1 | head -n1 | grep -oP 'lnav \K[0-9.]+' || echo "unknown")
     return 0
   else
@@ -101,7 +101,7 @@ install_via_package_manager() {
       sudo zypper install -y lnav
       ;;
     macos)
-      if command -v brew &>/dev/null; then
+      if command -v brew &> /dev/null; then
         echo "Installing lnav via Homebrew"
 
         brew install lnav
@@ -169,7 +169,7 @@ install_from_github() {
       echo "Installing lnav to /usr/local/bin"
       sudo install -m 755 "$lnav_binary" /usr/local/bin/lnav
 
-      cd - >/dev/null
+      cd - > /dev/null
       rm -rf "$temp_dir"
 
       echo "lnav installed successfully"
@@ -178,7 +178,7 @@ install_from_github() {
     else
       echo "ERROR: Could not find lnav binary in extracted files"
 
-      cd - >/dev/null
+      cd - > /dev/null
       rm -rf "$temp_dir"
 
       return 1
@@ -275,7 +275,7 @@ main() {
   fi
 
   ## Verify installation
-  if command -v lnav &>/dev/null; then
+  if command -v lnav &> /dev/null; then
     FINAL_VERSION=$(lnav -V 2>&1 | head -n1)
 
     echo "Installation complete!"

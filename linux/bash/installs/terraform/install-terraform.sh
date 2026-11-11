@@ -11,17 +11,17 @@ case "$ARCH" in
   *) echo "Unsupported architecture: $ARCH" && exit 1 ;;
 esac
 
-if command -v terraform &>/dev/null; then
+if command -v terraform &> /dev/null; then
   echo "Terraform is already installed."
   exit 0
 fi
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed."
   exit 1
 fi
 
-if ! command -v unzip &>/dev/null; then
+if ! command -v unzip &> /dev/null; then
   echo "unzip is not installed."
   exit 1
 fi
@@ -31,7 +31,7 @@ if [ "$OS" = "Darwin" ]; then
   echo "Detected OS: $OS"
 
   ## On macOS, prefer Homebrew if available
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     echo "Installing Terraform via Homebrew"
     brew install terraform
   else
@@ -160,7 +160,7 @@ elif [ "$OS" = "Linux" ]; then
       echo "Installing Terraform via pacman"
 
       ## On Arch Linux, use pacman or AUR
-      if command -v pacman >/dev/null 2>&1; then
+      if command -v pacman > /dev/null 2>&1; then
         sudo pacman -Sy --noconfirm terraform
       else
         echo "Pacman not found. Please install terraform manually or via AUR."
@@ -177,7 +177,7 @@ else
 fi
 
 ## Verify installation
-if command -v terraform &>/dev/null; then
+if command -v terraform &> /dev/null; then
   echo "Installed Terraform version: $(terraform version)"
   terraform version
 else

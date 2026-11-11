@@ -9,12 +9,12 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-function have_cmd() { command -v "$1" >/dev/null 2>&1; }
+function have_cmd() { command -v "$1" > /dev/null 2>&1; }
 
 function start_service() {
   ## systemd path
   if have_cmd systemctl; then
-    systemctl enable --now "$1" 2>/dev/null || true
+    systemctl enable --now "$1" 2> /dev/null || true
   fi
 }
 
@@ -49,7 +49,7 @@ function install_pkg() {
 echo "Detecting time sync capability"
 
 ## systemd-timesyncd (preferred on systemd systems)
-if have_cmd timedatectl && systemctl is-system-running >/dev/null 2>&1; then
+if have_cmd timedatectl && systemctl is-system-running > /dev/null 2>&1; then
   echo "Using systemd timedatectl"
 
   timedatectl set-ntp true || true
@@ -60,7 +60,7 @@ if have_cmd timedatectl && systemctl is-system-running >/dev/null 2>&1; then
 fi
 
 ## chrony (best cross-distro option)
-if have_cmd chronyc || systemctl list-unit-files 2>/dev/null | grep -q chrony; then
+if have_cmd chronyc || systemctl list-unit-files 2> /dev/null | grep -q chrony; then
   echo "Using chrony"
 
   install_pkg chrony
@@ -77,7 +77,7 @@ if have_cmd chronyc || systemctl list-unit-files 2>/dev/null | grep -q chrony; t
 fi
 
 ## ntpd fallback
-if have_cmd ntpd || systemctl list-unit-files 2>/dev/null | grep -q ntp; then
+if have_cmd ntpd || systemctl list-unit-files 2> /dev/null | grep -q ntp; then
   echo "Using ntpd"
   install_pkg ntp
 

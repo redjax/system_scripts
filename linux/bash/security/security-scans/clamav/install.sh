@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: install.sh [options]
 
 Options:
@@ -138,7 +138,7 @@ esac
 
 DATABASE="$(clam_absolute_path "$DATABASE")"
 
-id "$DATABASE_OWNER" >/dev/null 2>&1 ||
+id "$DATABASE_OWNER" > /dev/null 2>&1 ||
   clam_die "Unknown database owner: $DATABASE_OWNER"
 
 [[ -f "$SCRIPT_DIR/configure.sh" ]] ||

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v mise >/dev/null 2>&1; then
+if ! command -v mise > /dev/null 2>&1; then
   echo "[ERROR] Mise is not installed" >&2
   exit 1
 fi
@@ -14,4 +14,3 @@ fi
 
 echo
 echo "Mise cleanup complete"
-
