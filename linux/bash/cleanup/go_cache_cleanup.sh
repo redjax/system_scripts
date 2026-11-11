@@ -4,7 +4,7 @@ set -euo pipefail
 DRY_RUN="false"
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage:
   ${0##*/} [OPTIONS]
 
@@ -20,7 +20,7 @@ while [[ $# -gt 0 ]]; do
       DRY_RUN="true"
       shift
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
@@ -32,7 +32,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if ! command -v go >/dev/null 2>&1; then
+if ! command -v go > /dev/null 2>&1; then
   echo "[ERROR] Go is not installed." >&2
   exit 1
 fi
