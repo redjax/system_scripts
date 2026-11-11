@@ -31,7 +31,7 @@ while true; do
 done
 
 ## Check if kstart command is available
-if ! command -v kstart &>/dev/null; then
+if ! command -v kstart &> /dev/null; then
   echo "kstart not found. Please ensure KDE and kstart are installed."
   exit 2
 fi

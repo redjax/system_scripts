@@ -50,7 +50,7 @@ function run_git_cmd() {
 
   local err_file
   err_file="$(mktemp)"
-  if ! "$@" 2>"$err_file"; then
+  if ! "$@" 2> "$err_file"; then
     local rc=$?
     local err
     err="$(cat "$err_file")"

@@ -3,31 +3,31 @@ set -euo pipefail
 
 install_pre_commit() {
   ## Attempt to install pre-commit using pip (possibly via python -m pip)
-  if command -v pip &>/dev/null; then
+  if command -v pip &> /dev/null; then
     if pip install --user pre-commit; then
       return 0
     fi
   fi
 
-  if command -v pip3 &>/dev/null; then
+  if command -v pip3 &> /dev/null; then
     if pip3 install --user pre-commit; then
       return 0
     fi
   fi
 
-  if command -v python &>/dev/null; then
+  if command -v python &> /dev/null; then
     if python -m pip install --user pre-commit; then
       return 0
     fi
   fi
 
-  if command -v python3 &>/dev/null; then
+  if command -v python3 &> /dev/null; then
     if python3 -m pip install --user pre-commit; then
       return 0
     fi
   fi
 
-  if command -v py3 &>/dev/null; then
+  if command -v py3 &> /dev/null; then
     if py3 -m pip install --user pre-commit; then
       return 0
     fi
@@ -38,7 +38,7 @@ install_pre_commit() {
 
 main() {
   ## Check if uv is installed
-  if command -v uv &>/dev/null; then
+  if command -v uv &> /dev/null; then
     echo "Installing pre-commit using uv tool..."
     if uv tool install pre-commit --with pre-commit-uv --force-reinstall; then
       echo "pre-commit installed successfully with uv."

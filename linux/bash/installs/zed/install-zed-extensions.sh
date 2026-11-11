@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi
@@ -60,7 +60,7 @@ fi
 mkdir -p "$EXTENSIONS_DIR"
 
 ## Read extensions from file into array
-mapfile -t extensions <$EXTENSIONS_TXT
+mapfile -t extensions < $EXTENSIONS_TXT
 echo "Loaded ${#extensions[@]} extension(s) from file: $EXTENSIONS_TXT"
 
 INSTALL_ERRORS=()

@@ -25,7 +25,7 @@ curl -sL "https://github.com/gruntwork-io/terragrunt/releases/download/${VERSION
 
 ## Verify checksum
 echo "Verifying checksum..."
-EXPECTED_CHECKSUM="$(grep "$BINARY_NAME" <"$CHECKSUMS_PATH" | awk '{print $1}')"
+EXPECTED_CHECKSUM="$(grep "$BINARY_NAME" < "$CHECKSUMS_PATH" | awk '{print $1}')"
 ACTUAL_CHECKSUM="$(sha256sum "$BINARY_PATH" | awk '{print $1}')"
 
 if [[ "$EXPECTED_CHECKSUM" == "$ACTUAL_CHECKSUM" ]]; then

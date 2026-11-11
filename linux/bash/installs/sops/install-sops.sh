@@ -69,7 +69,7 @@ install_sops() {
   echo "sops version $(sops --version) installed successfully."
 }
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi
@@ -90,7 +90,7 @@ done
 
 if [[ ! -z $FORCE_INSTALL ]] && [[ ! "$FORCE_INSTALL" == "" ]]; then
   install_sops
-elif ! command -v sops --help &>/dev/null; then
+elif ! command -v sops --help &> /dev/null; then
   install_sops
 else
   echo "sops is already installed."

@@ -6,13 +6,13 @@ API_URL="https://api.github.com/repos/${REPO}/releases/latest"
 
 ## Check dependencies
 for cmd in curl tar; do
-  if ! command -v "$cmd" >/dev/null 2>&1; then
+  if ! command -v "$cmd" > /dev/null 2>&1; then
     echo "Error: '$cmd' is required but not installed." >&2
     exit 1
   fi
 done
 
-if ! command -v unzip >/dev/null 2>&1; then
+if ! command -v unzip > /dev/null 2>&1; then
   HAVE_UNZIP=0
 else
   HAVE_UNZIP=1

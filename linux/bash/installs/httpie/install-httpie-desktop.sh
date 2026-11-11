@@ -9,7 +9,7 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-if ! command -v flatpak &>/dev/null; then
+if ! command -v flatpak &> /dev/null; then
   echo "Flatpak not found. Please install Flatpak first."
   exit 1
 fi

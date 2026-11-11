@@ -8,7 +8,7 @@ RM_STALLED="false"
 DELETE_DATA="false"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: stalled.sh [OPTIONS]
 
   -h, --help                    Print this help menu

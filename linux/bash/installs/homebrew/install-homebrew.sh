@@ -18,7 +18,7 @@ errexit() {
 }
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage:
   $(basename "$0") [OPTIONS]
 
@@ -151,11 +151,11 @@ case "$OS" in
 esac
 
 ## Prerequisites
-command -v curl >/dev/null 2>&1 ||
+command -v curl > /dev/null 2>&1 ||
   errexit "curl is required but was not found."
 
 find_brew() {
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew > /dev/null 2>&1; then
     command -v brew
     return 0
   fi
@@ -215,7 +215,7 @@ log "Homebrew prefix: $(brew --prefix)"
 log "Homebrew version: $(brew --version | head -n 1)"
 
 if [[ "$INSTALL_GCC" == "1" ]]; then
-  if brew list --versions gcc >/dev/null 2>&1; then
+  if brew list --versions gcc > /dev/null 2>&1; then
     log "GCC already installed."
   else
     log "Installing GCC"

@@ -5,7 +5,7 @@ DEFAULT_FLATPAK_APPS=()
 function install_flatpak_apps {
   FLATPAK_APPS=("$@")
 
-  if ! command -v flatpak >/dev/null 2>&1; then
+  if ! command -v flatpak > /dev/null 2>&1; then
     echo "[ERROR] Flatpak is not installed."
     return 1
   fi

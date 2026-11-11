@@ -6,7 +6,7 @@ set -euo pipefail
 # export to requirements.txt.          #
 ########################################
 
-if ! command -v uv >/dev/null 2>&1; then
+if ! command -v uv > /dev/null 2>&1; then
   echo "[ERROR] uv is not installed" >&2
   exit 1
 fi
@@ -27,7 +27,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 
 Usage: $0 [OPTIONS]
 

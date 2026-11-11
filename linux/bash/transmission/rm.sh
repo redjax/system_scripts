@@ -9,7 +9,7 @@ ALL="false"
 DELETE_DATA="false"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: rm.sh [OPTIONS]
 
   -h, --help                   Print this help menu
@@ -131,7 +131,7 @@ fi
 response=$(rpc_torrent_remove "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "$ids_json" "$DELETE_DATA")
 echo "$response" | jq .
 
-if echo "$response" | jq -e '.result == "success"' >/dev/null; then
+if echo "$response" | jq -e '.result == "success"' > /dev/null; then
   echo "Remove request sent"
 else
   echo "[ERROR] Remove request failed" >&2

@@ -6,7 +6,7 @@ EXT_DIR="${VSCODE_EXTENSIONS_DIR:-$HOME/.vscode/extensions}"
 EXT_FILE=""
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [OPTIONS]
 
 Export the installed VS Code extension inventory.
@@ -96,7 +96,7 @@ fi
 
 THIS_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-if ! command -v code >/dev/null 2>&1; then
+if ! command -v code > /dev/null 2>&1; then
   echo "[ERROR] 'code' CLI not found in PATH." >&2
   exit 1
 fi
@@ -110,9 +110,9 @@ mkdir -p "$OUT"
 mkdir -p "$(dirname -- "$EXT_FILE")"
 
 echo "[INFO] Exporting extension inventory"
-code --list-extensions --show-versions | sort >"$EXT_FILE"
+code --list-extensions --show-versions | sort > "$EXT_FILE"
 
-printf '%s\n' "$EXT_DIR" >"$OUT/extensions-path.txt"
+printf '%s\n' "$EXT_DIR" > "$OUT/extensions-path.txt"
 
 echo "[INFO] Inventory saved to: $EXT_FILE"
 echo "[INFO] Extension directory: $EXT_DIR"

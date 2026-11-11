@@ -16,7 +16,7 @@ CACHE_HOST_PATH="$REPO_ROOT/${CACHE_HOST_DIR#./}"
 EXTRA_ARGS=()
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   run-renovate.sh [options]
 

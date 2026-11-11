@@ -8,7 +8,7 @@ IDS=()
 ALL="false"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: reannounce.sh [OPTIONS]
 
   -h, --help                   Print this help menu

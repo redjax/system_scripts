@@ -9,7 +9,7 @@ EXT_FILE="extensions.txt"
 REPORT_OUT=""
 
 usage() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [OPTIONS]
 
 Build the scanner image, export installed VS Code extensions, and scan them.

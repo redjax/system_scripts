@@ -8,14 +8,14 @@ OS="$(uname -s)"
 if [ "$OS" = "Linux" ]; then
 
   # Debian/Ubuntu
-  if command -v apt >/dev/null; then
+  if command -v apt > /dev/null; then
     echo "[+] Using apt (Debian/Ubuntu)"
 
     sudo apt update
     sudo apt install -y wireshark
 
     # Ensure wireshark group exists
-    if ! getent group wireshark >/dev/null; then
+    if ! getent group wireshark > /dev/null; then
       echo "[+] Creating wireshark group"
       sudo groupadd wireshark
     fi
@@ -27,14 +27,14 @@ if [ "$OS" = "Linux" ]; then
     echo "Optionally, run: sudo dpkg-reconfigure wireshark-common to allow non-root capture"
 
   # Fedora/RHEL
-  elif command -v dnf >/dev/null; then
+  elif command -v dnf > /dev/null; then
     echo "[+] Using dnf (Fedora/RHEL)"
 
     # Install CLI + GUI
     sudo dnf install -y wireshark wireshark-cli
 
     # Ensure wireshark group exists
-    if ! getent group wireshark >/dev/null; then
+    if ! getent group wireshark > /dev/null; then
       echo "[+] Creating wireshark group"
       sudo groupadd wireshark
     fi
@@ -44,11 +44,11 @@ if [ "$OS" = "Linux" ]; then
     echo "You may need to log out/in for group changes to take effect."
 
   # CentOS/RHEL legacy
-  elif command -v yum >/dev/null; then
+  elif command -v yum > /dev/null; then
     echo "[+] Using yum (RHEL/CentOS)"
     sudo yum install -y wireshark-qt tshark
 
-    if ! getent group wireshark >/dev/null; then
+    if ! getent group wireshark > /dev/null; then
       echo "[+] Creating wireshark group"
       sudo groupadd wireshark
     fi
@@ -57,11 +57,11 @@ if [ "$OS" = "Linux" ]; then
     echo "You may need to log out/in for group changes to take effect."
 
   # Arch/Manjaro
-  elif command -v pacman >/dev/null; then
+  elif command -v pacman > /dev/null; then
     echo "[+] Using pacman (Arch/Manjaro)"
     sudo pacman -Sy --noconfirm wireshark-qt
 
-    if ! getent group wireshark >/dev/null; then
+    if ! getent group wireshark > /dev/null; then
       echo "[+] Creating wireshark group"
       sudo groupadd wireshark
     fi
@@ -76,7 +76,7 @@ if [ "$OS" = "Linux" ]; then
 
 # macOS
 elif [ "$OS" = "Darwin" ]; then
-  if ! command -v brew >/dev/null; then
+  if ! command -v brew > /dev/null; then
     echo "[!] Homebrew not found. Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi

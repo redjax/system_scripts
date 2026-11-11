@@ -10,7 +10,7 @@ ACTION_METHOD="torrent-start-now"
 ACTION_NAME="Start"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: start.sh [OPTIONS]
 
   -h, --help                   Print this help menu

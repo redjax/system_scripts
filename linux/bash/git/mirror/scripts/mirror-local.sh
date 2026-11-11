@@ -5,7 +5,7 @@ SOURCE_URL=""
 LOCAL_ROOT="./repos"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   mirror-local.sh <source-url> [--local-root <dir>]
 
@@ -16,7 +16,7 @@ EOF
 }
 
 function require_git() {
-  if ! command -v git >/dev/null 2>&1; then
+  if ! command -v git > /dev/null 2>&1; then
     echo "[ERROR] git is required" >&2
     exit 1
   fi

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v docker &>/dev/null; then
+if ! command -v docker &> /dev/null; then
   echo "Docker is not installed." >&2
   exit 1
 fi

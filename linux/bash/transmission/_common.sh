@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed." >&2
   exit 1
 fi
 
-if ! command -v jq &>/dev/null; then
+if ! command -v jq &> /dev/null; then
   echo "[ERROR] jq is not installed." >&2
   exit 1
 fi
@@ -38,7 +38,7 @@ function get_session_id() {
   headers="$(mktemp)"
   trap 'rm -f "$headers"' RETURN
 
-  curl -sS -D "$headers" -o /dev/null -u "$auth" "$url" >/dev/null || true
+  curl -sS -D "$headers" -o /dev/null -u "$auth" "$url" > /dev/null || true
 
   local session
   session="$(awk -F': ' 'tolower($1)=="x-transmission-session-id"{gsub("\r","",$2); print $2}' "$headers" | tail -n 1)"
@@ -89,22 +89,22 @@ function remove_finished_torrents() {
           | .id]'
   )
 
-  [[ "$(jq 'length' <<<"$ids_json")" -eq 0 ]] && return
+  [[ "$(jq 'length' <<< "$ids_json")" -eq 0 ]] && return
 
-  echo "Removing $(jq 'length' <<<"$ids_json") finished torrent(s)"
+  echo "Removing $(jq 'length' <<< "$ids_json") finished torrent(s)"
 
   rpc_torrent_remove \
     "$session" \
     "$url" \
     "$auth" \
     "$ids_json" \
-    "$delete_data" >/dev/null
+    "$delete_data" > /dev/null
 }
 
 function check_dependencies() {
   local deps=(curl jq)
   for dep in "${deps[@]}"; do
-    if ! command -v "$dep" &>/dev/null; then
+    if ! command -v "$dep" &> /dev/null; then
       echo "[ERROR] Script requires $dep" >&2
       exit 1
     fi
@@ -140,16 +140,16 @@ function remove_stalled_torrents() {
           | .id]'
   )
 
-  [[ "$(jq 'length' <<<"$ids_json")" -eq 0 ]] && return
+  [[ "$(jq 'length' <<< "$ids_json")" -eq 0 ]] && return
 
-  echo "Removing $(jq 'length' <<<"$ids_json") stalled torrent(s)"
+  echo "Removing $(jq 'length' <<< "$ids_json") stalled torrent(s)"
 
   rpc_torrent_remove \
     "$session" \
     "$url" \
     "$auth" \
     "$ids_json" \
-    "$delete_data" >/dev/null
+    "$delete_data" > /dev/null
 }
 
 function build_ids_json() {

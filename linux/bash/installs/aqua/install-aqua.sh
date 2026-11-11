@@ -18,7 +18,7 @@ echo "aqua installed. Add the following to your ~/.bashrc:"
 echo '  export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:\$PATH"'
 
 ## Verify installation
-if command -v aqua >/dev/null 2>&1; then
+if command -v aqua > /dev/null 2>&1; then
   echo "Success: $(aqua version)"
 else
   echo "[ERROR] Failed installing aqua."

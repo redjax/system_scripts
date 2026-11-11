@@ -50,7 +50,7 @@ if [[ "$OS" == "Darwin" ]]; then
 fi
 
 if [[ "$OS" == "Linux" ]]; then
-  if command -v flatpak >/dev/null 2>&1; then
+  if command -v flatpak > /dev/null 2>&1; then
     echo "Flatpak detected, installing XMCL from Flathub"
 
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo

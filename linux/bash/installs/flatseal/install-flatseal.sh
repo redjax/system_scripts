@@ -2,7 +2,7 @@
 
 set -uo pipefail
 
-if ! command -v flatpak &>/dev/null; then
+if ! command -v flatpak &> /dev/null; then
   echo "[ERROR] Flatpak is not installed."
   exit 1
 fi

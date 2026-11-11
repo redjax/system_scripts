@@ -10,7 +10,7 @@ ACTION_METHOD="torrent-stop"
 ACTION_NAME="Stop"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: stop.sh [OPTIONS]
 
   -h, --help                   Print this help menu

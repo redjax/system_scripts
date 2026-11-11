@@ -34,7 +34,7 @@ PRIORITY=5
 SILENT="false"
 
 function _usage() {
-  cat <<EOF
+  cat << EOF
 
 Usage: ${0} [OPTIONS]
 
@@ -119,7 +119,7 @@ if [[ -n "$TOKEN_FILE" ]]; then
     echo "[ERROR] Token file not found: $TOKEN_FILE" >&2
     exit 1
   fi
-  TOKEN="$(<"$TOKEN_FILE")"
+  TOKEN="$(< "$TOKEN_FILE")"
 fi
 
 ## Remove trailing slash from URL
