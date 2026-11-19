@@ -10,7 +10,7 @@ KUBECONFIG_SOURCE="/var/lib/k0s/pki/admin.conf"
 KUBECONFIG_DEST="${HOME}/.kube/config"
 
 function require_command() {
-  command -v "$1" >/dev/null 2>&1 || {
+  command -v "$1" > /dev/null 2>&1 || {
     echo "[ERROR] Required command not found: $1"
     exit 1
   }
@@ -23,11 +23,11 @@ function prompt_yes_no() {
     read -rp "${prompt} (y/n): " yn
 
     case "$yn" in
-    [Yy]*) return 0 ;;
-    [Nn]*) return 1 ;;
-    *)
-      echo "Please answer y or n."
-      ;;
+      [Yy]*) return 0 ;;
+      [Nn]*) return 1 ;;
+      *)
+        echo "Please answer y or n."
+        ;;
     esac
   done
 }
@@ -35,7 +35,7 @@ function prompt_yes_no() {
 require_command curl
 require_command sudo
 
-if command -v k0s >/dev/null 2>&1; then
+if command -v k0s > /dev/null 2>&1; then
   echo "[INFO] k0s is already installed."
 
   if ! prompt_yes_no "Proceed anyway?"; then
@@ -100,4 +100,3 @@ fi
 
 echo ""
 echo "[INFO] k0s setup complete."
-
