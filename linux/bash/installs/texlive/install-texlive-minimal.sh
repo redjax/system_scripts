@@ -13,7 +13,7 @@ DISTRO=$(detect_distro)
 echo "Detected $DISTRO"
 
 case "$DISTRO" in
-  debian|ubuntu)
+  debian | ubuntu)
     echo "Installing minimal resume LaTeX for Debian/Ubuntu"
     sudo apt update
     sudo apt install -y \
@@ -25,7 +25,7 @@ case "$DISTRO" in
       texlive-bibtex-extra \
       latexmk
     ;;
-  fedora|rhel|ol*|centos)
+  fedora | rhel | ol* | centos)
     echo "Installing minimal resume LaTeX for Fedora/RHEL"
     sudo dnf install -y --skip-unavailable \
       texlive-scheme-medium \
@@ -46,7 +46,7 @@ case "$DISTRO" in
     ;;
   darwin)
     echo "Installing minimal LaTeX for macOS"
-    if ! command -v brew >/dev/null; then
+    if ! command -v brew > /dev/null; then
       echo "Homebrew required. Install from https://brew.sh/"
       exit 1
     fi

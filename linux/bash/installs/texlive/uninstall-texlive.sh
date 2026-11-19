@@ -4,7 +4,7 @@ echo "[ TeX Live Full Uninstall ]"
 
 ## Find all TeX Live installations
 echo "Scanning for TeX Live installations"
-TEX_INSTALLED=$(tlmgr info --list-paths | grep -E '^/usr/local/texlive/[0-9]{4}' || find /usr/local/texlive -maxdepth 1 -type d 2>/dev/null)
+TEX_INSTALLED=$(tlmgr info --list-paths | grep -E '^/usr/local/texlive/[0-9]{4}' || find /usr/local/texlive -maxdepth 1 -type d 2> /dev/null)
 
 if [ -z "$TEX_INSTALLED" ]; then
   echo "[ERROR] No full TeX Live installation found."
@@ -31,7 +31,7 @@ done
 
 ## Clean up PATH from shell profiles
 for profile in ~/.bashrc ~/.zshrc ~/.bash_profile; do
-  if [ -f "$profile" ] && grep -q "texlive" "$profile" 2>/dev/null; then
+  if [ -f "$profile" ] && grep -q "texlive" "$profile" 2> /dev/null; then
     echo "Cleaning $profile"
     sudo sed -i '/texlive.*PATH/d' "$profile"
   fi
