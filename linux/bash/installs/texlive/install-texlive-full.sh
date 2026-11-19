@@ -5,9 +5,9 @@ echo "[Install TeX Live ]"
 
 detect_os() {
   case "$(uname -s)" in
-    Linux)  echo "linux" ;;
+    Linux) echo "linux" ;;
     Darwin) echo "macos" ;;
-    *)      echo "unknown" ;;
+    *) echo "unknown" ;;
   esac
 }
 
@@ -22,7 +22,7 @@ detect_linux_distro() {
 }
 
 install_texlive_macos() {
-  if ! command -v brew >/dev/null 2>&1; then
+  if ! command -v brew > /dev/null 2>&1; then
     echo "[ERROR] Homebrew not found. Install Homebrew from https://brew.sh/ and re-run this script."
     exit 1
   fi
@@ -39,7 +39,7 @@ install_texlive_macos() {
   PROFILE="${HOME}/.bashrc"
 
   if [ -d "$TEX_BIN" ]; then
-    if ! grep -q "texlive" "$PROFILE" 2>/dev/null; then
+    if ! grep -q "texlive" "$PROFILE" 2> /dev/null; then
       echo "Adding TeX Live bin to PATH in ${PROFILE}"
       {
         echo ""
@@ -64,7 +64,7 @@ install_texlive_linux() {
   echo "Detected Linux distribution: ${distro}"
 
   ## Install minimal prerequisites
-  if command -v apt-get >/dev/null 2>&1; then
+  if command -v apt-get > /dev/null 2>&1; then
     echo "Installing prerequisites via apt-get"
 
     sudo apt-get update
@@ -73,7 +73,7 @@ install_texlive_linux() {
       exit 1
     fi
 
-  elif command -v dnf >/dev/null 2>&1; then
+  elif command -v dnf > /dev/null 2>&1; then
     echo "Installing prerequisites via dnf"
 
     if ! sudo dnf install -y perl wget tar; then
@@ -81,7 +81,7 @@ install_texlive_linux() {
       exit 1
     fi
 
-  elif command -v pacman >/dev/null 2>&1; then
+  elif command -v pacman > /dev/null 2>&1; then
     echo "Installing prerequisites via pacman"
 
     if ! sudo pacman -Sy --needed --noconfirm perl wget tar; then
@@ -92,14 +92,17 @@ install_texlive_linux() {
     echo "[ERROR] Could not detect package manager. Ensure perl, wget, and tar are installed and re-run."
   fi
 
-  TMPDIR="$(mktemp -d 2>/dev/null || mktemp -d -t texlive)"
+  TMPDIR="$(mktemp -d 2> /dev/null || mktemp -d -t texlive)"
   if [ ! -d "$TMPDIR" ]; then
     echo "[ERROR] Failed to create temporary directory."
     exit 1
   fi
 
   echo "Using temp dir: ${TMPDIR}"
-  cd "$TMPDIR" || { echo "[ERROR] Failed to cd into ${TMPDIR}."; exit 1; }
+  cd "$TMPDIR" || {
+    echo "[ERROR] Failed to cd into ${TMPDIR}."
+    exit 1
+  }
 
   echo "Downloading latest TeX Live installer from CTAN"
   if ! wget -O install-tl-unx.tar.gz http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz; then
@@ -123,7 +126,10 @@ install_texlive_linux() {
   fi
 
   echo "Found installer directory: $INSTALL_DIR"
-  cd "$INSTALL_DIR" || { echo "[ERROR] Failed to cd into $INSTALL_DIR."; exit 1; }
+  cd "$INSTALL_DIR" || {
+    echo "[ERROR] Failed to cd into $INSTALL_DIR."
+    exit 1
+  }
 
   echo "Running TeX Live installer (this may take a long time)..."
   if ! sudo perl install-tl -no-gui; then
@@ -136,7 +142,7 @@ install_texlive_linux() {
   PROFILE="${HOME}/.bashrc"
 
   if [ -d "$TEX_BIN" ]; then
-    if ! grep -q "texlive" "$PROFILE" 2>/dev/null; then
+    if ! grep -q "texlive" "$PROFILE" 2> /dev/null; then
       echo "Adding TeX Live bin to PATH in ${PROFILE}"
       {
         echo ""
