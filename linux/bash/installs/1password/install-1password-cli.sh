@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed."
   exit 1
 fi
 
-if ! command -v unzip &>/dev/null; then
+if ! command -v unzip &> /dev/null; then
   echo "unzip is not installed."
   exit 1
 fi
@@ -15,7 +15,7 @@ fi
 ARCH=$(uname -m)
 case "$ARCH" in
   x86_64) ARCH="amd64" ;;
-  aarch64|arm64) ARCH="arm64" ;;
+  aarch64 | arm64) ARCH="arm64" ;;
   *)
     echo "Unsupported architecture: $ARCH"
     exit 1
@@ -39,7 +39,7 @@ echo "Installing binary to /usr/local/bin/op (requires sudo)..."
 sudo install -m 755 "$TMPDIR/op" /usr/local/bin/op
 
 ## Optionally create onepassword-cli group (from docs)
-if ! getent group onepassword-cli >/dev/null; then
+if ! getent group onepassword-cli > /dev/null; then
   echo "Creating onepassword-cli group..."
   sudo groupadd --system onepassword-cli
 fi

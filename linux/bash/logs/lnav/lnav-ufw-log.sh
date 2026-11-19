@@ -10,4 +10,3 @@ echo "Starting lnav, watching UFW"
 echo "[WARNING] This log requires sudo permission"
 
 sudo lnav /var/log/ufw.log
-

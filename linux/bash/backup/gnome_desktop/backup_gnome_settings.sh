@@ -8,8 +8,8 @@ TAR_ARCHIVE_FILE="gnome_settings_backup.tar.gz"
 
 function dump_gnome_settings {
   OUTPUT_PATH=$1
-  
-  if ! command -v dconf >/dev/null 2>&1; then
+
+  if ! command -v dconf > /dev/null 2>&1; then
     echo "[ERROR] dconf is not installed"
     return 1
   fi
@@ -26,7 +26,7 @@ function create_tar_backup {
   OUTPUT_PATH=$1
   GNOME_SETTINGS_DUMP_FILE=$2
 
-  if ! command -v tar >/dev/null 2>&1; then
+  if ! command -v tar > /dev/null 2>&1; then
     echo "[ERROR] tar is not installed"
     return 1
   fi

@@ -9,40 +9,40 @@ LINUX_SCRIPTS_DIR="${REPO_ROOT}/linux"
 DRY_RUN=false
 
 function usage() {
-    echo ""
-    echo "Usage: ${0} [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  --dry-run  Describe actions that would be taken, without taking them."
-    echo "  -h|--help  Print help menu"
-    echo ""
+  echo ""
+  echo "Usage: ${0} [OPTIONS]"
+  echo ""
+  echo "Options:"
+  echo "  --dry-run  Describe actions that would be taken, without taking them."
+  echo "  -h|--help  Print help menu"
+  echo ""
 }
 
 while [[ $# -gt 0 ]]; do
-    case $1 in
-        --dry-run)
-            DRY_RUN=true
-            shift
-            ;;
-        -h|--help)
-            usage
+  case $1 in
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    -h | --help)
+      usage
 
-            exit 0
-            ;;
-        *)
-            echo "[ERROR] Invalid options: $1"
+      exit 0
+      ;;
+    *)
+      echo "[ERROR] Invalid options: $1"
 
-            usage
-            exit 1
-            ;;
-    esac
+      usage
+      exit 1
+      ;;
+  esac
 done
 
 echo "Searching for .sh files that do not have chmod +x set."
 echo "  Search path: '${LINUX_SCRIPTS_DIR}'"
 
 if [ "$DRY_RUN" = true ]; then
-    echo "  DRY RUN enabled"
+  echo "  DRY RUN enabled"
 fi
 
 echo ""
@@ -58,7 +58,7 @@ find ~/scripts/system_scripts/linux -type f -name "*.sh" ! -executable | while I
 done
 
 if [ "$DRY_RUN" = true ]; then
-    echo ""
+  echo ""
 
-    echo "Re-run the script without --dry-run to make these files executable."
+  echo "Re-run the script without --dry-run to make these files executable."
 fi

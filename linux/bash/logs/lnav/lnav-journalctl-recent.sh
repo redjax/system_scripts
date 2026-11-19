@@ -9,4 +9,3 @@ fi
 echo "Starting lnav, watching recent journalctl errors"
 
 journalctl -p err --since "1 hour ago" | lnav
-

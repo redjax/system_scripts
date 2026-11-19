@@ -127,7 +127,7 @@ foreach ($resource in $Resources) {
 
     $resourceGroup = $resource.ResourceGroup
     $appService = $resource.AppService
-    
+
     Write-Host ""
     Write-Host "Processing: $appService in $resourceGroup" -ForegroundColor Cyan
     Write-Host ("-" * 40)
@@ -135,7 +135,7 @@ foreach ($resource in $Resources) {
     try {
         # Call the function with SaveToJson switch
         List-AzAppEnvVars -ResourceGroup $resourceGroup -AppService $appService -OutputDirectory $JsonOutputDirectory -SaveToJson:$SaveToJson
-        
+
         if ($SaveToJson) {
             # Only check for output file if SaveToJson was specified
             $outputFile = "$($JsonOutputDirectory)/$appService-env-vars.json"

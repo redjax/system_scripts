@@ -4,6 +4,7 @@
 __pycache__/
 .venv/
 *.py[cod]
+.ruff_cache/
 
 ## Logs
 *.log

@@ -12,7 +12,7 @@ BASE_DIR="${RENOVATE_BASE_DIR:-$REPO_ROOT/cache/renovate}"
 RENOVATE_BIN="${RENOVATE_BIN:-}"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   run-renovate-local.sh [options]
 
@@ -38,23 +38,23 @@ function require_var() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -e|--env-file)
+    -e | --env-file)
       ENV_FILE="$2"
       shift 2
       ;;
-    -c|--config)
+    -c | --config)
       CONFIG_FILE_PATH="$2"
       shift 2
       ;;
-    -d|--dry-run)
+    -d | --dry-run)
       export RENOVATE_DRY_RUN=true
       shift
       ;;
-    -r|--repository)
+    -r | --repository)
       export RENOVATE_REPOSITORIES="$2"
       shift 2
       ;;
-    -p|--platform)
+    -p | --platform)
       export RENOVATE_PLATFORM="$2"
       shift 2
       ;;
@@ -66,7 +66,7 @@ while [[ $# -gt 0 ]]; do
       shift
       break
       ;;
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
@@ -107,11 +107,11 @@ export RENOVATE_BASE_DIR="$BASE_DIR"
 export LOG_LEVEL="${LOG_LEVEL:-info}"
 
 if [[ -z "$RENOVATE_BIN" ]]; then
-  if command -v npx >/dev/null 2>&1; then
+  if command -v npx > /dev/null 2>&1; then
     RENOVATE_BIN="npx"
-  elif command -v renovate >/dev/null 2>&1; then
+  elif command -v renovate > /dev/null 2>&1; then
     RENOVATE_BIN="renovate"
-  elif command -v npm >/dev/null 2>&1; then
+  elif command -v npm > /dev/null 2>&1; then
     echo "Renovate not found; installing with npm..."
     npm install -g renovate
     RENOVATE_BIN="renovate"

@@ -4,18 +4,18 @@ set -euo pipefail
 ## Find a Python interpreter for pip installs
 PYTHON_BIN=""
 for bin in python3 python py py3 python; do
-  if command -v "$bin" >/dev/null 2>&1; then
+  if command -v "$bin" > /dev/null 2>&1; then
     PYTHON_BIN=$bin
     break
   fi
 done
 
 ## Ensure git-filter-repo is installed (try uv first, then pip)
-if ! command -v git-filter-repo >/dev/null 2>&1; then
+if ! command -v git-filter-repo > /dev/null 2>&1; then
   echo "git-filter-repo not found."
 
   ## Install with uv, if available
-  if command -v uv >/dev/null 2>&1; then
+  if command -v uv > /dev/null 2>&1; then
     echo "uv found. Installing git-filter-repo as a tool..."
     uv tool install git-filter-repo
     export PATH="$HOME/.local/bin:$PATH"
@@ -33,7 +33,7 @@ if ! command -v git-filter-repo >/dev/null 2>&1; then
 fi
 
 ## Test git-filter-repo was installed correctly
-if ! command -v git-filter-repo >/dev/null 2>&1; then
+if ! command -v git-filter-repo > /dev/null 2>&1; then
   echo "git-filter-repo still not found after installation attempts."
   exit 1
 fi
@@ -63,37 +63,37 @@ FORCE_PUSH=""
 ## Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-  --repo-url)
-    REPO_URL="$2"
-    shift 2
-    ;;
-  --source-email)
-    SRC_EMAIL="$2"
-    shift 2
-    ;;
-  --target-email)
-    TGT_EMAIL="$2"
-    shift 2
-    ;;
-  --source-name)
-    SRC_NAME="$2"
-    shift 2
-    ;;
-  --target-name)
-    TGT_NAME="$2"
-    shift 2
-    ;;
-  --force)
-    FORCE_PUSH=1
-    shift
-    ;;
-  -h | --help)
-    usage
-    ;;
-  *)
-    echo "Invalid argument: $1"
-    usage
-    ;;
+    --repo-url)
+      REPO_URL="$2"
+      shift 2
+      ;;
+    --source-email)
+      SRC_EMAIL="$2"
+      shift 2
+      ;;
+    --target-email)
+      TGT_EMAIL="$2"
+      shift 2
+      ;;
+    --source-name)
+      SRC_NAME="$2"
+      shift 2
+      ;;
+    --target-name)
+      TGT_NAME="$2"
+      shift 2
+      ;;
+    --force)
+      FORCE_PUSH=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      ;;
+    *)
+      echo "Invalid argument: $1"
+      usage
+      ;;
   esac
 done
 
@@ -125,7 +125,7 @@ if commit.author_email.decode('utf-8') == '$SRC_EMAIL':
     commit.author_email = b'$TGT_EMAIL'
 "
 if [[ -n "$TGT_NAME" ]]; then
-    COMMIT_CALLBACK+="
+  COMMIT_CALLBACK+="
     commit.author_name = b'$TGT_NAME'
 "
 fi
@@ -135,7 +135,7 @@ if commit.committer_email.decode('utf-8') == '$SRC_EMAIL':
     commit.committer_email = b'$TGT_EMAIL'
 "
 if [[ -n "$TGT_NAME" ]]; then
-    COMMIT_CALLBACK+="
+  COMMIT_CALLBACK+="
     commit.committer_name = b'$TGT_NAME'
 "
 fi

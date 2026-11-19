@@ -9,17 +9,17 @@ function install_lazygit {
     return 0
   fi
 
-  if ! command -v git --version > /dev/null 2>&1 ; then
+  if ! command -v git --version > /dev/null 2>&1; then
     echo "[ERROR] git is not installed."
     return 1
   fi
 
-  if ! command -v curl --version > /dev/null 2>&1 ; then
+  if ! command -v curl --version > /dev/null 2>&1; then
     echo "[ERROR] curl is not installed."
     return 1
   fi
 
-  if ! command -v tar --version > /dev/null 2>&1 ; then
+  if ! command -v tar --version > /dev/null 2>&1; then
     echo "[ERROR] tar is not installed."
     return 1
   fi

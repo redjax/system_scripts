@@ -60,4 +60,3 @@ esac
 
 echo "Enpass installed."
 exit 0
-

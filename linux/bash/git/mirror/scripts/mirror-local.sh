@@ -5,7 +5,7 @@ SOURCE_URL=""
 LOCAL_ROOT="./repos"
 
 function usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage:
   mirror-local.sh <source-url> [--local-root <dir>]
 
@@ -16,7 +16,7 @@ EOF
 }
 
 function require_git() {
-  if ! command -v git >/dev/null 2>&1; then
+  if ! command -v git > /dev/null 2>&1; then
     echo "[ERROR] git is required" >&2
     exit 1
   fi
@@ -53,30 +53,30 @@ function parse_args() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    --local-root)
-      require_arg "--local-root" "${2:-}"
-      LOCAL_ROOT="$2"
-      shift 2
-      ;;
-    --*)
-      echo "[ERROR] unknown flag: $1" >&2
-      usage
-      exit 2
-      ;;
-    *)
-      if [[ -z "$SOURCE_URL" ]]; then
-        SOURCE_URL="$1"
-        shift
-      else
-        echo "[ERROR] unexpected argument: $1" >&2
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      --local-root)
+        require_arg "--local-root" "${2:-}"
+        LOCAL_ROOT="$2"
+        shift 2
+        ;;
+      --*)
+        echo "[ERROR] unknown flag: $1" >&2
         usage
         exit 2
-      fi
-      ;;
+        ;;
+      *)
+        if [[ -z "$SOURCE_URL" ]]; then
+          SOURCE_URL="$1"
+          shift
+        else
+          echo "[ERROR] unexpected argument: $1" >&2
+          usage
+          exit 2
+        fi
+        ;;
     esac
   done
 

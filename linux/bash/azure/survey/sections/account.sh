@@ -5,7 +5,7 @@ function survey_section_account() {
   survey_section_header "Account & Subscription Info"
   survey_run_az "account info" az account show --output table
 
-  if ! az ad signed-in-user show --output table 2>/dev/null; then
+  if ! az ad signed-in-user show --output table 2> /dev/null; then
     echo -e "${YELLOW}[WARN] Could not get signed-in user info.${NC}"
   fi
   echo
@@ -14,7 +14,7 @@ function survey_section_account() {
   user_obj_id="$(survey_get_signed_in_user_id || true)"
   if [[ -n "$user_obj_id" ]]; then
     echo "[Role assignments for you in this sub:]"
-    if ! az role assignment list --assignee "$user_obj_id" --output table 2>/dev/null; then
+    if ! az role assignment list --assignee "$user_obj_id" --output table 2> /dev/null; then
       echo -e "${YELLOW}[WARN] Could not get your role assignments.${NC}"
     fi
     echo

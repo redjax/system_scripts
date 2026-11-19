@@ -33,22 +33,22 @@ install_zeal_opensuse() {
 }
 
 case "$ID" in
-ubuntu | debian | linuxmint)
-  install_zeal_debian
-  ;;
-fedora | rhel | rocky | alma)
-  install_zeal_rhel
-  ;;
-arch)
-  install_zeal_arch
-  ;;
-opensuse* | suse)
-  install_zeal_opensuse
-  ;;
-*)
-  echo "Unsupported or unrecognized Linux distribution: $ID"
-  exit 2
-  ;;
+  ubuntu | debian | linuxmint)
+    install_zeal_debian
+    ;;
+  fedora | rhel | rocky | alma)
+    install_zeal_rhel
+    ;;
+  arch)
+    install_zeal_arch
+    ;;
+  opensuse* | suse)
+    install_zeal_opensuse
+    ;;
+  *)
+    echo "Unsupported or unrecognized Linux distribution: $ID"
+    exit 2
+    ;;
 esac
 
 echo "Zeal installation completed."

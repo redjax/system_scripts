@@ -3,12 +3,12 @@
 Description:
     Immich-go outputs a log file that contains a record of all of the files uploaded to Immich.
     The file includes all of the files that failed to upload.
-    
+
     This script iterates over lines in the log file and extracts the filename of files that failed to upload,
     then outputs them to a text file.
-    
+
     You can move those files to another directory and re-run immich-go to attempt to upload them again.
-    
+
 Usage:
     ./extract-errored-uploads.py <log_file>
 """

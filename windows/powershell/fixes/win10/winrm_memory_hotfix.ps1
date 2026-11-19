@@ -2,9 +2,9 @@
 [String] $file = "$env:temp\Install-WMF3Hotfix.ps1"
 
 try {
-    (New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file) 
+    (New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file)
 }
-catch { 
+catch {
     Write-Error "Error downloading file from URL: [{$url}] to File: [{$file}]"
     Write-Error "Exception details: $($exc.Message)"
 

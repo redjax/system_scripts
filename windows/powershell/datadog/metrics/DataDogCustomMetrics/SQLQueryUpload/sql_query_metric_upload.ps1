@@ -69,7 +69,7 @@ function Invoke-SQL {
 
     ## Build connection string
     $ConnectionStr = "Data Source=$DS; Integrated Security=SSPI; Initial Catalog=$DB"
-    
+
     ## Build connection object
     $Connection = New-Object System.Data.SQLClient.SQLConnection($ConnectionStr)
     # Write-Host "Connection: $($Connection)"
@@ -158,9 +158,9 @@ function postMetric($metric, $tags) {
         Write-Debug "POST URL: $($url)"
 
         $response = Invoke-RestMethod -Method Post -Uri $url -Body $post_json -ContentType "application/json"
-    
+
         Write-Debug "Response: $($response)"
-    
+
     }
     catch {
         Write-Error "Unhandled exception POSTing query results to DataDog. Details: $($_.exception.message)"
@@ -197,7 +197,7 @@ $metric_name = "$($metric_ns).all"
 
 
 Write-Debug "Metric Name: $($metric_name)"
-    
+
 ForEach ($pair in $metric.GetEnumerator()) {
     Write-Debug "Key: $($pair.Key)`n`tValue: $($pair.Value)"
 }

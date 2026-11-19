@@ -10,4 +10,3 @@ echo "Starting lnav, watching dmesg"
 echo "[WARNING] dmesg logs require sudo permissions"
 
 sudo dmesg -x | lnav
-

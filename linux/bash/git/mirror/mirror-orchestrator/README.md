@@ -42,7 +42,7 @@ Run either script with `--help` to see help/usage menu.
 ### Examples
 
 - local bare mirror under ./repos
-  
+
   ```bash
   ./mirror-git-repo mirror git@github.com:org/repo.git
   ```

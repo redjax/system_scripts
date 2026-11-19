@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "curl is not installed. Please install curl & try again."
   exit 1
 fi
@@ -14,4 +14,3 @@ else
   echo "Chezmoi installed successfully. You might need to add \$HOME/.local/bin to your \$PATH."
   exit 0
 fi
-

@@ -30,7 +30,7 @@ function New-AquaPaths {
         .PARAMETER RootPath
         Root path for aqua install
 
-        .PARAMETER ProjectPath    
+        .PARAMETER ProjectPath
         Project path for aqua install
     #>
     Param(
@@ -49,7 +49,7 @@ function New-AquaPaths {
     try {
         New-Item -ItemType Directory -Force -Path $RootPath | Out-Null
         Write-Debug "Created directory: $RootPath"
-    } 
+    }
     catch {
         Write-Error "Unhandled exception creating path [$($RootPath)]. Details: $($_.Exception.Message)"
         return 1
@@ -66,7 +66,7 @@ function New-AquaPaths {
     #         If ( $DryRun ) {
     #             Write-Host "[DRY RUN] Would create path: $path" -ForegroundColor Magenta
     #             continue
-    #         } 
+    #         }
 
     #         try {
     #             New-Item -ItemType Directory -Force -Path $path | Out-Null
@@ -84,7 +84,7 @@ function New-AquaPaths {
 
 function Get-PkgManager {
     Param(
-        [ValidateSet("winget", "chocolatey", "scoop", $null)] 
+        [ValidateSet("winget", "chocolatey", "scoop", $null)]
         [string]$PreferPkgManager = $null
     )
 
@@ -218,7 +218,7 @@ function Set-AquaEnvVariables {
 
         return
     }
-    
+
     Write-Information "Setting aqua env variables"
     Write-Host "Setting environment variables for aqua." -ForegroundColor cyan
 
@@ -308,7 +308,7 @@ function Invoke-AquaInit {
         Write-Host "Aqua project already initialized. Run 'aqua --help' to get started. Run 'aqua root-dir' to get the path to the global aqua project." -ForegroundColor Green
         return 0
     }
-    
+
 }
 
 

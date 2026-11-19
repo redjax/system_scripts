@@ -2,7 +2,7 @@
 
 ## Unban an app from the SSHD fail2ban jail
 
-if ! command -v fail2ban-client &>/dev/null; then
+if ! command -v fail2ban-client &> /dev/null; then
   echo "Fail2Ban client is not installed."
   exit 1
 fi
@@ -23,20 +23,20 @@ function print_help() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-  --ip | --ip-address)
-    if [[ -z "$2" ]]; then
-      echo "[ERROR] --ip-address provided, but no IP address given."
-      print_help
-      exit 1
-    fi
+    --ip | --ip-address)
+      if [[ -z "$2" ]]; then
+        echo "[ERROR] --ip-address provided, but no IP address given."
+        print_help
+        exit 1
+      fi
 
-    IP_ADDR="$2"
-    shift
-    ;;
-  -h | --help)
-    print_help
-    exit 0
-    ;;
+      IP_ADDR="$2"
+      shift
+      ;;
+    -h | --help)
+      print_help
+      exit 0
+      ;;
   esac
 done
 

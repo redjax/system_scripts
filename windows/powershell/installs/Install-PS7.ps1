@@ -48,10 +48,10 @@ function Install-PwshWithMSI {
         Write-Error "Could not find MSI asset in latest GitHub release."
         return
     }
-    
+
     $msiUrl = $asset.browser_download_url
     $msiPath = "$env:TEMP\$($asset.name)"
-    
+
     try {
         Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath
     } catch {
@@ -60,7 +60,7 @@ function Install-PwshWithMSI {
     }
 
     Write-Host "Installing PowerShell 7 from MSI..." -ForegroundColor Cyan
-    
+
     try {
         Start-Process "msiexec.exe" -ArgumentList "/i `"$msiPath`" /qn ADD_PATH=1 ENABLE_PSREMOTING=1" -Wait
     } catch {

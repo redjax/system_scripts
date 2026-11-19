@@ -13,7 +13,7 @@ set -euo pipefail
 ###################################################
 
 ## Ensure git is installed
-if ! command -v git >/dev/null 2>&1; then
+if ! command -v git > /dev/null 2>&1; then
   echo "[ERROR] git is not installed. Install git before running this script." >&2
   exit 1
 fi
@@ -35,7 +35,8 @@ GENERATE_GLOBAL_GITIGNORE=""
 GIT_PAGER="less -FRX"
 
 ## Default gitignore contents
-DEFAULT_GITIGNORE_CONTENT=$(cat <<'EOF'
+DEFAULT_GITIGNORE_CONTENT=$(
+  cat << 'EOF'
 ############################################################
 # Global gitignore                                         #
 #                                                          #
@@ -111,7 +112,7 @@ EOF
 
 ## Print help menu
 function usage() {
-  cat <<EOF
+  cat << EOF
 USAGE: $(basename "$0") [OPTIONS]
 
 Options:
@@ -232,6 +233,14 @@ function set_line_endings() {
   git config --global core.autocrlf input
 }
 
+## Enable tracking of executable file permissions.
+#  For example, detects when you chmod +x a .sh file.
+function set_filemode() {
+  echo "Enabling git file mode tracking"
+
+  git config --global core.filemode true
+}
+
 ## Set git editor
 function set_editor() {
   git config --global core.editor "$1"
@@ -266,50 +275,51 @@ function set_autocorrect() {
 function parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -u|--git-user)
+      -u | --git-user)
         GIT_USERNAME="$2"
         shift 2
         ;;
-      -e|--git-email)
+      -e | --git-email)
         GIT_EMAIL="$2"
         shift 2
         ;;
-      -b|--default-branch)
+      -b | --default-branch)
         GIT_DEFAULT_BRANCH="$2"
         shift 2
         ;;
-      -p|--pull-rebase)
+      -p | --pull-rebase)
         GIT_ENABLE_PULL_REBASE="true"
         shift
         ;;
-      -f|--prune-on-fetch)
+      -f | --prune-on-fetch)
         GIT_PRUNE_ON_FETCH="true"
         shift
         ;;
-      -a|--auto-setup-remote)
+      -a | --auto-setup-remote)
         GIT_AUTO_SETUP_REMOTE="true"
         shift
         ;;
-      -r|--reuse-conflict)
+      -r | --reuse-conflict)
         GIT_REUSE_CONFLICT_RESOLUTION="true"
         shift
         ;;
-      -s|--enable-signing)
+      -s | --enable-signing)
         GIT_ENABLE_SIGNING="true"
         shift
         ;;
-      -k|--sign-ssh-key)
+      -k | --sign-ssh-key)
         GIT_SIGN_SSH_KEY="$2"
-        shift 2 ;;
-      -E|--editor)
+        shift 2
+        ;;
+      -E | --editor)
         GIT_PREFERRED_EDITOR="$2"
         shift 2
         ;;
-      -i|--default-gitignore)
+      -i | --default-gitignore)
         GENERATE_GLOBAL_GITIGNORE="$2"
         shift 2
         ;;
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
@@ -333,6 +343,7 @@ function do_git_setup() {
   set_pager "${GIT_PAGER}"
   enable_signing "${GIT_ENABLE_SIGNING}" "${GIT_SIGN_SSH_KEY}"
   set_line_endings
+  set_filemode
   set_editor "${GIT_PREFERRED_EDITOR}"
   set_conflict_style
   set_autocorrect
