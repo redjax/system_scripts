@@ -13,13 +13,13 @@ fi
 
 ## Normalize architecture
 case "$ARCH" in
-x86_64) ARCH="amd64" ;;
-aarch64 | arm64) ARCH="arm64" ;;
-armv7l) ARCH="arm" ;;
-*)
-  echo "[ERROR] Unsupported architecture: $ARCH"
-  exit 1
-  ;;
+  x86_64) ARCH="amd64" ;;
+  aarch64 | arm64) ARCH="arm64" ;;
+  armv7l) ARCH="arm" ;;
+  *)
+    echo "[ERROR] Unsupported architecture: $ARCH"
+    exit 1
+    ;;
 esac
 
 install_binary() {
@@ -36,7 +36,7 @@ install_binary() {
 }
 
 ## Debian / Ubuntu
-if command -v apt-get >/dev/null 2>&1; then
+if command -v apt-get > /dev/null 2>&1; then
   echo "[INFO] Detected Debian/Ubuntu"
   sudo apt-get update -y
   sudo apt-get install -y kubectl || install_binary
@@ -44,34 +44,34 @@ if command -v apt-get >/dev/null 2>&1; then
 fi
 
 ## RHEL / CentOS / Rocky / Alma
-if command -v dnf >/dev/null 2>&1; then
+if command -v dnf > /dev/null 2>&1; then
   echo "[INFO] Detected RHEL-based (dnf)"
   sudo dnf install -y kubectl || install_binary
   exit 0
 fi
 
-if command -v yum >/dev/null 2>&1; then
+if command -v yum > /dev/null 2>&1; then
   echo "[INFO] Detected RHEL-based (yum)"
   sudo yum install -y kubectl || install_binary
   exit 0
 fi
 
 ## openSUSE
-if command -v zypper >/dev/null 2>&1; then
+if command -v zypper > /dev/null 2>&1; then
   echo "[INFO] Detected openSUSE"
   sudo zypper install -y kubectl || install_binary
   exit 0
 fi
 
 ## Arch Linux
-if command -v pacman >/dev/null 2>&1; then
+if command -v pacman > /dev/null 2>&1; then
   echo "[INFO] Detected Arch Linux"
   sudo pacman -Sy --noconfirm kubectl || install_binary
   exit 0
 fi
 
 ## Alpine Linux
-if command -v apk >/dev/null 2>&1; then
+if command -v apk > /dev/null 2>&1; then
   echo "[INFO] Detected Alpine Linux"
   sudo apk add kubectl || install_binary
   exit 0
@@ -80,4 +80,3 @@ fi
 ## Binary install fallback
 echo "[WARN] Unknown distro. Falling back to binary install."
 install_binary
-
