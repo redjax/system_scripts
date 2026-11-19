@@ -4,9 +4,9 @@ set -uo pipefail
 VERSION=""
 
 # Parse args
-while (( "$#" )); do
+while (("$#")); do
   case "$1" in
-    -v|--version)
+    -v | --version)
       if [ -n "$2" ] && [[ "${2:0:1}" != "-" ]]; then
         VERSION=$2
         shift 2

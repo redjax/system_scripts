@@ -19,19 +19,19 @@ function usage() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  -b | --bridge)
-    BRIDGE_NAME="$2"
-    shift 2
-    ;;
-  *)
-    echo "[ERROR] Invalid arg: $1" >&2
-    usage
-    exit 1
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -b | --bridge)
+      BRIDGE_NAME="$2"
+      shift 2
+      ;;
+    *)
+      echo "[ERROR] Invalid arg: $1" >&2
+      usage
+      exit 1
+      ;;
   esac
 done
 
@@ -47,4 +47,3 @@ if ! "${cmd[@]}"; then
   echo "[ERROR] Failed running command: ${cmd[*]}" >&2
   exit 1
 fi
-

@@ -1,0 +1,22 @@
+## Allow sourcing files via variables
+source-path=SCRIPTDIR
+
+# Can't statically resolve dynamic source paths
+disable=SC1090
+disable=SC1091
+
+# Intentional literal strings containing variables
+# disable=SC2016
+
+# Overly noisy in larger script repos
+disable=SC2034
+
+# Function argument forwarding heuristics
+disable=SC2119
+disable=SC2120
+
+# Prefer direct command checks, but existing $? style is acceptable
+disable=SC2181
+
+# Allow simultaneous declare & assign, i.e. `local var=val`
+disable=SC2155

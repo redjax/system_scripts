@@ -6,7 +6,7 @@ set -euo pipefail
 # export to requirements.txt.          #
 ########################################
 
-if ! command -v uv >/dev/null 2>&1; then
+if ! command -v uv > /dev/null 2>&1; then
   echo "[ERROR] uv is not installed" >&2
   exit 1
 fi
@@ -27,7 +27,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 
 Usage: $0 [OPTIONS]
 
@@ -44,7 +44,7 @@ while [[ $# -gt 0 ]]; do
       usage
       exit 0
       ;;
-    -p|--project-dir)
+    -p | --project-dir)
       PY_PROJECT_DIR="$2"
       shift 2
       ;;
@@ -66,7 +66,7 @@ function export_requirements_txt() {
 
   echo "(Re)compiling requirements.txt with uv"
   echo "Output: ${requirements_file}"
-  
+
   if [[ "${DRY_RUN}" == "true" ]]; then
     echo "[DRY RUN] Would run: uv pip compile requirements.txt -o ${requirements_file} --upgrade"
     echo "[DRY RUN] Would run: uv pip sync requirements.txt"

@@ -46,14 +46,14 @@ function Test-ScoopInstalled {
 
 function Test-ScoopBucket {
     param([string]$BucketName)
-    
+
     $buckets = scoop bucket list 2>&1 | Out-String
     return $buckets -match $BucketName
 }
 
 function Add-ScoopBucket {
     param([string]$BucketName)
-    
+
     Write-Host "Adding Scoop bucket: $BucketName..." -ForegroundColor Cyan
     try {
         scoop bucket add $BucketName
@@ -69,14 +69,14 @@ function Install-ScoopPackage {
         [string]$DisplayName = $PackageName,
         [switch]$Optional
     )
-    
+
     ## Check if already installed
     $installed = scoop list 2>&1 | Out-String
     if ($installed -match $PackageName) {
         Write-Host "  ✓ $DisplayName is already installed." -ForegroundColor Gray
         return $true
     }
-    
+
     Write-Host "  Installing $DisplayName..." -ForegroundColor Cyan
     try {
         $output = scoop install $PackageName 2>&1
@@ -146,14 +146,14 @@ foreach ($pkg in $essentialPackages) {
 if (-not $Essential) {
     Write-Host ""
     Write-Host "Installing optional dependencies..." -ForegroundColor Green
-    
+
     $optionalPackages = @(
         @{ Name = "ffmpeg"; Display = "FFmpeg (Video preview)" }
         @{ Name = "poppler"; Display = "Poppler (PDF preview)" }
         @{ Name = "imagemagick"; Display = "ImageMagick (Image processing)" }
         @{ Name = "zoxide"; Display = "zoxide (Smart directory jumping)" }
     )
-    
+
     foreach ($pkg in $optionalPackages) {
         Install-ScoopPackage -PackageName $pkg.Name -DisplayName $pkg.Display -Optional
     }
@@ -164,7 +164,7 @@ if (-not $SkipFonts) {
     Write-Host ""
     Write-Host "Installing Nerd Fonts..." -ForegroundColor Green
     Write-Host "  Note: Font installation may require administrator privileges." -ForegroundColor Yellow
-    
+
     ## Popular Nerd Fonts choices
     $fonts = @(
         "Hack-NF",
@@ -174,11 +174,11 @@ if (-not $SkipFonts) {
         "JetBrainsMono-NF",
         "JetBrainsMono-NF-Mono"
     )
-    
+
     foreach ($font in $fonts) {
         Install-ScoopPackage -PackageName $font -DisplayName "Nerd Font ($font)" -Optional
     }
-    
+
     Write-Host ""
     Write-Host "  After installation, you may need to:" -ForegroundColor Yellow
     Write-Host "  1. Restart your terminal" -ForegroundColor Yellow

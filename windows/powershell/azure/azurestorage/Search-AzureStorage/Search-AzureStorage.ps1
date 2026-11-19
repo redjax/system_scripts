@@ -62,10 +62,10 @@ Function Check-AzCLI {
     <#
     .SYNOPSIS
     Check if the Azure CLI (az) tool is installed.
-    
+
     .DESCRIPTION
     Attempts to locate the `az` command, and presents user with install URL if not found.
-    
+
     .EXAMPLE
     Check-AzCLI
     #>
@@ -85,7 +85,7 @@ Function Authenticate-AzCLI {
 
     .DESCRIPTION
     Authenticates with the Azure CLI (az) using the `az login` command.
-    
+
     .EXAMPLE
     Authenticate-AzCLI
     #>
@@ -104,19 +104,19 @@ Function Get-BlobManifest {
     <#
     .SYNOPSIS
     Retrieves a blob manifest from an Azure Storage container.
-    
+
     .DESCRIPTION
     Retrieves a blob manifest from an Azure Storage container using the `az storage blob list` command.
-    
+
     .PARAMETER ResourceGroupName
     The name of the resource group that contains the storage account.
-    
+
     .PARAMETER StorageAccountName
     The name of the storage account.
-    
+
     .PARAMETER ContainerName
     The name of the container in the storage account.
-    
+
     .PARAMETER ManifestFilePath
     The path to the local copy of the container's blob manifest.
 
@@ -167,16 +167,16 @@ Function Search-Blobs {
     <#
     .SYNOPSIS
     Searches for blobs in a local copy of a container's blob manifest.
-    
+
     .DESCRIPTION
     Searches for blobs in a local copy of a container's blob manifest using the -like operator with wildcards.
-    
+
     .PARAMETER ManifestFilePath
     The path to the local copy of the container's blob manifest.
-    
+
     .PARAMETER SearchString
     The string to search for in the blob manifest.
-    
+
     .EXAMPLE
     Search-Blobs -ManifestFilePath $ManifestFilePath -SearchString $SearchString
     #>
@@ -190,7 +190,7 @@ Function Search-Blobs {
 
         ## Read the JSON file and convert it to an object
         $Blobs = Get-Content -Path $ManifestFilePath | ConvertFrom-Json
-        
+
         ## Perform the search using the -like operator with wildcards
         $MatchingBlobs = $Blobs | Where-Object { $_.name -like "*$SearchString*" }
 

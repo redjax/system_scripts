@@ -12,7 +12,7 @@ set -euo pipefail
 ###########################################################
 
 ## Use an existing installation if available.
-if command -v speedtest >/dev/null 2>&1; then
+if command -v speedtest > /dev/null 2>&1; then
   exec speedtest --accept-license --accept-gdpr "$@"
 fi
 

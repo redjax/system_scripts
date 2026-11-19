@@ -27,28 +27,48 @@ EOF
 function parse_arguments() {
   while [[ $# -gt 0 ]]; do
     case $1 in
-      -H|--host)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --host requires argument" >&2; usage; exit 1; }
+      -H | --host)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --host requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_HOST="$2"
         shift 2
         ;;
-      -p|--port)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --port requires argument" >&2; usage; exit 1; }
+      -p | --port)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --port requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_PORT="$2"
         shift 2
         ;;
-      -u|--username)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --username requires argument" >&2; usage; exit 1; }
+      -u | --username)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --username requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_USERNAME="$2"
         shift 2
         ;;
-      -P|--password)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --password requires argument" >&2; usage; exit 1; }
+      -P | --password)
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --password requires argument" >&2
+          usage
+          exit 1
+        }
         TRANSMISSION_PASSWORD="$2"
         shift 2
         ;;
       --id)
-        [[ -z "${2:-}" ]] && { echo "[ERROR] --id requires argument" >&2; usage; exit 1; }
+        [[ -z "${2:-}" ]] && {
+          echo "[ERROR] --id requires argument" >&2
+          usage
+          exit 1
+        }
         IDS+=("$2")
         shift 2
         ;;
@@ -64,7 +84,7 @@ function parse_arguments() {
         DEBUG="true"
         shift
         ;;
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
@@ -111,7 +131,7 @@ fi
 response=$(rpc_torrent_remove "$SESSION_ID" "$RPC_URL" "$TRANSMISSION_AUTH_STR" "$ids_json" "$DELETE_DATA")
 echo "$response" | jq .
 
-if echo "$response" | jq -e '.result == "success"' >/dev/null; then
+if echo "$response" | jq -e '.result == "success"' > /dev/null; then
   echo "Remove request sent"
 else
   echo "[ERROR] Remove request failed" >&2

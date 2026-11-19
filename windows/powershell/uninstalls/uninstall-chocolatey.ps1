@@ -28,7 +28,7 @@ This script removes the chocolatey directory ($($ChocolateyDir)) and chocolatey 
     Chocolatey has a script that will do this, but it is not recommended as it is very desctructive:
     https://docs.chocolatey.org/en-us/choco/uninstallation/#script
 "
-Write-Warning $WarningMessage 
+Write-Warning $WarningMessage
 
 
 function Remove-ChocoDir {

@@ -2,7 +2,7 @@
 
 set -uo pipefail
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi
@@ -17,4 +17,3 @@ else
   echo "Helm installed."
   exit 0
 fi
-

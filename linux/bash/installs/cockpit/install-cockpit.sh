@@ -16,25 +16,25 @@ install_cockpit() {
   echo "Detected Linux distro: $DISTRO"
 
   case "$DISTRO" in
-    fedora|centos|rhel)
+    fedora | centos | rhel)
       echo "Using DNF/YUM for package management"
       sudo dnf install -y cockpit || sudo yum install -y cockpit
       sudo systemctl enable --now cockpit.socket
       sudo firewall-cmd --permanent --add-service=cockpit
       sudo firewall-cmd --reload
       ;;
-    
-    ubuntu|debian)
+
+    ubuntu | debian)
       echo "Using APT for package management"
       sudo apt update
       sudo apt install -y cockpit
       sudo systemctl enable --now cockpit.socket
       # Check if ufw is installed and enable rule
-      if command -v ufw >/dev/null 2>&1; then
+      if command -v ufw > /dev/null 2>&1; then
         sudo ufw allow 9090/tcp
       fi
       ;;
-    
+
     *)
       echo "Unsupported or unknown distro: $DISTRO"
       echo "Please install Cockpit manually."
@@ -47,4 +47,3 @@ install_cockpit() {
 }
 
 install_cockpit
-

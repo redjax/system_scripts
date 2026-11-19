@@ -69,7 +69,7 @@ ForEach ($GitBranch in $GitBranches) {
     else {
         # For local branches, simply checkout and pull
         git checkout $GitBranchName
-        
+
         try {
             git pull
         }

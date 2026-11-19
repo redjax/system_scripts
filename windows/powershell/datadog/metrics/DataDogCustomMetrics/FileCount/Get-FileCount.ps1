@@ -207,7 +207,7 @@ function postMetric($url, $metric, $tags) {
     $post_json = $post_obj | ConvertTo-Json -Depth 5 -Compress
 
     Write-Debug "POST request body: $($post_json)"
-    
+
     # POST to DD API
     try {
         Write-Output "Posting results to DataDog"
@@ -256,12 +256,12 @@ function Send-ToDataDog() {
     $metric_ns = "fileCount.count" # your desired metric namespace
 
     Write-Debug "DataDog metric namespace: $($metric_ns)"
-    
+
     ## Create request body
     [System.Collections.Hashtable]$metric = @{"name" = $metric_ns; "amount" = $FileCount }
     If ( $Debug ) {
         Write-Debug "Debug `$metric:"
-    
+
         ForEach ($pair in $metric.GetEnumerator()) {
             Write-Debug "Key: $($pair.Key)`n`tValue: $($pair.Value)"
         }

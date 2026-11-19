@@ -15,7 +15,7 @@ main() {
 
 ## Help message function
 show_help() {
-  cat <<EOF
+  cat << EOF
 Usage: $(basename "$0") [PROGRAM_NAME]...
 
 Kills all processes matching each PROGRAM_NAME argument.
@@ -32,7 +32,7 @@ EOF
 ## Parse help flag
 for arg in "$@"; do
   case "$arg" in
-    -h|--help)
+    -h | --help)
       show_help
       exit 0
       ;;
@@ -42,4 +42,3 @@ done
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   main "$@"
 fi
-

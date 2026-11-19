@@ -8,17 +8,17 @@ KEY_LENGTH=2048
 OUTPUT_FILE=""
 
 if ! command -v resticprofile; then
-    echo "resticprofile is not installed. Please install resticprofile & try again."
-    exit 1
+  echo "resticprofile is not installed. Please install resticprofile & try again."
+  exit 1
 fi
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    -k|--key-length)
+    -k | --key-length)
       KEY_LENGTH="$2"
       shift 2
       ;;
-    -o|--output-file)
+    -o | --output-file)
       OUTPUT_FILE="$2"
       shift 2
       ;;
@@ -36,16 +36,15 @@ fi
 
 if [[ ! "$OUTPUT_FILE" == "" ]]; then
   if [[ -f "$OUTPUT_FILE" ]]; then
-  echo "Restic password file '$OUTPUT_FILE' already exists."
-  read -p "Do you want to overwrite it? (y/n) " overwrite_response
-  case $overwrite_response in
-    [yY])
-    ;;
-    *)
-      echo "Cancelling."
-      exit 1
-    ;;
-  esac
+    echo "Restic password file '$OUTPUT_FILE' already exists."
+    read -p "Do you want to overwrite it? (y/n) " overwrite_response
+    case $overwrite_response in
+      [yY]) ;;
+      *)
+        echo "Cancelling."
+        exit 1
+        ;;
+    esac
   fi
 fi
 

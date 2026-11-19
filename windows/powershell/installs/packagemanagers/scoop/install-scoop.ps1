@@ -20,7 +20,7 @@ function Install-ScoopCli {
         Write-Host "[DRY RUN] Would download & install scoop." -ForegroundColor Magenta
         return
     }
-    
+
     If ( -Not (Get-Command scoop) ) {
         try {
             Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression

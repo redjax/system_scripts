@@ -4,7 +4,7 @@ set -e
 
 RANGE="192.168.1.1-100"
 
-if ! command -v nmap >/dev/null 2>&1; then
+if ! command -v nmap > /dev/null 2>&1; then
   echo "nmap is not installed."
   exit 1
 fi
@@ -24,15 +24,15 @@ function print_help() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -r|--range)
+    -r | --range)
       if [[ -z $2 ]] || [[ "$2" == "" ]]; then
         echo "[ERROR] --range provided, but no IP range given."
-	
-	print_help
-	exit 1
+
+        print_help
+        exit 1
       fi
       ;;
-    -o|--output)
+    -o | --output)
       if [[ -z $2 ]] || [[ "$2" == "" ]]; then
         echo "[ERROR] --output provided, but no file path given."
 
@@ -43,7 +43,7 @@ while [[ $# -gt 0 ]]; do
       OUTPUT_FILE="$2"
       shift 2
       ;;
-    -h|--help)
+    -h | --help)
       print_help
       exit 0
       ;;

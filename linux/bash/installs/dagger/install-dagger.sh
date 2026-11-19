@@ -1,16 +1,16 @@
 #!/bin/bash
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi
 
-if command -v dagger &>/dev/null || type dagger &>/dev/null || which dagger &>/dev/null; then
+if command -v dagger &> /dev/null || type dagger &> /dev/null || which dagger &> /dev/null; then
   echo "Dagger is already installed."
   exit 0
 fi
 
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   echo "[ERROR] curl is not installed."
   exit 1
 fi

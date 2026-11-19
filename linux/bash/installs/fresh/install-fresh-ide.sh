@@ -16,7 +16,7 @@ function detect_linux_distro() {
 }
 
 function install_fresh_brew() {
-  if ! command -v brew &>/dev/null; then
+  if ! command -v brew &> /dev/null; then
     echo "Error: Homebrew is not installed. Install it from https://brew.sh"
     exit 1
   fi
@@ -26,9 +26,9 @@ function install_fresh_brew() {
 }
 
 function install_fresh_arch() {
-  if command -v yay &>/dev/null; then
+  if command -v yay &> /dev/null; then
     yay -S fresh-editor-bin
-  elif command -v paru &>/dev/null; then
+  elif command -v paru &> /dev/null; then
     paru -S fresh-editor-bin
   else
     echo "Installing fresh-editor from AUR manually"
@@ -47,9 +47,9 @@ function install_fresh_deb() {
 
   local deb_url
 
-  deb_url="$(curl -s https://api.github.com/repos/sinelaw/fresh/releases/latest \
-    | grep "browser_download_url.*_$(dpkg --print-architecture)\.deb" \
-    | cut -d '"' -f 4)"
+  deb_url="$(curl -s https://api.github.com/repos/sinelaw/fresh/releases/latest |
+    grep "browser_download_url.*_$(dpkg --print-architecture)\.deb" |
+    cut -d '"' -f 4)"
 
   if [ -z "$deb_url" ]; then
     echo "Error: Could not find .deb download URL for architecture $(dpkg --print-architecture)"
@@ -69,9 +69,9 @@ function install_fresh_rpm() {
 
   local rpm_url
 
-  rpm_url="$(curl -s https://api.github.com/repos/sinelaw/fresh/releases/latest \
-    | grep "browser_download_url.*\.$(uname -m)\.rpm" \
-    | cut -d '"' -f 4)"
+  rpm_url="$(curl -s https://api.github.com/repos/sinelaw/fresh/releases/latest |
+    grep "browser_download_url.*\.$(uname -m)\.rpm" |
+    cut -d '"' -f 4)"
 
   if [ -z "$rpm_url" ]; then
     echo "Error: Could not find .rpm download URL for architecture $(uname -m)"
@@ -113,9 +113,9 @@ function install_fresh_binary() {
 
   local tarball="fresh-editor-${target}.tar.xz"
   local download_url
-  download_url="$(curl -s https://api.github.com/repos/sinelaw/fresh/releases/latest \
-    | grep "browser_download_url.*${target}\.tar\.xz\"" \
-    | cut -d '"' -f 4)"
+  download_url="$(curl -s https://api.github.com/repos/sinelaw/fresh/releases/latest |
+    grep "browser_download_url.*${target}\.tar\.xz\"" |
+    cut -d '"' -f 4)"
 
   if [ -z "$download_url" ]; then
     echo "Error: Could not find binary release for target '$target'"
@@ -171,25 +171,25 @@ case "$OS" in
 
     case "$DISTRO" in
       ## Brew-based immutable distros
-      bazzite|bluefin|aurora)
+      bazzite | bluefin | aurora)
         echo "  Method: Homebrew"
         install_fresh_brew
         ;;
 
       ## Arch Linux and derivatives
-      arch|endeavouros|manjaro)
+      arch | endeavouros | manjaro)
         echo "  Method: AUR"
         install_fresh_arch
         ;;
 
       ## Debian/Ubuntu family
-      debian|ubuntu|pop|linuxmint|elementary|zorin|kali)
+      debian | ubuntu | pop | linuxmint | elementary | zorin | kali)
         echo "  Method: .deb package"
         install_fresh_deb
         ;;
 
       ## RPM-based distros
-      fedora|rhel|centos|rocky|alma|ol|opensuse*|sles)
+      fedora | rhel | centos | rocky | alma | ol | opensuse* | sles)
         echo "  Method: .rpm package"
         install_fresh_rpm
         ;;

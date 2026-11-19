@@ -29,7 +29,7 @@ if ($Local) {
 ## If --latest, sort descending and take first
 if ($Latest) {
     $releases = $releases | Sort-Object version -Descending
-    
+
     if ($releases.Count -gt 0) {
         $releases = $releases[0..0]
     }

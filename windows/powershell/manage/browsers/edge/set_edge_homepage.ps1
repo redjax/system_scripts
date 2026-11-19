@@ -2,7 +2,7 @@
     Reference: https://gist.github.com/aldodelgado/ab70809ed513fa59c1a50f532d47297a
 
     Sets Edge browser's homepage to value in $url.
-#> 
+#>
 
 param(
     # Set URL to become Edge's homepage
@@ -51,7 +51,7 @@ Else {
 #  set-item line with the name -2 and the new url
 if ($policyexistshome -eq $false) {
     ## Key does not exist. Create and set property
-    
+
     New-Item -path HKLM:\SOFTWARE\Policies\Microsoft\Edge\RestoreOnStartupURLs
     New-ItemProperty -path $regKeyhome -Name 1 -PropertyType String -Value $url
 

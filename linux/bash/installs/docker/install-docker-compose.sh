@@ -9,8 +9,8 @@ install_docker_compose_latest() {
 }
 
 if command -v docker compose --version &> /dev/null; then
-    echo "Docker Compose is already installed."
-    exit 0
+  echo "Docker Compose is already installed."
+  exit 0
 fi
 
 install_docker_compose_latest

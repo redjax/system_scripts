@@ -10,4 +10,3 @@ echo "Starting lnav, watching cron log"
 echo "[WARNING] cron logs require sudo permissions"
 
 sudo journalctl -u cron | lnav
-

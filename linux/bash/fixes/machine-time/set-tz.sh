@@ -10,7 +10,7 @@ TZ="Etc/UTC"
 LIST_TZ="false"
 
 function usage() {
-  cat <<EOF
+  cat << EOF
 Usage: ${0} [OPTIONS]
 
 Options:
@@ -24,7 +24,7 @@ function list_timezones() {
   echo "Available timezones:"
 
   ## systemd-based systems
-  if command -v timedatectl >/dev/null 2>&1; then
+  if command -v timedatectl > /dev/null 2>&1; then
     timedatectl list-timezones
     return 0
   fi
@@ -34,15 +34,15 @@ function list_timezones() {
     find /usr/share/zoneinfo -type f \
       ! -path "*/posix/*" \
       ! -path "*/right/*" \
-      ! -name ".*" \
-      | sed "s|/usr/share/zoneinfo/||" \
-      | sort
+      ! -name ".*" |
+      sed "s|/usr/share/zoneinfo/||" |
+      sort
     return 0
   fi
 
   ## Alpine / minimal systems fallback
-  if command -v ls >/dev/null 2>&1; then
-    ls /usr/share/zoneinfo 2>/dev/null || {
+  if command -v ls > /dev/null 2>&1; then
+    ls /usr/share/zoneinfo 2> /dev/null || {
       echo "No timezone database found."
       return 1
     }
@@ -56,14 +56,14 @@ function set_timezone() {
     echo "[ERROR] Missing --timezone value" >&2
     echo "  Print timezones with ${0} --list-timezones" >&2
     echo "  Run again like: ${0} --timezone Region/City_Name" >&2
-    
+
     return 1
   fi
 
   echo "Setting timezone to: $tz"
 
   # systemd systems (Debian, RHEL, Arch, openSUSE, etc.)
-  if command -v timedatectl >/dev/null 2>&1; then
+  if command -v timedatectl > /dev/null 2>&1; then
     if ! timedatectl list-timezones | grep -qx "$tz"; then
       echo "Invalid timezone: $tz"
       return 1
@@ -102,15 +102,15 @@ function set_timezone() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -h|--help)
+    -h | --help)
       usage
       exit 0
       ;;
-    -l|--list-timezones)
+    -l | --list-timezones)
       list_timezones
       exit 0
       ;;
-    -t|--timezone)
+    -t | --timezone)
       TZ="$2"
       shift 2
       ;;
@@ -122,4 +122,3 @@ while [[ $# -gt 0 ]]; do
 done
 
 set_timezone "${TZ}"
-

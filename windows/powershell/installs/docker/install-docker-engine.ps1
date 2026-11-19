@@ -65,13 +65,13 @@ function Get-LatestDockerVersion {
     try {
         ## Match all docker-<version>.zip filenames
         $VersionMatches = [regex]::Matches($html.Content, "docker-(\d+\.\d+\.\d+)\.zip")
-        
+
         if ($VersionMatches.Count -eq 0) {
             Write-Error "No Docker zip files found in the HTML content."
             exit 1
         }
 
-        
+
         $zipFiles = $VersionMatches | ForEach-Object {
             [PSCustomObject]@{
                 FileName = $_.Value
@@ -195,7 +195,7 @@ function Start-ExtractDockerZip {
 
     ## Move contents of the inner 'docker' folder to the final destination
     $innerDockerPath = Join-Path -Path $tempPath -ChildPath "docker"
-    
+
     if ( -not ( Test-Path $innerDockerPath ) ) {
         Write-Error "Expected 'docker' folder not found in the archive."
         exit 1
@@ -216,7 +216,7 @@ function Start-ExtractDockerZip {
             Write-Error "Failed to clean up temporary extraction path: $tempPath. Details: $($_.Exception.Message)"
             exit 1
         }
-    } 
+    }
 
     Write-Host "Docker has been extracted to $DestinationPath"
 }
@@ -226,7 +226,7 @@ function Add-DockerToPath {
     Param(
         [string]$DockerPath = $InstallPath
     )
-    
+
     ## Get the current system PATH
     $ExistingPath = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
 
@@ -263,7 +263,7 @@ catch {
 if ( Test-Path -Path $InstallPath ) {
     if ( $Update ) {
         Write-Host "Docker is already installed at $InstallPath and will be updated." -ForegroundColor Yellow
-        
+
         try {
             Remove-Item -Recurse -Force -Path $installPath
             Write-Host "Removed existing Docker installation at $installPath"

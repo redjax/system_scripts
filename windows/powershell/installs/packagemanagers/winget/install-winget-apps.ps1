@@ -147,7 +147,7 @@ function Install-Apps {
         ForEach ( $app in $AppsList ) {
 
             Write-Host "Installing $($app.name)" -ForegroundColor Blue
-            
+
             $Proceed = Install-Prompt -Application $app
 
             If ( $Proceed ) {
