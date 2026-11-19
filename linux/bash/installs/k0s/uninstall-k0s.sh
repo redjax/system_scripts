@@ -5,18 +5,18 @@ NUKE=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-  --nuke)
-    NUKE=1
-    shift
-    ;;
-  *)
-    echo "[ERROR] Unknown argument: $1"
-    exit 1
-    ;;
+    --nuke)
+      NUKE=1
+      shift
+      ;;
+    *)
+      echo "[ERROR] Unknown argument: $1"
+      exit 1
+      ;;
   esac
 done
 
-if ! command -v k0s >/dev/null 2>&1; then
+if ! command -v k0s > /dev/null 2>&1; then
   echo "[INFO] k0s is not installed."
   exit 0
 fi
@@ -79,8 +79,8 @@ if [[ "$NUKE" -eq 1 ]]; then
 
   ## Network cleanup
 
-  sudo ip link delete cni0 2>/dev/null || true
-  sudo ip link delete flannel.1 2>/dev/null || true
+  sudo ip link delete cni0 2> /dev/null || true
+  sudo ip link delete flannel.1 2> /dev/null || true
 
   echo ""
   echo "[INFO] Kubernetes networking artifacts may still exist in iptables."
@@ -89,4 +89,3 @@ fi
 
 echo ""
 echo "[INFO] k0s uninstall complete."
-
