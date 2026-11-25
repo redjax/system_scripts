@@ -99,9 +99,13 @@ fi
 
 ## Output
 if [[ "$QUIET" == true ]]; then
-  echo "$FIRST_COMMIT"
+  printf '%s\n' "$FIRST_COMMIT"
 else
-  echo "First commit:"
-  echo
-  git --git-dir="$TMP_DIR/repo.git" show --no-patch --format=fuller "$FIRST_COMMIT"
+  printf 'Root commit(s):\n\n'
+
+  while IFS= read -r commit; do
+    git --git-dir="$TMP_DIR/repo.git" show \
+      --no-patch --format=fuller "$commit"
+    printf '\n'
+  done <<< "$FIRST_COMMIT"
 fi
